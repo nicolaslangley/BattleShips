@@ -1,7 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Xml;
+using System.Xml.Serialization;
 
-public class ShipScript : MonoBehaviour {
+public class ShipScript {
+	[XmlAttribute("player")]
+	public string player;
+
+	public ShipScript() {
+		player = "Horatio";
+	}
 
 	// Use this for initialization
 	void Start () {
