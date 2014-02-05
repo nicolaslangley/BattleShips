@@ -4,11 +4,19 @@ using System.Collections.Generic;
 
 public class GridScript : MonoBehaviour {
 
+	/** PROPERTIES **/
+
+	//Prefabs
 	public GameObject gridCell;
+	public GameObject ship1;
+	
 	public int gridSize;
 	public Vector2 cellSize;
 	public GameObject[,] grid;
 	public List<GameObject> currentSelection;
+
+	private GameObject system;
+	private GUIScript guiScript;
 
 	/** UNITY METHODS **/
 
@@ -16,9 +24,36 @@ public class GridScript : MonoBehaviour {
 	void Start () {
 		CreateGrid ();
 		currentSelection = new List<GameObject>();
+		system = GameObject.FindGameObjectWithTag("System");
+		guiScript = system.GetComponent<GUIScript>();
 	}
 
 	void Update () {
+	
+		// Check if ship is to be added to grid
+		if (guiScript.allowShipPlacement == true) {
+			if (currentSelection.Count == guiScript.shipLength && currentSelection.Count != 0) {
+				// Place ship over selected squares
+				// Get position of first item in currentSelection
+				Vector3 startPos = currentSelection[0].transform.position;
+				Vector3 endPos = currentSelection[currentSelection.Count - 1].transform.position;
+				float newX = ((endPos.x - startPos.x) / 2) + startPos.x;
+				float newZ = ((endPos.z - startPos.z) / 2) + startPos.z;
+				float newY = 0.5f;
+				Vector3 pos = new Vector3(newX, newY, newZ);
+				// Create ship
+				GameObject newShip = Instantiate(ship1, pos, Quaternion.identity) as GameObject;
+
+				// Reset selection of ship and cells
+				guiScript.shipLength = 0;
+				foreach (GameObject o in currentSelection) {
+					CellScript cs = o.GetComponent<CellScript>();
+					cs.selected = false;
+					cs.DisplaySelection();
+				}
+				currentSelection.Clear();
+			}
+		}
 
 	}
 

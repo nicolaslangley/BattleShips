@@ -5,6 +5,7 @@ public class GUIScript : MonoBehaviour {
 		
 	public GameObject ship;
 	public bool allowShipPlacement = false;
+	public int shipLength = 0;
 
 	void OnGUI () {
 		if (allowShipPlacement == false) {
@@ -18,6 +19,10 @@ public class GUIScript : MonoBehaviour {
 				Debug.Log("Done button hit");
 				// Check squares have been selected that match ship requirements
 				allowShipPlacement = false;
+			}
+			if (GUI.Button(new Rect(10, 50, 100, 30), "Ship 1")) {
+				Debug.Log ("Ship 1 placement hit");
+				shipLength = 2;
 			}
 		}
 	}

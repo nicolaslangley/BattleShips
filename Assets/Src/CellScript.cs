@@ -4,11 +4,15 @@ using System.Collections.Generic;
 
 public class CellScript : MonoBehaviour {
 
-	private bool selected = false;
-	GameObject system;
-	GUIScript guiScript;
-	GridScript gridScript;
-	List<GameObject> neighbours;
+	/** PROPERTIES **/
+
+	public List<GameObject> neighbours;
+	public bool selected = false;
+
+	private GameObject system;
+	private GUIScript guiScript;
+	private GridScript gridScript;
+
 
 	/** UNITY METHODS **/
 	
