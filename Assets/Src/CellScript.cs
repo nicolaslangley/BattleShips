@@ -8,6 +8,7 @@ public class CellScript : MonoBehaviour {
 
 	public List<GameObject> neighbours;
 	public bool selected = false;
+	public bool available = false;
 
 	private GameObject system;
 	private GUIScript guiScript;
@@ -17,7 +18,7 @@ public class CellScript : MonoBehaviour {
 	/** UNITY METHODS **/
 	
 	// Use this for initialization
-	void Start () {
+	public void Init () {
 		gameObject.renderer.material.color = Color.blue;
 		system = GameObject.FindGameObjectWithTag("System");
 		guiScript = system.GetComponent<GUIScript>();
@@ -52,11 +53,13 @@ public class CellScript : MonoBehaviour {
 			gameObject.renderer.material.color = Color.red;
 			foreach (GameObject o in neighbours) {
 				if (o.renderer.material.color != Color.red) o.renderer.material.color = Color.green;
+				o.GetComponent<CellScript>().available = true;
 			}
 		} else {
 			gameObject.renderer.material.color = Color.blue;
 			foreach (GameObject o in neighbours) {
 				o.renderer.material.color = Color.blue;
+				o.GetComponent<CellScript>().available = true;
 				if (o.GetComponent<CellScript>().selected == true) {
 					o.GetComponent<CellScript>().DisplaySelection();
 				}

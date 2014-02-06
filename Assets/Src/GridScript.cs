@@ -21,15 +21,14 @@ public class GridScript : MonoBehaviour {
 	/** UNITY METHODS **/
 
 	// Use this for initialization
-	void Start () {
+	public void Init () {
 		CreateGrid ();
 		currentSelection = new List<GameObject>();
 		system = GameObject.FindGameObjectWithTag("System");
 		guiScript = system.GetComponent<GUIScript>();
 	}
 
-	void Update () {
-	
+	public void CustomSetupUpdate () {
 		// Check if ship is to be added to grid
 		if (guiScript.allowShipPlacement == true) {
 			if (currentSelection.Count == guiScript.shipLength && currentSelection.Count != 0) {
@@ -43,6 +42,8 @@ public class GridScript : MonoBehaviour {
 				Vector3 pos = new Vector3(newX, newY, newZ);
 				// Create ship
 				GameObject newShip = Instantiate(ship1, pos, Quaternion.identity) as GameObject;
+				newShip.GetComponent<ShipScript>().Init();
+				List<GameObject> shipCells = newShip.GetComponent<ShipScript>().cells;
 
 				// Reset selection of ship and cells
 				guiScript.shipLength = 0;
@@ -50,22 +51,23 @@ public class GridScript : MonoBehaviour {
 					CellScript cs = o.GetComponent<CellScript>();
 					cs.selected = false;
 					cs.DisplaySelection();
+					shipCells.Add(o);
 				}
 				currentSelection.Clear();
 			}
 		}
-
 	}
 
 	/** HELPER METHODS **/
 
 	// Initialize grid of specified size
-	void CreateGrid () {
+	private void CreateGrid () {
 		grid = new GameObject[gridSize,gridSize];
 		for (int i = 0; i < gridSize; i++) {
 			for (int j = 0; j < gridSize; j++) {
 				Vector3 cellPos = new Vector3(i * cellSize[0], 0, j * cellSize[1]);
 				GameObject newCell = Instantiate(gridCell, cellPos, Quaternion.identity) as GameObject;
+				newCell.GetComponent<CellScript>().Init();
 				newCell.transform.localScale = new Vector3(cellSize[0], 0.5f, cellSize[1]);
 				grid[i,j] = newCell;
 			}

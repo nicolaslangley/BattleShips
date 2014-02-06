@@ -5,6 +5,7 @@ public class GUIScript : MonoBehaviour {
 		
 	public GameObject ship;
 	public bool allowShipPlacement = false;
+	public bool allowShipMovement = false;
 	public int shipLength = 0;
 
 	void OnGUI () {
