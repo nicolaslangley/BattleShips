@@ -1,0 +1,22 @@
+game:Game[a]
+grid:Grid[a]
+/cell:Cells
+/player:Player
+/ship:Ship
+
+
+game:game.initGame
+game:grid.initGrid
+ grid:grid.newGrid
+ [c: loop for each cell needed]
+   grid:cell.new
+   grid:cell.initCell(x:int, y:int, type:CellType)
+ [/c]
+ [c: loop for each player needed]
+   game:player.new
+   game:player.initPlayer(UID:int)
+   [c: loop for each ship needed]
+     game:ship.new
+     game:ship.initShip(type:ShipType)
+   [/c]
+ [/c]
