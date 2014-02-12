@@ -14,16 +14,7 @@ public class CellScript : MonoBehaviour {
 	private GUIScript guiScript;
 	private GridScript gridScript;
 
-
 	/** UNITY METHODS **/
-	
-	// Use this for initialization
-	public void Init () {
-		gameObject.renderer.material.color = Color.blue;
-		system = GameObject.FindGameObjectWithTag("System");
-		guiScript = system.GetComponent<GUIScript>();
-		gridScript = system.GetComponent<GridScript>();
-	}
 
 	// Change selection status of cell and display it and it's neighbours if allowShipPlacement button has been pressed;
 	void OnMouseDown () {
@@ -36,12 +27,23 @@ public class CellScript : MonoBehaviour {
 					selected = false;
 					return;
 				}
-
+				
 			} else {
 				gridScript.RemoveFromSelection(gameObject);
 			}
 			DisplaySelection();
 		}
+	}
+
+
+	/** GAMELOOP METHODS **/
+	
+	// Use this for initialization
+	public void Init () {
+		gameObject.renderer.material.color = Color.blue;
+		system = GameObject.FindGameObjectWithTag("System");
+		guiScript = system.GetComponent<GUIScript>();
+		gridScript = system.GetComponent<GridScript>();
 	}
 
 	/** HELPER METHODS **/

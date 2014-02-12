@@ -19,6 +19,7 @@ public class GameScript : MonoBehaviour {
 
 		// Run game initialization
 		gridScript.Init();
+
 	}
 	
 	// Update is called once per frame

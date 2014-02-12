@@ -32,8 +32,7 @@ public class ShipScript : MonoBehaviour {
 				cs.selected = true;
 				cs.DisplaySelection();
 			}
-		} 
-		else {
+		} else {
 			gameObject.renderer.material.color = Color.white;
 			foreach (GameObject o in cells) {
 				CellScript cs = o.GetComponent<CellScript>();
@@ -61,6 +60,9 @@ public class ShipScript : MonoBehaviour {
 		float newY = 0.5f;
 		Vector3 pos = new Vector3(newX, newY, newZ);
 		gameObject.transform.position = pos;
+
+
+
 	}
 
 

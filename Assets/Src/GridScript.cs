@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+
 public class GridScript : MonoBehaviour {
 
 	/** PROPERTIES **/
@@ -18,7 +19,7 @@ public class GridScript : MonoBehaviour {
 	private GameObject system;
 	private GUIScript guiScript;
 
-	/** UNITY METHODS **/
+	/** GAMELOOP METHODS **/
 
 	// Use this for initialization
 	public void Init () {
