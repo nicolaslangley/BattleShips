@@ -6,9 +6,11 @@ public class CellScript : MonoBehaviour {
 
 	/** PROPERTIES **/
 
+
 	public List<GameObject> neighbours;
 	public bool selected = false;
 	public bool available = false;
+	public GameScript.CellState curCellState = GameScript.CellState.Available;
 
 	private GameObject system;
 	private GUIScript guiScript;
@@ -34,7 +36,6 @@ public class CellScript : MonoBehaviour {
 			DisplaySelection();
 		}
 	}
-
 
 	/** GAMELOOP METHODS **/
 	

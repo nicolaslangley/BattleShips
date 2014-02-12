@@ -16,11 +16,7 @@ public class ShipScript : MonoBehaviour {
 		player = "Horatio";
 	}
 
-	// Use this for initialization
-	public void Init () {
-		system = GameObject.FindGameObjectWithTag("System");
-		guiScript = system.GetComponent<GUIScript>();
-	}
+	/** UNITY METHODS **/
 
 	// Handle clicking on object
 	void OnMouseDown () {
@@ -51,19 +47,18 @@ public class ShipScript : MonoBehaviour {
 		}
 	}
 
-	// Handles movement of ship - INCOMPLETE
-	void MoveShip (List<GameObject> newCells) {
-		Vector3 startPos = newCells[0].transform.position;
-		Vector3 endPos = newCells[newCells.Count - 1].transform.position;
-		float newX = ((endPos.x - startPos.x) / 2) + startPos.x;
-		float newZ = ((endPos.z - startPos.z) / 2) + startPos.z;
-		float newY = 0.5f;
-		Vector3 pos = new Vector3(newX, newY, newZ);
-		gameObject.transform.position = pos;
+	/** GAMELOOP METHODS **/
 
-
-
+	// Use this for initialization
+	public void Init () {
+		system = GameObject.FindGameObjectWithTag("System");
+		guiScript = system.GetComponent<GUIScript>();
 	}
 
+	/** HELPER METHODS **/
 
+	// Handles movement of ship - INCOMPLETE
+	void MoveShip (int amount, GameScript.Direction dir) {
+
+	}
 }

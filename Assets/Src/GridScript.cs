@@ -63,6 +63,7 @@ public class GridScript : MonoBehaviour {
 
 	// Initialize grid of specified size
 	private void CreateGrid () {
+		// Create cell objects to from grid
 		grid = new GameObject[gridSize,gridSize];
 		for (int i = 0; i < gridSize; i++) {
 			for (int j = 0; j < gridSize; j++) {
