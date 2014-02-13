@@ -6,8 +6,13 @@ using System.Xml.Serialization;
 
 public class ShipScript : MonoBehaviour {
 	[XmlAttribute("player")]
+
+	/** Properties **/
+
 	public string player;
 	public List<GameObject> cells;
+	public GameScript.Direction curDir;
+
 	private bool selected = false;
 	private GameObject system;
 	private GUIScript guiScript;
@@ -16,25 +21,21 @@ public class ShipScript : MonoBehaviour {
 		player = "Horatio";
 	}
 
-	// Use this for initialization
-	public void Init () {
-		system = GameObject.FindGameObjectWithTag("System");
-		guiScript = system.GetComponent<GUIScript>();
-	}
+	/** UNITY METHODS **/
 
 	// Handle clicking on object
 	void OnMouseDown () {
 		selected = !selected;
 		if (selected == true) {
-			gameObject.renderer.material.color = Color.cyan;
+			//TODO: Fix this on selection for gameobject
+			//gameObject.renderer.material.color = Color.cyan;
 			foreach (GameObject o in cells) {
 				CellScript cs = o.GetComponent<CellScript>();
 				cs.selected = true;
 				cs.DisplaySelection();
 			}
-		} 
-		else {
-			gameObject.renderer.material.color = Color.white;
+		} else {
+			//gameObject.renderer.material.color = Color.white;
 			foreach (GameObject o in cells) {
 				CellScript cs = o.GetComponent<CellScript>();
 				cs.selected = false;
@@ -52,16 +53,18 @@ public class ShipScript : MonoBehaviour {
 		}
 	}
 
-	// Handles movement of ship - INCOMPLETE
-	void MoveShip (List<GameObject> newCells) {
-		Vector3 startPos = newCells[0].transform.position;
-		Vector3 endPos = newCells[newCells.Count - 1].transform.position;
-		float newX = ((endPos.x - startPos.x) / 2) + startPos.x;
-		float newZ = ((endPos.z - startPos.z) / 2) + startPos.z;
-		float newY = 0.5f;
-		Vector3 pos = new Vector3(newX, newY, newZ);
-		gameObject.transform.position = pos;
+	/** GAMELOOP METHODS **/
+
+	// Use this for initialization
+	public void Init () {
+		system = GameObject.FindGameObjectWithTag("System");
+		guiScript = system.GetComponent<GUIScript>();
 	}
 
+	/** HELPER METHODS **/
 
+	// Handles movement of ship - INCOMPLETE
+	void MoveShip (int amount, GameScript.Direction dir) {
+
+	}
 }

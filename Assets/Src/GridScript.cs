@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+
 public class GridScript : MonoBehaviour {
 
 	/** PROPERTIES **/
@@ -18,7 +19,7 @@ public class GridScript : MonoBehaviour {
 	private GameObject system;
 	private GUIScript guiScript;
 
-	/** UNITY METHODS **/
+	/** GAMELOOP METHODS **/
 
 	// Use this for initialization
 	public void Init () {
@@ -41,6 +42,7 @@ public class GridScript : MonoBehaviour {
 				float newY = 0.5f;
 				Vector3 pos = new Vector3(newX, newY, newZ);
 				// Create ship
+				// TODO: Place new ship at correct orientation
 				GameObject newShip = Instantiate(ship1, pos, Quaternion.identity) as GameObject;
 				newShip.GetComponent<ShipScript>().Init();
 				List<GameObject> shipCells = newShip.GetComponent<ShipScript>().cells;
@@ -62,6 +64,7 @@ public class GridScript : MonoBehaviour {
 
 	// Initialize grid of specified size
 	private void CreateGrid () {
+		// Create cell objects to from grid
 		grid = new GameObject[gridSize,gridSize];
 		for (int i = 0; i < gridSize; i++) {
 			for (int j = 0; j < gridSize; j++) {
@@ -72,6 +75,31 @@ public class GridScript : MonoBehaviour {
 				grid[i,j] = newCell;
 			}
 		}
+
+		// Create bases for each player
+		// Create base on grid for Player 1
+		for (int i = 0; i < 10; i++) {
+			grid[0, 10 + i].GetComponent<CellScript>().SetBase(Color.magenta);
+		}
+		// Create base on grid for Player 2
+		for (int i = 0; i < 10; i++) {
+			grid[29, 10 + i].GetComponent<CellScript>().SetBase(Color.cyan);
+		}
+
+		// Create reefs on grid
+		for (int i = 0; i < 24; i++) {
+			int xVal = Random.Range(10, 20);
+			int yVal = Random.Range(3, 27);
+			while(grid[xVal, yVal].GetComponent<CellScript>().curCellState == GameScript.CellState.Reef) {
+				xVal = Random.Range(10, 20);
+				yVal = Random.Range(3, 27);
+			}
+			grid[xVal, yVal].GetComponent<CellScript>().SetReef();
+		}
+
+
+
+
 	}
 
 	// Returns the neighbours of the given cell in the grid

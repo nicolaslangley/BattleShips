@@ -6,24 +6,19 @@ public class CellScript : MonoBehaviour {
 
 	/** PROPERTIES **/
 
+
 	public List<GameObject> neighbours;
 	public bool selected = false;
 	public bool available = false;
+	public bool isVisible = true;
+	public GameObject occupier = null;
+	public GameScript.CellState curCellState = GameScript.CellState.Available;
 
 	private GameObject system;
 	private GUIScript guiScript;
 	private GridScript gridScript;
 
-
 	/** UNITY METHODS **/
-	
-	// Use this for initialization
-	public void Init () {
-		gameObject.renderer.material.color = Color.blue;
-		system = GameObject.FindGameObjectWithTag("System");
-		guiScript = system.GetComponent<GUIScript>();
-		gridScript = system.GetComponent<GridScript>();
-	}
 
 	// Change selection status of cell and display it and it's neighbours if allowShipPlacement button has been pressed;
 	void OnMouseDown () {
@@ -36,12 +31,22 @@ public class CellScript : MonoBehaviour {
 					selected = false;
 					return;
 				}
-
+				
 			} else {
 				gridScript.RemoveFromSelection(gameObject);
 			}
 			DisplaySelection();
 		}
+	}
+
+	/** GAMELOOP METHODS **/
+	
+	// Use this for initialization
+	public void Init () {
+		gameObject.renderer.material.color = Color.blue;
+		system = GameObject.FindGameObjectWithTag("System");
+		guiScript = system.GetComponent<GUIScript>();
+		gridScript = system.GetComponent<GridScript>();
 	}
 
 	/** HELPER METHODS **/
@@ -65,5 +70,15 @@ public class CellScript : MonoBehaviour {
 				}
 			}
 		}
+	}
+
+	public void SetBase (Color c) {
+		curCellState = GameScript.CellState.Base;
+		gameObject.renderer.material.color = c;
+	}
+
+	public void SetReef () {
+		curCellState = GameScript.CellState.Reef;
+		gameObject.renderer.material.color = Color.black;
 	}
 }
