@@ -6,8 +6,13 @@ using System.Xml.Serialization;
 
 public class ShipScript : MonoBehaviour {
 	[XmlAttribute("player")]
+
+	/** Properties **/
+
 	public string player;
 	public List<GameObject> cells;
+	public GameScript.Direction curDir;
+
 	private bool selected = false;
 	private GameObject system;
 	private GUIScript guiScript;
@@ -22,14 +27,15 @@ public class ShipScript : MonoBehaviour {
 	void OnMouseDown () {
 		selected = !selected;
 		if (selected == true) {
-			gameObject.renderer.material.color = Color.cyan;
+			//TODO: Fix this on selection for gameobject
+			//gameObject.renderer.material.color = Color.cyan;
 			foreach (GameObject o in cells) {
 				CellScript cs = o.GetComponent<CellScript>();
 				cs.selected = true;
 				cs.DisplaySelection();
 			}
 		} else {
-			gameObject.renderer.material.color = Color.white;
+			//gameObject.renderer.material.color = Color.white;
 			foreach (GameObject o in cells) {
 				CellScript cs = o.GetComponent<CellScript>();
 				cs.selected = false;

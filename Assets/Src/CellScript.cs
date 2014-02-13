@@ -10,6 +10,8 @@ public class CellScript : MonoBehaviour {
 	public List<GameObject> neighbours;
 	public bool selected = false;
 	public bool available = false;
+	public bool isVisible = true;
+	public GameObject occupier = null;
 	public GameScript.CellState curCellState = GameScript.CellState.Available;
 
 	private GameObject system;
@@ -68,5 +70,15 @@ public class CellScript : MonoBehaviour {
 				}
 			}
 		}
+	}
+
+	public void SetBase (Color c) {
+		curCellState = GameScript.CellState.Base;
+		gameObject.renderer.material.color = c;
+	}
+
+	public void SetReef () {
+		curCellState = GameScript.CellState.Reef;
+		gameObject.renderer.material.color = Color.black;
 	}
 }

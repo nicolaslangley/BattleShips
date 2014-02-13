@@ -9,7 +9,7 @@ public class GameScript : MonoBehaviour {
 
 	public enum GameState {Setup, Play, End};
 	public enum Direction {North, South, East, West};
-	public enum CellState {Available, Mine, Reef, Ship};
+	public enum CellState {Available, Mine, Reef, Ship, Base};
 
 	/** Properties **/
 
