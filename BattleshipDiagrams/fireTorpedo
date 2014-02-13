@@ -1,0 +1,31 @@
+system:System[a]
+ship:Ship
+grid:Grid[a]
+cell:Cell
+mine:Mine
+otherShip:Ship
+
+system:ship.fireTorpedo(target:Cell)
+ship:grid.updateTorpedoCells(amountToMove:int direction:Direction)
+[c:loop for amountToMove]
+ [c:opt cell.type = available]
+ grid:cell.Type=cell.checkTorpedo
+  cell:do nothing
+  --[cell.type = Mine]
+  cell:break Loop
+  cell:system.torpedoMine(cell:Cell)
+  cell:mine.activate
+  --[cell.type = Reef]
+  cell:break Loop
+  cell:system.torpedoReef(cell:Cell)
+  --[cell.type = ship]
+  cell:break Loop
+  cell:system.torpedoShip(cell:Cell)
+  cell:otherShip.crash
+ [c:alt cell.type != available]
+   grid:break Loop
+ [/c]
+ grid:amountChecked = # of cells checked
+ grid:result = based on cell\.Type
+[/c]
+[/c]

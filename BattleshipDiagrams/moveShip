@@ -1,0 +1,39 @@
+system:System[a]
+ship:Ship
+grid:Grid[a]
+cell:Cell
+mine:Mine
+otherShip:Ship
+
+system:ship.moveShip(amountToMove:int, direction:Direction)
+ship:(amountChecked\:int, result\:ResultEnum)=grid.MovementUpdateCells(startCell:Cell, amountToMove:int, direction:Direction)
+[c:loop for shipSize]
+ grid:cell.setCellType(available)
+[/c]
+[c:loop for amountToMove]
+ [c:opt cell.type = available]
+ grid:cell.Type=cell.checkMove
+  cell:do nothing
+  --[cell.type = Mine]
+  cell:break Loop
+  cell:mine.activate
+  --[cell.type = Reef]
+  cell:break Loop
+  --[cell.type = ship]
+  cell:break Loop
+  cell:otherShip.crash
+ [c:alt cell.type != available]
+   grid:break Loop
+ [/c]
+ grid:amountChecked = # of cells checked
+ grid:result = based on cell\.Type
+ [/c]
+[/c]
+ship:grid.updateShipPlacement(startCell:cell, amountChecked:int)
+[c:loop for shipSize]
+ grid:cell.setCellType(ship)
+[/c]
+ship:ship.handleDamage(result)
+
+
+

@@ -1,0 +1,16 @@
+system:System[a]
+ship:Ship
+grid:Grid[a]
+cell:Cell
+/mine:Mine
+
+
+system:ship.dropMine(cell:Cell)
+ship:grid.updateMineCell(cell:Cell)
+[c:opt cell.type = available]
+ grid:cell.checkTorpedo()
+  cell:do nothing
+  cell:mine.new
+  cell:mine.initMine(cell:Cell)
+
+[/c]

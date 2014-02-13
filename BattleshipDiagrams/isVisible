@@ -1,0 +1,5 @@
+system:System[a]
+cell:Cell
+
+
+system:visionEnum=cell.isVisible(UID:int)

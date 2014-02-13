@@ -1,0 +1,28 @@
+system:System[a]
+ship:Ship
+grid:Grid[a]
+target:Cell
+enemyShip:Ship
+mine:Mine
+
+system:ship.fireCannon(target:Cell)
+ship:grid.CannonUpdateCells(ship:Ship, target:Cell)
+grid:target.isCannonHit(ship:Ship)
+[c:alt target.type = reef]
+ target:system.cannonReef(ship:Ship)
+ --[target.type = ship]
+ target:system.cannonShip(ship:Ship, target:Cell)
+ target:enemyShip.hitBy(ship.cannon, target:cell)
+ --[target.type = available]
+ target:system.cannonEmpty(ship:Ship)
+ --[target.type = base]
+ target:system.cannonBase(ship:Ship, target:Cell)
+ --[target.type = mine]
+ target:system.cannonMine(ship:Ship, target:Cell)
+ target:mine.activate()
+[/c]
+
+#!>>
+#!cannon____ will cause the system to broadcast a message.
+#!<<
+

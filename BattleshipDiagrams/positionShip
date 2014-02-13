@@ -5,15 +5,15 @@ grid:Grid[a]
 cell:Cell
 
 game:game.ShipPlacementPhase
-[c: loop for each player]
-  [c: loop for each ship of player]
+[c:loop for each player]
+  [c:loop for each ship of player]
     game:coordinates(x,y,direction)=gui.requestPosition(ship:Ship)
     game:ship.positionShip(x:int, y:int, direction:Direction)
     ship:cells=grid.isPositionAvailable(x,y,direction)
-    [c: for all cells ship would need to fill]
-           grid:available=cell.isAvailable
+    [c:for all cells ship would need to fill]
+           grid:cellTypeEnum=cell.isAvailable
     [/c]
-    [c: alt cells != empty]
+    [c:alt cells != empty]
       ship:ship.setPlacement(cells)
     [/c]
   [/c]
