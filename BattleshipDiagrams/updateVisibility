@@ -1,0 +1,20 @@
+system:System[a]
+game:Game[a]
+grid:Grid[a]
+cell:Cell
+ship:Ship
+
+system:game.updateVisiblity()
+[c:for each player]
+ game:grid.resetVisibility(player)
+  [c:for each cell in Grid]
+  grid:cell.setVisibilityCell(player,False)
+  [/c]
+  [c:for each ship in player]
+    game:visibleCells=ship.getVisibleCells
+    game:grid.setVisibilityGrid(player,VisibleCells)
+    [c:for each cell in VisibleCells]
+      grid:cell.setVisibilityCell(player,True)
+    [/c]
+  [/c]
+[/c]

@@ -4,13 +4,10 @@ grid:Grid[a]
 cell:Cell
 /mine:Mine
 
-
 system:ship.dropMine(cell:Cell)
-ship:grid.updateMineCell(cell:Cell)
+ship:grid.updateMineCell(cell)
 [c:opt cell.type = available]
- grid:cell.checkTorpedo()
-  cell:do nothing
+ grid:cell.checkType()
   cell:mine.new
-  cell:mine.initMine(cell:Cell)
-
+  cell:mine.initMine(cell)
 [/c]

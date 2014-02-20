@@ -1,10 +1,11 @@
+system:System[a]
 game:Game[a]
 grid:Grid[a]
 /cell:Cells
 /player:Player
 /ship:Ship
 
-
+system:game.newGame(UID1:int, UID2:int)
 game:game.initGame
 game:grid.initGrid
  grid:grid.newGrid
@@ -14,9 +15,10 @@ game:grid.initGrid
  [/c]
  [c:loop for each player needed]
    game:player.new
-   game:player.initPlayer(UID:int)
+   game:player.initPlayer(UID)
    [c:loop for each ship needed]
      game:ship.new
-     game:ship.initShip(type:ShipType, UID:int)
+     game:type \:= the shipType for the selected ship
+     game:ship.initShip(type, player)
    [/c]
  [/c]

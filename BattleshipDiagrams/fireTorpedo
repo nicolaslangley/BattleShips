@@ -4,28 +4,20 @@ grid:Grid[a]
 cell:Cell
 mine:Mine
 otherShip:Ship
+base:Base
 
 system:ship.fireTorpedo(target:Cell)
 ship:grid.updateTorpedoCells(amountToMove:int direction:Direction)
 [c:loop for amountToMove]
- [c:opt cell.type = available]
- grid:cell.Type=cell.checkTorpedo
-  cell:do nothing
+ grid:cell.Type=cell.torpedoHitResult(cell)
+ [c:opt cell.type = ship]
+  cell:otherShip.crash(ship,cell)
   --[cell.type = Mine]
-  cell:break Loop
-  cell:system.torpedoMine(cell:Cell)
   cell:mine.activate
-  --[cell.type = Reef]
-  cell:break Loop
-  cell:system.torpedoReef(cell:Cell)
-  --[cell.type = ship]
-  cell:break Loop
-  cell:system.torpedoShip(cell:Cell)
-  cell:otherShip.crash
+ --[target.type = base]
+  cell:base.hitBy(ship.torpedo, cell)
  [c:alt cell.type != available]
    grid:break Loop
  [/c]
- grid:amountChecked = # of cells checked
- grid:result = based on cell\.Type
 [/c]
 [/c]

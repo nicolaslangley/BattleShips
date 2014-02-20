@@ -1,20 +1,19 @@
-game:Game[a]
-gui:GUI[a]
+system:System[a]
 ship:Ship
 grid:Grid[a]
 cell:Cell
+game:Game[a]
 
-game:game.ShipPlacementPhase
-[c:loop for each player]
-  [c:loop for each ship of player]
-    game:coordinates(x,y,direction)=gui.requestPosition(ship:Ship)
-    game:ship.positionShip(x:int, y:int, direction:Direction)
-    ship:cells=grid.isPositionAvailable(x,y,direction)
-    [c:for all cells ship would need to fill]
-           grid:cellTypeEnum=cell.isAvailable
-    [/c]
-    [c:alt cells != empty]
-      ship:ship.setPlacement(cells)
-    [/c]
-  [/c]
-[/c]
+system:ship.positionShip(x:int, y:int, direction:Direction)
+ship:cells=grid.isPositionAvailable(x,y,direction,ship.size)
+ [c:for ship.size]
+   grid:isAvailableResult=cell.isAvailable
+   grid:cells \:= list of cells that return isAvailable
+ [/c]
+ [c:alt cells = ship.size]
+   [c:for cells]
+     ship:cell.shipPlaced(ship)
+   [/c]
+ [/c]
+ship:game.updateVisibility()
+

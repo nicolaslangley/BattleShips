@@ -2,4 +2,4 @@ system:System[a]
 cell:Cell
 
 
-system:visionEnum=cell.isVisible(UID:int)
+system:visionEnum=cell.isVisible(player:Player)

@@ -4,36 +4,35 @@ grid:Grid[a]
 cell:Cell
 mine:Mine
 otherShip:Ship
+game:Game[a]
 
 system:ship.moveShip(amountToMove:int, direction:Direction)
-ship:(amountChecked\:int, result\:ResultEnum)=grid.MovementUpdateCells(startCell:Cell, amountToMove:int, direction:Direction)
-[c:loop for shipSize]
+ship:(endCell, result)=grid.MovementUpdateCells(amountToMove, direction, ship)
+[c:loop for ship.Size]
  grid:cell.setCellType(available)
 [/c]
 [c:loop for amountToMove]
- [c:opt cell.type = available]
  grid:cell.Type=cell.checkMove
-  cell:do nothing
+ [c:opt cell.type = ship]
+  cell:otherShip.crash(cell)
   --[cell.type = Mine]
-  cell:break Loop
   cell:mine.activate
-  --[cell.type = Reef]
-  cell:break Loop
-  --[cell.type = ship]
-  cell:break Loop
-  cell:otherShip.crash
  [c:alt cell.type != available]
    grid:break Loop
  [/c]
+ grid:endCell \:= cell
  grid:amountChecked = # of cells checked
  grid:result = based on cell\.Type
  [/c]
 [/c]
-ship:grid.updateShipPlacement(startCell:cell, amountChecked:int)
-[c:loop for shipSize]
+ship:grid.updatePosition(ship, endCell)
+[c:loop for cells needed to be updated]
  grid:cell.setCellType(ship)
 [/c]
+ship:game.updateVisibility()
 ship:ship.handleDamage(result)
+
+
 
 
 
