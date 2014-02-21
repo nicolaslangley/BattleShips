@@ -11,14 +11,10 @@ ship:grid.CannonUpdateCells(ship:Ship, target:Cell)
 grid:target.CannonHitResult(ship:Ship)
 [c:alt target.type = ship]
  target:enemyShip.hitBy(ship.cannon, target)
- --[target.type = available]
- target:GUI CALL
  --[target.type = base]
  target:base.hitBy(ship.cannon, target)
  --[target.type = mine]
  target:mine.activate()
- --[target.type = reef]
- target:GUI CALL
 [/c]
 
 #!>>
