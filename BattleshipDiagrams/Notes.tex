@@ -1,0 +1,23 @@
+\documentclass{article}
+
+\title{Interaction and Design Class Models\\
+Comp 361 Project}
+\author{Peter Davoust \and Nicolas Langley \and Jeffrey Ng}
+
+\begin{document}
+\maketitle
+\section{New Game}
+When a new game is created, a \texttt{system} Game Object (which is a singleton), which creates a new Grid Game Object (also a singleton). The Grid then creates Cells, as indicated in the diagram.\\
+
+\subsection{Cell Types}
+When the Grid creates Cells, in the \texttt{initCell(x, y, cellType)} method, cells are assigned a \texttt{CellType} enum that is either reef or empty. During the game, the cell's type will be set to one of occupied, mine, or empty.
+
+\section{User Interaction}
+Messages that would be displayed to the User have not been included in our diagrams, since message display does not affect game mechanics. These display calls are handled by the system. 
+
+\section{Damage}
+Damage is handled internally by the \texttt{Ship} class.
+
+\section{Move Ship}
+During ship movement, cells in the ship's path, as well as the cells adjacent to the ship's path, are checked for mines. This includes the cell one space in front of the ship's endpoint.
+\end{document}
