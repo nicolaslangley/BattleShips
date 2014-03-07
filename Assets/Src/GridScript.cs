@@ -17,7 +17,7 @@ public class GridScript : MonoBehaviour {
 	public List<GameObject> currentSelection;
 
 	private GameObject system;
-	private GUIScript guiScript;
+	private GameScript gameScript;
 
 	/** GAMELOOP METHODS **/
 
@@ -26,38 +26,41 @@ public class GridScript : MonoBehaviour {
 		CreateGrid ();
 		currentSelection = new List<GameObject>();
 		system = GameObject.FindGameObjectWithTag("System");
-		guiScript = system.GetComponent<GUIScript>();
+		gameScript = system.GetComponent<GameScript>();
+	}
+
+	public void PlaceShip () {
+		if (currentSelection.Count == 2 && currentSelection.Count != 0) {
+			// Place ship over selected squares
+			// Get position of first item in currentSelection
+			Vector3 startPos = currentSelection[0].transform.position;
+			Vector3 endPos = currentSelection[currentSelection.Count - 1].transform.position;
+			float newX = ((endPos.x - startPos.x) / 2) + startPos.x;
+			float newZ = ((endPos.z - startPos.z) / 2) + startPos.z;
+			float newY = 0.5f;
+			Vector3 pos = new Vector3(newX, newY, newZ);
+			// Create ship
+			// TODO: Place new ship at correct orientation
+			GameObject newShip = Instantiate(ship1, pos, Quaternion.identity) as GameObject;
+			// Add ship to list of ships in GameScript
+			gameScript.ships.Add(newShip);
+			newShip.GetComponent<ShipScript>().Init();
+			List<GameObject> shipCells = newShip.GetComponent<ShipScript>().cells;
+			
+			// Reset selection of ship and cells
+			foreach (GameObject o in currentSelection) {
+				CellScript cs = o.GetComponent<CellScript>();
+				cs.selected = false;
+				cs.DisplaySelection();
+				shipCells.Add(o);
+			}
+			currentSelection.Clear();
+		}
 	}
 
 	public void CustomSetupUpdate () {
-		// Check if ship is to be added to grid
-		if (guiScript.allowShipPlacement == true) {
-			if (currentSelection.Count == guiScript.shipLength && currentSelection.Count != 0) {
-				// Place ship over selected squares
-				// Get position of first item in currentSelection
-				Vector3 startPos = currentSelection[0].transform.position;
-				Vector3 endPos = currentSelection[currentSelection.Count - 1].transform.position;
-				float newX = ((endPos.x - startPos.x) / 2) + startPos.x;
-				float newZ = ((endPos.z - startPos.z) / 2) + startPos.z;
-				float newY = 0.5f;
-				Vector3 pos = new Vector3(newX, newY, newZ);
-				// Create ship
-				// TODO: Place new ship at correct orientation
-				GameObject newShip = Instantiate(ship1, pos, Quaternion.identity) as GameObject;
-				newShip.GetComponent<ShipScript>().Init();
-				List<GameObject> shipCells = newShip.GetComponent<ShipScript>().cells;
+		// Handle update function for grid during update phase
 
-				// Reset selection of ship and cells
-				guiScript.shipLength = 0;
-				foreach (GameObject o in currentSelection) {
-					CellScript cs = o.GetComponent<CellScript>();
-					cs.selected = false;
-					cs.DisplaySelection();
-					shipCells.Add(o);
-				}
-				currentSelection.Clear();
-			}
-		}
 	}
 
 	/** HELPER METHODS **/
@@ -71,6 +74,7 @@ public class GridScript : MonoBehaviour {
 				Vector3 cellPos = new Vector3(i * cellSize[0], 0, j * cellSize[1]);
 				GameObject newCell = Instantiate(gridCell, cellPos, Quaternion.identity) as GameObject;
 				newCell.GetComponent<CellScript>().Init();
+				newCell.GetComponent<CellScript>().SetGridPosition(i, j);
 				newCell.transform.localScale = new Vector3(cellSize[0], 0.5f, cellSize[1]);
 				grid[i,j] = newCell;
 			}

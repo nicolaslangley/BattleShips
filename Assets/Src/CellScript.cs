@@ -6,37 +6,33 @@ public class CellScript : MonoBehaviour {
 
 	/** PROPERTIES **/
 
-
 	public List<GameObject> neighbours;
 	public bool selected = false;
 	public bool available = false;
 	public bool isVisible = true;
 	public GameObject occupier = null;
 	public GameScript.CellState curCellState = GameScript.CellState.Available;
+	public Vector2 gridPosition;
 
 	private GameObject system;
-	private GUIScript guiScript;
 	private GridScript gridScript;
 
 	/** UNITY METHODS **/
 
 	// Change selection status of cell and display it and it's neighbours if allowShipPlacement button has been pressed;
 	void OnMouseDown () {
-		// Only allow for selection if "Place Ship" button has been pressed
-		if (guiScript.allowShipPlacement == true) {
-			selected = !selected;
-			if (selected == true) {
-				// Verify that selection is valid otherwise return
-				if (gridScript.AddToSelection(gameObject) == false) {
-					selected = false;
-					return;
-				}
-				
-			} else {
-				gridScript.RemoveFromSelection(gameObject);
+		selected = !selected;
+		if (selected == true) {
+			// Verify that selection is valid otherwise return
+			if (gridScript.AddToSelection(gameObject) == false) {
+				selected = false;
+				return;
 			}
-			DisplaySelection();
+			
+		} else {
+			gridScript.RemoveFromSelection(gameObject);
 		}
+		DisplaySelection();
 	}
 
 	/** GAMELOOP METHODS **/
@@ -45,7 +41,6 @@ public class CellScript : MonoBehaviour {
 	public void Init () {
 		gameObject.renderer.material.color = Color.blue;
 		system = GameObject.FindGameObjectWithTag("System");
-		guiScript = system.GetComponent<GUIScript>();
 		gridScript = system.GetComponent<GridScript>();
 	}
 
@@ -70,6 +65,10 @@ public class CellScript : MonoBehaviour {
 				}
 			}
 		}
+	}
+
+	public void SetGridPosition (float x, float y) {
+		gridPosition = new Vector2(x, y);
 	}
 
 	public void SetBase (Color c) {
