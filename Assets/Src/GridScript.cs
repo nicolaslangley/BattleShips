@@ -23,7 +23,10 @@ public class GridScript : MonoBehaviour {
 
 	// Use this for initialization
 	public void Init () {
+		// Create grid of cells
 		CreateGrid ();
+
+		// Initialize references to system and current selection
 		currentSelection = new List<GameObject>();
 		system = GameObject.FindGameObjectWithTag("System");
 		gameScript = system.GetComponent<GameScript>();
@@ -35,16 +38,34 @@ public class GridScript : MonoBehaviour {
 			// Get position of first item in currentSelection
 			Vector3 startPos = currentSelection[0].transform.position;
 			Vector3 endPos = currentSelection[currentSelection.Count - 1].transform.position;
-			float newX = ((endPos.x - startPos.x) / 2) + startPos.x;
-			float newZ = ((endPos.z - startPos.z) / 2) + startPos.z;
+			float newX = ((endPos.x - startPos.x) / 2) + startPos.x - 0.5f;
+			float newZ = ((endPos.z - startPos.z) / 2) + startPos.z - 0.5f;
 			float newY = 0.5f;
+			// Update newZ and newX based on orientation
+			GameScript.Direction shipDir = GameScript.Direction.East;
+			// Ship is facing either North or South
+			if (endPos.x - startPos.x == 0) {
+				if (endPos.z > startPos.z) shipDir = GameScript.Direction.North;
+				else shipDir = GameScript.Direction.South;
+
+				newX += 0.5f;
+			}
+			// Ship is facing either East or West
+			if (endPos.z - startPos.z == 0) { 
+				if (endPos.x > startPos.x) shipDir = GameScript.Direction.East;
+				else shipDir = GameScript.Direction.West;
+				newZ += 0.5f;
+			}
 			Vector3 pos = new Vector3(newX, newY, newZ);
 			// Create ship
 			// TODO: Place new ship at correct orientation
 			GameObject newShip = Instantiate(ship1, pos, Quaternion.identity) as GameObject;
 			// Add ship to list of ships in GameScript
 			gameScript.ships.Add(newShip);
-			newShip.GetComponent<ShipScript>().Init();
+			ShipScript newShipScript = newShip.GetComponent<ShipScript>();
+			newShipScript.Init();
+			newShipScript.curDir = shipDir;
+			newShipScript.SetRotation();
 			List<GameObject> shipCells = newShip.GetComponent<ShipScript>().cells;
 			
 			// Reset selection of ship and cells

@@ -16,11 +16,18 @@ public class CellScript : MonoBehaviour {
 
 	private GameObject system;
 	private GridScript gridScript;
+	private GameScript gameScript;
 
 	/** UNITY METHODS **/
 
 	// Change selection status of cell and display it and it's neighbours if allowShipPlacement button has been pressed;
 	void OnMouseDown () {
+		// Handle selection if moving ship
+		if (gameScript.curPlayAction == GameScript.PlayAction.Move) {
+			gameScript.selectedShip.MoveShip(this);
+			return;
+		}
+
 		selected = !selected;
 		if (selected == true) {
 			// Verify that selection is valid otherwise return
@@ -42,6 +49,7 @@ public class CellScript : MonoBehaviour {
 		gameObject.renderer.material.color = Color.blue;
 		system = GameObject.FindGameObjectWithTag("System");
 		gridScript = system.GetComponent<GridScript>();
+		gameScript = system.GetComponent<GameScript>();
 	}
 
 	/** HELPER METHODS **/

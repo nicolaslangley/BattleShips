@@ -34,6 +34,7 @@ public class ShipScript : MonoBehaviour {
 				cs.selected = true;
 				cs.DisplaySelection();
 			}
+			gameScript.selectedShip = this;
 		} else {
 			//gameObject.renderer.material.color = Color.white;
 			foreach (GameObject o in cells) {
@@ -48,7 +49,7 @@ public class ShipScript : MonoBehaviour {
 	void OnGUI () {
 		if (selected == true) {
 			if (GUI.Button(new Rect(Screen.width - 110, 10, 100, 30), "Move")) {
-				 gameScript.curPlayAction = GameScript.PlayAction.Move;
+				gameScript.curPlayAction = GameScript.PlayAction.Move;
 			}
 		}
 	}
@@ -62,24 +63,67 @@ public class ShipScript : MonoBehaviour {
 	}
 
 	public void CustomPlayUpdate () {
+		if (gameScript.curPlayAction == GameScript.PlayAction.Move) {
+
+		}
 		SetRotation();
+	}
+
+	/** COROUTINES **/
+
+	// Coroutine for movement
+	IEnumerator MoveShipForward (Vector3 destPos){
+		Vector3 start = transform.position;
+		Vector3 dest = transform.position;
+		float amount;
+		switch(curDir) {
+		case GameScript.Direction.East:
+			amount = destPos.x - start.x;
+			dest.x += amount;
+			break;
+		case GameScript.Direction.North:
+			amount = destPos.z - start.z;
+			dest.z += amount;
+			break;
+		case GameScript.Direction.South:
+			amount = destPos.z - start.z;
+			dest.z += amount;
+			break;
+		case GameScript.Direction.West:
+			amount = destPos.x - start.x;
+			dest.x += amount;
+			break;
+		}
+		float startTime=Time.time; // Time.time contains current frame time, so remember starting point
+		while(Time.time-startTime<=1){ // until one second passed
+			transform.position=Vector3.Lerp(start,dest,Time.time-startTime); // lerp from A to B in one second
+			yield return 1; // wait for next frame
+		}
 	}
 
 	/** HELPER METHODS **/
 
 	// Handles movement of ship - INCOMPLETE
-	void MoveShip (int amount, GameScript.Direction dir) {
-		Vector3 dest = transform.position;
-		switch(dir) {
-		case GameScript.Direction.East:
-			dest.x += amount;
-			break;
+	public void MoveShip (CellScript destCell) {
+		// TODO: Check that destination cell is a valid destination and otherwise modify path
+		StartCoroutine(MoveShipForward(destCell.transform.position));
+		// Update occupied cells
+		// Reset currently occupied cells
+		foreach (GameObject o in cells) {
+			o.GetComponent<CellScript>().occupier = null;
+			o.GetComponent<CellScript>().selected = false;
+			o.GetComponent<CellScript>().DisplaySelection();
 		}
-		Vector3.Lerp(transform.position, dest, 2.0f);
+		cells.Clear();
+		// Add newly occupied cells
+		destCell.occupier = this.gameObject;
+		destCell.selected = true;
+		destCell.DisplaySelection();
+		cells.Add(destCell.gameObject);
 	}
 
 	// Set rotation of ship based on direction
-	void SetRotation () {
+	public void SetRotation () {
 		Quaternion tempRot = Quaternion.identity;
 		switch(curDir) {
 		case GameScript.Direction.East:
