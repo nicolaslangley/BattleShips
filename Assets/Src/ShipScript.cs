@@ -12,10 +12,12 @@ public class ShipScript : MonoBehaviour {
 	public string player;
 	public List<GameObject> cells;
 	public GameScript.Direction curDir;
+	public int shipSize;
 
 	private bool selected = false;
 	private GameObject system;
 	private GameScript gameScript;
+	private GridScript gridScript;
 
 	public ShipScript() {
 		player = "Horatio";
@@ -51,6 +53,9 @@ public class ShipScript : MonoBehaviour {
 			if (GUI.Button(new Rect(Screen.width - 110, 10, 100, 30), "Move")) {
 				gameScript.curPlayAction = GameScript.PlayAction.Move;
 			}
+			if (GUI.Button(new Rect(Screen.width - 110, 50, 100, 30), "Fire Cannon")) {
+				gameScript.curPlayAction = GameScript.PlayAction.Cannon;
+			}
 		}
 	}
 
@@ -60,6 +65,9 @@ public class ShipScript : MonoBehaviour {
 	public void Init () {
 		system = GameObject.FindGameObjectWithTag("System");
 		gameScript = system.GetComponent<GameScript>();
+		gridScript = system.GetComponent<GridScript>();
+		// Change the size for each sub ship
+		shipSize = 2;
 	}
 
 	public void CustomPlayUpdate () {
@@ -72,7 +80,7 @@ public class ShipScript : MonoBehaviour {
 	/** COROUTINES **/
 
 	// Coroutine for movement
-	IEnumerator MoveShipForward (Vector3 destPos){
+	IEnumerator MoveShipForward (Vector3 destPos) {
 		Vector3 start = transform.position;
 		Vector3 dest = transform.position;
 		float amount;
@@ -101,6 +109,16 @@ public class ShipScript : MonoBehaviour {
 		}
 	}
 
+	// Display the effects of shooting the cannon over a period of time
+	IEnumerator DisplayCannon (GameObject target) {
+		float startTime=Time.time; // Time.time contains current frame time, so remember starting point
+		while(Time.time-startTime<=0.3){ // until one second passed
+			target.renderer.material.color = Color.white; // lerp from A to B in one second
+			yield return 1; // wait for next frame
+		}
+		target.renderer.material.color = Color.blue;
+	}
+
 	/** HELPER METHODS **/
 
 	// Handles movement of ship - INCOMPLETE
@@ -116,10 +134,53 @@ public class ShipScript : MonoBehaviour {
 		}
 		cells.Clear();
 		// Add newly occupied cells
-		destCell.occupier = this.gameObject;
-		destCell.selected = true;
-		destCell.DisplaySelection();
 		cells.Add(destCell.gameObject);
+		switch(curDir) {
+		case GameScript.Direction.East:
+			for (int i = 1; i < shipSize; i++) {
+				GameObject newCell = gridScript.grid[destCell.gridPositionX + i, destCell.gridPositionY];
+				CellScript newCellScript = newCell.GetComponent<CellScript>();
+				newCellScript.occupier = this.gameObject;
+				cells.Add (newCell);
+			}
+			break;
+		case GameScript.Direction.North:
+			for (int i = 1; i < shipSize; i++) {
+				GameObject newCell = gridScript.grid[destCell.gridPositionX, destCell.gridPositionY + i];
+				CellScript newCellScript = newCell.GetComponent<CellScript>();
+				newCellScript.occupier = this.gameObject;
+				cells.Add (newCell);
+			}
+			break;
+		case GameScript.Direction.South:
+			for (int i = 1; i < shipSize; i++) {
+				GameObject newCell = gridScript.grid[destCell.gridPositionX, destCell.gridPositionY - i];
+				CellScript newCellScript = newCell.GetComponent<CellScript>();
+				newCellScript.occupier = this.gameObject;
+				cells.Add (newCell);
+			}
+			break;
+		case GameScript.Direction.West:
+			for (int i = 1; i < shipSize; i++) {
+				GameObject newCell = gridScript.grid[destCell.gridPositionX - i, destCell.gridPositionY];
+				CellScript newCellScript = newCell.GetComponent<CellScript>();
+				newCellScript.occupier = this.gameObject;
+				cells.Add (newCell);
+			}
+			break;
+		}
+
+		foreach (GameObject o in cells) {
+			o.GetComponent<CellScript>().occupier = this.gameObject;
+			o.GetComponent<CellScript>().selected = true;
+			o.GetComponent<CellScript>().DisplaySelection();
+		}
+	}
+
+	// Fire cannon at targeted cell
+	public void FireCannon(CellScript targetCell) {
+		// Call coroutine to display fire outcome
+		StartCoroutine(DisplayCannon(targetCell.gameObject));
 	}
 
 	// Set rotation of ship based on direction

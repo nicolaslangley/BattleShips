@@ -12,7 +12,8 @@ public class CellScript : MonoBehaviour {
 	public bool isVisible = true;
 	public GameObject occupier = null;
 	public GameScript.CellState curCellState = GameScript.CellState.Available;
-	public Vector2 gridPosition;
+	public int gridPositionX;
+	public int gridPositionY;
 
 	private GameObject system;
 	private GridScript gridScript;
@@ -26,20 +27,22 @@ public class CellScript : MonoBehaviour {
 		if (gameScript.curPlayAction == GameScript.PlayAction.Move) {
 			gameScript.selectedShip.MoveShip(this);
 			return;
-		}
-
-		selected = !selected;
-		if (selected == true) {
-			// Verify that selection is valid otherwise return
-			if (gridScript.AddToSelection(gameObject) == false) {
-				selected = false;
-				return;
-			}
-			
+		} else if (gameScript.curPlayAction == GameScript.PlayAction.Cannon) {
+			gameScript.selectedShip.FireCannon(this);
 		} else {
-			gridScript.RemoveFromSelection(gameObject);
+			selected = !selected;
+			if (selected == true) {
+				// Verify that selection is valid otherwise return
+				if (gridScript.AddToSelection(gameObject) == false) {
+					selected = false;
+					return;
+				}
+				
+			} else {
+				gridScript.RemoveFromSelection(gameObject);
+			}
+			DisplaySelection();
 		}
-		DisplaySelection();
 	}
 
 	/** GAMELOOP METHODS **/
@@ -75,8 +78,9 @@ public class CellScript : MonoBehaviour {
 		}
 	}
 
-	public void SetGridPosition (float x, float y) {
-		gridPosition = new Vector2(x, y);
+	public void SetGridPosition (int x, int y) {
+		gridPositionX = x;
+		gridPositionY = y;
 	}
 
 	public void SetBase (Color c) {
