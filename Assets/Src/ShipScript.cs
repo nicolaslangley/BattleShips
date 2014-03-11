@@ -18,7 +18,14 @@ public class ShipScript : MonoBehaviour {
 	private GameObject system;
 	private GameScript gameScript;
 	private GridScript gridScript;
+	private int[] health;
 
+	private int speed; 
+	private static int maxSpeed; //Speed at full health
+	private int rotSteps; // increments of 90 degrees. Most ships have 1, Torpedo Boats have 2
+
+	private bool heavyArmor;
+	
 	public ShipScript() {
 		player = "Horatio";
 	}
@@ -68,9 +75,48 @@ public class ShipScript : MonoBehaviour {
 		gridScript = system.GetComponent<GridScript>();
 		// Change the size for each sub ship
 		shipSize = 2;
+		health = new int[shipSize];
+		initArmor ();
 	}
 
-	public void CustomPlayUpdate () {
+	/*
+	 * Fill in the health array so that this ship will have armor. 
+	 * Normal armor => all cells are 1
+	 * Heavy armor => all cells are 2
+	 */
+	private void initArmor() {
+		int armor = 1;
+		if (heavyArmor) {
+			armor = 2;
+		}
+		for (int i = 0; i < shipSize; i++) {
+			health [i] = armor;
+		}
+	}
+
+	/*
+	 * Add damage to ship and recalculate speed.
+	 */
+	public void hit(int section) 
+	{
+		health [section] -= 1;
+		int damageTotal = 0;
+		for (int i = 0; i < shipSize; i++) {
+			damageTotal += health[i];
+		}
+		if (damageTotal == 0) {
+			Destroy(gameObject);
+			//Take care of stats, etc.
+		} else {
+			if (heavyArmor)
+					speed = maxSpeed * (damageTotal / (2 * shipSize));
+			else
+					speed = maxSpeed * (damageTotal / shipSize);
+		}
+	}
+
+	public void CustomPlayUpdate () 
+	{
 		if (gameScript.curPlayAction == GameScript.PlayAction.Move) {
 
 		}
