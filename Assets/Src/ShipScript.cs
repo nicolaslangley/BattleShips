@@ -102,11 +102,7 @@ public class ShipScript : MonoBehaviour {
 		health [section] -= 1;
 		int damageTotal = 0;
 		for (int i = 0; i < shipSize; i++) {
-<<<<<<< HEAD
 			damageTotal += health[i];
-=======
-			damageTotal += heath[i];
->>>>>>> ac90b4d03e7a906c31301560038af7f6f7777ff1
 		}
 		if (damageTotal == 0) {
 			Destroy(gameObject);
