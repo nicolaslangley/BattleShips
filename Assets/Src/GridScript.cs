@@ -13,7 +13,7 @@ public class GridScript : MonoBehaviour {
 	
 	public int gridSize;
 	public Vector2 cellSize;
-	public GameObject[,] grid;
+	public CellScript[,] grid;
 	public List<GameObject> currentSelection;
 
 	private GameObject system;
@@ -26,12 +26,20 @@ public class GridScript : MonoBehaviour {
 		// Create grid of cells
 		CreateGrid ();
 
+<<<<<<< HEAD
 		/*CellScript[,] testCells = range (3, 4, 5, 2);
+=======
+		CellScript[,] testCells = range (3, 4, 5, 2);
+>>>>>>> ac90b4d03e7a906c31301560038af7f6f7777ff1
 		for (int x = 0; x < 5; x ++) {
 			for (int y = 0; y < 2; y++) {
 				testCells[x, y].selected = true;
 			}
+<<<<<<< HEAD
 		}*/
+=======
+		}
+>>>>>>> ac90b4d03e7a906c31301560038af7f6f7777ff1
 
 		// Initialize references to system and current selection
 		currentSelection = new List<GameObject>();
@@ -154,8 +162,13 @@ public class GridScript : MonoBehaviour {
 	 * Returns the cells in a given rectangle on the grid, for the purposes of moving,
 	 * torpedo intersecting, and radar searching. 
 	*/
+<<<<<<< HEAD
 	public GameObject[,] range (int positionX, int positionY, int dx, int dy) {
 		GameObject[,] cells = new GameObject[dx, dy];
+=======
+	public CellScript[,] range (int positionX, int positionY, int dx, int dy) {
+		CellScript[,] cells = new CellScript[dx, dy];
+>>>>>>> ac90b4d03e7a906c31301560038af7f6f7777ff1
 		for (int x = 0; x < dx; x++) {
 			for (int y = 0; y < dy; y++) {
 				cells[x, y] = grid[positionX+x, positionY+y];
