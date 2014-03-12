@@ -83,7 +83,7 @@ public class GameScript : MonoBehaviour {
 				Debug.Log ("Moving to Play state");
 			}
 			if (GUI.Button (new Rect(10, 50, 100, 30), "Place Ship")) {
-				gridScript.PlaceShip();
+				gridScript.setShip();
 				Debug.Log ("Placing a Ship on selected square");
 				rpcScript.SignalPlayer();
 			}
