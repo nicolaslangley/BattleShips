@@ -9,6 +9,8 @@ public class ShipScript : MonoBehaviour {
 
 	/** Properties **/
 
+	public string shipID;
+
 	public string player;
 	public List<GameObject> cells;
 	public GameScript.Direction curDir;
@@ -18,6 +20,7 @@ public class ShipScript : MonoBehaviour {
 	private GameObject system;
 	private GameScript gameScript;
 	private GridScript gridScript;
+	private RPCScript rpcScript;
 	private int[] health;
 
 	private int speed; 
@@ -28,6 +31,7 @@ public class ShipScript : MonoBehaviour {
 	
 	public ShipScript() {
 		player = "Horatio";
+		shipID = "ABC";
 	}
 
 	/** UNITY METHODS **/
@@ -221,6 +225,8 @@ public class ShipScript : MonoBehaviour {
 			o.GetComponent<CellScript>().selected = true;
 			o.GetComponent<CellScript>().DisplaySelection();
 		}
+		//Debug.Log("X: "+ destCell.gridPositionX + " Y: " + destCell.gridPositionY);
+		rpcScript.MoveShip(shipID,destCell.gridPositionX, destCell.gridPositionY);
 	}
 
 	// Fire cannon at targeted cell
