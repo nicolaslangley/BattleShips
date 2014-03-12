@@ -26,6 +26,15 @@ public class GridScript : MonoBehaviour {
 		// Create grid of cells
 		CreateGrid ();
 
+		/*For testing
+		CellScript[,] testCells = range (3, 4, 5, 2);
+
+		for (int x = 0; x < 5; x ++) {
+			for (int y = 0; y < 2; y++) {
+				testCells[x, y].selected = true;
+			}
+		}*/
+
 		// Initialize references to system and current selection
 		currentSelection = new List<GameObject>();
 		system = GameObject.FindGameObjectWithTag("System");
@@ -141,6 +150,20 @@ public class GridScript : MonoBehaviour {
 			}
 		}
 		return neighbours;
+	}
+
+	/*
+	 * Returns the cells in a given rectangle on the grid, for the purposes of moving,
+	 * torpedo intersecting, and radar searching. 
+	*/
+	public GameObject[,] range (int positionX, int positionY, int dx, int dy) {
+		GameObject[,] cells = new GameObject[dx, dy];
+		for (int x = 0; x < dx; x++) {
+			for (int y = 0; y < dy; y++) {
+				cells[x, y] = grid[positionX+x, positionY+y];
+			}
+		}
+		return cells;
 	}
 
 	// Adds given cell to current selection - returns FALSE if not a valid selection

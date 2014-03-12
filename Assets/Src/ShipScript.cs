@@ -18,7 +18,14 @@ public class ShipScript : MonoBehaviour {
 	private GameObject system;
 	private GameScript gameScript;
 	private GridScript gridScript;
+	private int[] health;
 
+	private int speed; 
+	private static int maxSpeed; //Speed at full health
+	private int rotSteps = 1; // increments of 90 degrees. Most ships have 1, Torpedo Boats have 2
+
+	private bool heavyArmor;
+	
 	public ShipScript() {
 		player = "Horatio";
 	}
@@ -56,6 +63,12 @@ public class ShipScript : MonoBehaviour {
 			if (GUI.Button(new Rect(Screen.width - 110, 50, 100, 30), "Fire Cannon")) {
 				gameScript.curPlayAction = GameScript.PlayAction.Cannon;
 			}
+			if (GUI.Button(new Rect(Screen.width - 110, 90, 100, 30), "Rotate Clockwise")) {
+				RotateShip(true);
+			}
+			if (GUI.Button(new Rect(Screen.width - 110, 130, 100, 30), "Rotate Counterclockwise")) {
+				RotateShip(false);
+			}
 		}
 	}
 
@@ -68,9 +81,48 @@ public class ShipScript : MonoBehaviour {
 		gridScript = system.GetComponent<GridScript>();
 		// Change the size for each sub ship
 		shipSize = 2;
+		health = new int[shipSize];
+		InitArmor ();
 	}
 
-	public void CustomPlayUpdate () {
+	/*
+	 * Fill in the health array so that this ship will have armor. 
+	 * Normal armor => all cells are 1
+	 * Heavy armor => all cells are 2
+	 */
+	private void InitArmor() {
+		int armor = 1;
+		if (heavyArmor) {
+			armor = 2;
+		}
+		for (int i = 0; i < shipSize; i++) {
+			health [i] = armor;
+		}
+	}
+
+	/*
+	 * Add damage to ship and recalculate speed.
+	 */
+	public void hit(int section) 
+	{
+		health [section] -= 1;
+		int damageTotal = 0;
+		for (int i = 0; i < shipSize; i++) {
+			damageTotal += health[i];
+		}
+		if (damageTotal == 0) {
+			Destroy(gameObject);
+			//Take care of stats, etc.
+		} else {
+			if (heavyArmor)
+					speed = maxSpeed * (damageTotal / (2 * shipSize));
+			else
+					speed = maxSpeed * (damageTotal / shipSize);
+		}
+	}
+
+	public void CustomPlayUpdate () 
+	{
 		if (gameScript.curPlayAction == GameScript.PlayAction.Move) {
 
 		}
@@ -174,6 +226,24 @@ public class ShipScript : MonoBehaviour {
 			o.GetComponent<CellScript>().occupier = this.gameObject;
 			o.GetComponent<CellScript>().selected = true;
 			o.GetComponent<CellScript>().DisplaySelection();
+		}
+	}
+
+	/*
+	 * Rotates the 
+	 */
+	public void RotateShip(bool clockwise) {
+		//TODO: Check for obstacles. 
+
+		int curRot = (int)curDir;
+		Debug.Log ("Current rotation" + curRot);
+		if (clockwise) {
+			int newRot =(curRot - rotSteps);
+			if (newRot == -1) newRot = 3;
+			curDir = (GameScript.Direction)newRot;
+		} else {
+			int newRot = ((curRot + rotSteps) % 4);
+			curDir = (GameScript.Direction)newRot;
 		}
 	}
 
