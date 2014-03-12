@@ -26,6 +26,7 @@ public class CellScript : MonoBehaviour {
 		// Handle selection if moving ship
 		if (gameScript.curPlayAction == GameScript.PlayAction.Move) {
 			gameScript.selectedShip.MoveShip(this);
+			gameScript.curPlayAction = GameScript.PlayAction.None;
 			return;
 		} else if (gameScript.curPlayAction == GameScript.PlayAction.Cannon) {
 			gameScript.selectedShip.FireCannon(this);
