@@ -52,8 +52,6 @@ public class GameScript : MonoBehaviour {
 		// Run game initialization
 		gridScript.Init();
 
-		GUI.Label(new Rect(10, 20, 150, 20), myname);
-		GUI.Label(new Rect(10, 20, 150, 20), opponentname);
 	}
 	
 	// Update is called once per frame
