@@ -18,12 +18,18 @@ public class GridScript : MonoBehaviour {
 
 	private GameObject system;
 	private GameScript gameScript;
+	public RPCScript rpcScript;
+
+	private int reefSeed;
+
 
 	/** GAMELOOP METHODS **/
 
 	// Use this for initialization
 	public void Init () {
 		// Create grid of cells
+		reefSeed = 42;
+		//rpcScript.shareReefSeed(reefSeed);
 		CreateGrid ();
 
 		/*For testing
@@ -39,29 +45,55 @@ public class GridScript : MonoBehaviour {
 		currentSelection = new List<GameObject>();
 		system = GameObject.FindGameObjectWithTag("System");
 		gameScript = system.GetComponent<GameScript>();
+		rpcScript = system.GetComponent<RPCScript>();
 	}
 
-	public void PlaceShip () {
-		if (currentSelection.Count == 2 && currentSelection.Count != 0) {
-			// Place ship over selected squares
-			// Get position of first item in currentSelection
+	public void setReefSeed(int seed)
+	{
+		reefSeed = seed;
+	}
+
+	public void setShip()
+	{
+		if (currentSelection.Count == 2 && currentSelection.Count != 0){
 			Vector3 startPos = currentSelection[0].transform.position;
 			Vector3 endPos = currentSelection[currentSelection.Count - 1].transform.position;
-			float newX = ((endPos.x - startPos.x) / 2) + startPos.x - 0.5f;
-			float newZ = ((endPos.z - startPos.z) / 2) + startPos.z - 0.5f;
+
+			PlaceShip(startPos.x, startPos.z, endPos.x, endPos.z);
+			currentSelection.Clear();
+			rpcScript.setShip(startPos.x, startPos.z, endPos.x, endPos.z);
+
+		}
+	}
+
+	public void PlaceShip (float startPosX, float startPosZ, float endPosX, float endPosZ) {
+//		if (currentSelection.Count == 2 && currentSelection.Count != 0) {
+			// Place ship over selected squares
+			// Get position of first item in currentSelection
+
+//
+//			Vector3 startPos = currentSelection[0].transform.position;
+//			Vector3 endPos = currentSelection[currentSelection.Count - 1].transform.position;
+
+
+//			float newX = ((endPos.x - startPos.x) / 2) + startPos.x - 0.5f;
+//			float newZ = ((endPos.z - startPos.z) / 2) + startPos.z - 0.5f;
+
+			float newX = ((endPosX - startPosX)/2) + startPosX - 0.5f;
+			float newZ = ((endPosZ - startPosZ)/2) + startPosZ - 0.5f;
 			float newY = 0.5f;
 			// Update newZ and newX based on orientation
 			GameScript.Direction shipDir = GameScript.Direction.East;
 			// Ship is facing either North or South
-			if (endPos.x - startPos.x == 0) {
-				if (endPos.z > startPos.z) shipDir = GameScript.Direction.North;
+			if (endPosX - startPosX == 0) {
+				if (endPosZ > startPosZ) shipDir = GameScript.Direction.North;
 				else shipDir = GameScript.Direction.South;
 
 				newX += 0.5f;
 			}
 			// Ship is facing either East or West
-			if (endPos.z - startPos.z == 0) { 
-				if (endPos.x > startPos.x) shipDir = GameScript.Direction.East;
+			if (endPosZ - startPosZ == 0) { 
+				if (endPosX > startPosX) shipDir = GameScript.Direction.East;
 				else shipDir = GameScript.Direction.West;
 				newZ += 0.5f;
 			}
@@ -84,8 +116,8 @@ public class GridScript : MonoBehaviour {
 				cs.DisplaySelection();
 				shipCells.Add(o);
 			}
-			currentSelection.Clear();
-		}
+//			currentSelection.Clear();
+//		}
 	}
 
 	public void CustomSetupUpdate () {
@@ -119,7 +151,7 @@ public class GridScript : MonoBehaviour {
 		for (int i = 0; i < 10; i++) {
 			grid[29, 10 + i].GetComponent<CellScript>().SetBase(Color.cyan);
 		}
-
+		Random.seed = reefSeed;
 		// Create reefs on grid
 		for (int i = 0; i < 24; i++) {
 			int xVal = Random.Range(10, 20);
@@ -130,9 +162,6 @@ public class GridScript : MonoBehaviour {
 			}
 			grid[xVal, yVal].GetComponent<CellScript>().SetReef();
 		}
-
-
-
 
 	}
 
