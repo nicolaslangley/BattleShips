@@ -239,17 +239,56 @@ public class ShipScript : MonoBehaviour {
 	 * Rotates the 
 	 */
 	public void RotateShip(bool clockwise) {
-		//TODO: Check for obstacles. 
-
+		//Calculate new turn direction
 		int curRot = (int)curDir;
-		Debug.Log ("Current rotation" + curRot);
-		if (clockwise) {
-			int newRot =(curRot - rotSteps);
+		int newRot;
+		if (!clockwise) {
+			newRot =(curRot - rotSteps);
 			if (newRot == -1) newRot = 3;
+		} else {
+			newRot = ((curRot + rotSteps) % 4);
+		}
+
+		//Check for obstacles
+		bool obstacle = false;
+		CellScript cell = cells[0].GetComponent<CellScript>();
+		if (curDir == GameScript.Direction.North || curDir == GameScript.Direction.South) {
+			int sign = 1;
+			if (curDir == GameScript.Direction.North && ! clockwise ||
+			    curDir == GameScript.Direction.South && clockwise) sign = -1;
+
+			int ysign = 1;
+			if (curDir == GameScript.Direction.South) ysign = -1;
+			for (int w = 1; w < shipSize; w++) {
+				if (gridScript.GetCell(cell.gridPositionX+sign*w, cell.gridPositionY+ysign*w).GetComponent<CellScript>().curCellState != GameScript.CellState.Available) {
+					obstacle = true;
+					//break;
+				}
+				//For debugging
+				//gridScript.GetCell(cell.gridPositionX+sign*w, cell.gridPositionY+ysign*w).renderer.material.color = Color.magenta;
+			}
+
+		} else {
+			int sign = 1;
+			if (curDir == GameScript.Direction.East && clockwise ||
+			    curDir == GameScript.Direction.West && !clockwise) sign = -1;
+
+			int xsign = 1;
+			if (curDir == GameScript.Direction.West) xsign = -1;
+			for (int w = shipSize-1; w > 0; w--) {
+				if (gridScript.GetCell(cell.gridPositionX+xsign*w, cell.gridPositionY+sign*w).GetComponent<CellScript>().curCellState != GameScript.CellState.Available) {
+					obstacle = true;
+					break;
+				}
+				//For debugging
+				//gridScript.GetCell(cell.gridPositionX+xsign*w, cell.gridPositionY+sign*w).renderer.material.color = Color.magenta;
+			}
+		}
+
+		if (!obstacle) {
 			curDir = (GameScript.Direction)newRot;
 		} else {
-			int newRot = ((curRot + rotSteps) % 4);
-			curDir = (GameScript.Direction)newRot;
+			//display an error message
 		}
 	}
 

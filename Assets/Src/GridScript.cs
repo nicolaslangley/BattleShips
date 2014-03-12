@@ -185,7 +185,7 @@ public class GridScript : MonoBehaviour {
 	 * Returns the cells in a given rectangle on the grid, for the purposes of moving,
 	 * torpedo intersecting, and radar searching. 
 	*/
-	public GameObject[,] range (int positionX, int positionY, int dx, int dy) {
+	public GameObject[,] Range (int positionX, int positionY, int dx, int dy) {
 		GameObject[,] cells = new GameObject[dx, dy];
 		for (int x = 0; x < dx; x++) {
 			for (int y = 0; y < dy; y++) {
@@ -214,6 +214,10 @@ public class GridScript : MonoBehaviour {
 		} else {
 			return false;
 		}
+	}
+
+	public GameObject GetCell(int x, int y) {
+		return grid [x, y];
 	}
 
 	// Removes given cell from current selection - if cell is not in selection, does nothing
