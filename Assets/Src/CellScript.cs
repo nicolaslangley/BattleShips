@@ -9,7 +9,6 @@ public class CellScript : MonoBehaviour {
 	public List<GameObject> neighbours;
 	public bool selected = false;
 	public bool available = false;
-	public bool isVisible = true;
 	public GameObject occupier = null;
 	public GameScript.CellState curCellState = GameScript.CellState.Available;
 	public int gridPositionX;
@@ -18,6 +17,7 @@ public class CellScript : MonoBehaviour {
 	private GameObject system;
 	private GridScript gridScript;
 	private GameScript gameScript;
+	private bool isVisible = true;
 
 	/** UNITY METHODS **/
 
@@ -26,6 +26,7 @@ public class CellScript : MonoBehaviour {
 		// Handle selection if moving ship
 		if (gameScript.curPlayAction == GameScript.PlayAction.Move) {
 			gameScript.selectedShip.MoveShip(this);
+			gameScript.curPlayAction = GameScript.PlayAction.None;
 			return;
 		} else if (gameScript.curPlayAction == GameScript.PlayAction.Cannon) {
 			gameScript.selectedShip.FireCannon(this);
@@ -76,6 +77,14 @@ public class CellScript : MonoBehaviour {
 				}
 			}
 		}
+	}
+
+	/*
+	 * Sets the visibility and changes the color of the cell to grey.
+	 */
+	public void setVisible(bool visibility) {
+		isVisible = visibility;
+		gameObject.renderer.material.color = Color.grey;
 	}
 
 	public void SetGridPosition (int x, int y) {
