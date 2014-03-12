@@ -233,6 +233,8 @@ public class GameLobbyScript : MonoBehaviour
     {
         Debug.Log("got addplayer" + username);
 
+		NetworkViewID newViewID = Network.AllocateViewID();
+
         PlayerInfo playerInstance = new PlayerInfo();
         playerInstance.player = player;
         playerInstance.username = username;
@@ -281,10 +283,10 @@ public class GameLobbyScript : MonoBehaviour
 		GUI.Label(new Rect(Screen.width / 4 + 200, Screen.height / 2 - 25, 285, 150), "Loaded, starting the game!");
 
 
-        if (Application.CanStreamedLevelBeLoaded("game"))
+        if (Application.CanStreamedLevelBeLoaded("GridTest"))
         {
             GUI.Label(new Rect(Screen.width / 4 + 200, Screen.height / 2 - 25, 285, 150), "Loaded, starting the game!");
-            Application.LoadLevel("game");
+			Application.LoadLevel("GridTest");
         }
         else
         {

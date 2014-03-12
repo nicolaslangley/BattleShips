@@ -13,21 +13,38 @@ public class GameScript : MonoBehaviour {
 	public enum PlayAction {Move, Cannon, Torpedo, DropMine, PickupMine, Repair, None};
 
 
+
 	/** Properties **/
 
 	public List<GameObject> ships;
 	public GridScript gridScript;
 	public ShipScript selectedShip;
+	public RPCScript rpcScript;
+
+	public string myname;
+	public string opponentname;
 
 	/** Current state of game **/
 	public GameState curGameState;
 	public PlayAction curPlayAction;
 
+
+
 	/** UNITY METHODS **/
+
+
+	void Awake()
+	{
+		//RE-enable the network messages now we've loaded the right level
+		Network.isMessageQueueRunning = true;
+		DontDestroyOnLoad(networkView);
+	}
 
 	// Use this for initialization
 	void Start () {
 		gridScript = gameObject.GetComponent<GridScript>();
+		rpcScript = gameObject.GetComponent<RPCScript>();
+
 		// Initialize game state variables
 		curPlayAction = PlayAction.None;
 		curGameState = GameState.Setup;
@@ -68,6 +85,7 @@ public class GameScript : MonoBehaviour {
 			if (GUI.Button (new Rect(10, 50, 100, 30), "Place Ship")) {
 				gridScript.PlaceShip();
 				Debug.Log ("Placing a Ship on selected square");
+				rpcScript.SignalPlayer();
 			}
 			break;
 		case (GameState.Play):

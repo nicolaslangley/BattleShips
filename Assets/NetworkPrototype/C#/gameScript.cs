@@ -1,12 +1,13 @@
 using UnityEngine;
 using System.Collections;
 
-public class gamescriptScript : MonoBehaviour
+public class gameScript: MonoBehaviour
 {
     void Awake()
     {
         //RE-enable the network messages now we've loaded the right level
         Network.isMessageQueueRunning = true;
+		DontDestroyOnLoad(networkView);
     }
     void OnGUI()
     {
@@ -54,9 +55,21 @@ public class gamescriptScript : MonoBehaviour
             {
                 Network.Disconnect();
             }
+
+			if (GUI.Button(new Rect(40, 10, 150, 20), "Signal"))
+			{
+				string playerName = PlayerPrefs.GetString("playerName");
+				networkView.RPC("signalPlayer", RPCMode.AllBuffered, playerName);
+			}
         }
         
     }
+
+	[RPC]
+	void signalPlayer(string myName)
+	{
+		Debug.Log("Hit" + myName);
+	}
 
     //Client&Server
     void OnDisconnectedFromServer(NetworkDisconnection info)
