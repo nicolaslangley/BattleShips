@@ -45,7 +45,7 @@ public class ShipScript : MonoBehaviour {
 			foreach (GameObject o in cells) {
 				CellScript cs = o.GetComponent<CellScript>();
 				cs.selected = true;
-				cs.DisplaySelection();
+				//cs.DisplaySelection();
 			}
 			gameScript.selectedShip = this;
 		} else {
@@ -63,6 +63,8 @@ public class ShipScript : MonoBehaviour {
 		if (selected == true) {
 			if (GUI.Button(new Rect(Screen.width - 110, 10, 100, 30), "Move")) {
 				gameScript.curPlayAction = GameScript.PlayAction.Move;
+				// Display movement range in cells
+				DisplayMoveRange();
 			}
 			if (GUI.Button(new Rect(Screen.width - 110, 50, 100, 30), "Fire Cannon")) {
 				gameScript.curPlayAction = GameScript.PlayAction.Cannon;
@@ -101,27 +103,6 @@ public class ShipScript : MonoBehaviour {
 		}
 		for (int i = 0; i < shipSize; i++) {
 			health [i] = armor;
-		}
-	}
-
-	/*
-	 * Add damage to ship and recalculate speed.
-	 */
-	public void hit(int section) 
-	{
-		health [section] -= 1;
-		int damageTotal = 0;
-		for (int i = 0; i < shipSize; i++) {
-			damageTotal += health[i];
-		}
-		if (damageTotal == 0) {
-			Destroy(gameObject);
-			//Take care of stats, etc.
-		} else {
-			if (heavyArmor)
-					speed = maxSpeed * (damageTotal / (2 * shipSize));
-			else
-					speed = maxSpeed * (damageTotal / shipSize);
 		}
 	}
 
@@ -180,6 +161,7 @@ public class ShipScript : MonoBehaviour {
 	// Handles movement of ship - INCOMPLETE
 	public void MoveShip (CellScript destCell) {
 		// TODO: Check that destination cell is a valid destination and otherwise modify path
+		// TODO: Verify that destination cell is within correct range
 		StartCoroutine(MoveShipForward(destCell.transform.position));
 		// Update occupied cells
 		// Reset currently occupied cells
@@ -236,6 +218,27 @@ public class ShipScript : MonoBehaviour {
 	}
 
 	/*
+	 * Add damage to ship and recalculate speed.
+	 */
+	public void HandleHit(int section) 
+	{
+		health [section] -= 1;
+		int damageTotal = 0;
+		for (int i = 0; i < shipSize; i++) {
+			damageTotal += health[i];
+		}
+		if (damageTotal == 0) {
+			Destroy(gameObject);
+			//Take care of stats, etc.
+		} else {
+			if (heavyArmor)
+				speed = maxSpeed * (damageTotal / (2 * shipSize));
+			else
+				speed = maxSpeed * (damageTotal / shipSize);
+		}
+	}
+	
+	/*
 	 * Rotates the 
 	 */
 	public void RotateShip(bool clockwise) {
@@ -279,5 +282,41 @@ public class ShipScript : MonoBehaviour {
 			break;
 		}
 		transform.rotation = tempRot;
+	}
+
+	/** DISPLAY **/
+
+	public void DisplayMoveRange () {
+		// Get front cell of ship
+		Debug.Log ("Displaying Move Range");
+		CellScript frontCellScript = cells[cells.Count - 1].GetComponent<CellScript>();
+		int startX = frontCellScript.gridPositionX;
+		int startY = frontCellScript.gridPositionY;
+		switch (curDir) {
+		case GameScript.Direction.East:
+			for (int i = 1; i <= shipSize; i++) {
+				GameObject curCell = gridScript.grid[startX + i, startY];
+				curCell.GetComponent<CellScript>().renderer.material.color = Color.cyan;
+			}
+			break;
+		case GameScript.Direction.West:
+			for (int i = 1; i <= shipSize; i++) {
+				GameObject curCell = gridScript.grid[startX - i, startY];
+				curCell.GetComponent<CellScript>().renderer.material.color = Color.cyan;
+			}
+			break;
+		case GameScript.Direction.North:
+			for (int i = 1; i <= shipSize; i++) {
+				GameObject curCell = gridScript.grid[startX, startY + i];
+				curCell.GetComponent<CellScript>().renderer.material.color = Color.cyan;
+			}
+			break;
+		case GameScript.Direction.South:
+			for (int i = 1; i <= shipSize; i++) {
+				GameObject curCell = gridScript.grid[startX, startY - i];
+				curCell.GetComponent<CellScript>().renderer.material.color = Color.cyan;
+			}
+			break;
+		}
 	}
 }

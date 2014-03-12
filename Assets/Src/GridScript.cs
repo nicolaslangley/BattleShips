@@ -130,10 +130,6 @@ public class GridScript : MonoBehaviour {
 			}
 			grid[xVal, yVal].GetComponent<CellScript>().SetReef();
 		}
-
-
-
-
 	}
 
 	// Returns the neighbours of the given cell in the grid
@@ -155,8 +151,8 @@ public class GridScript : MonoBehaviour {
 	/*
 	 * Returns the cells in a given rectangle on the grid, for the purposes of moving,
 	 * torpedo intersecting, and radar searching. 
-	*/
-	public GameObject[,] range (int positionX, int positionY, int dx, int dy) {
+	 */
+	public GameObject[,] GetCellsInRange (int positionX, int positionY, int dx, int dy) {
 		GameObject[,] cells = new GameObject[dx, dy];
 		for (int x = 0; x < dx; x++) {
 			for (int y = 0; y < dy; y++) {
@@ -164,6 +160,59 @@ public class GridScript : MonoBehaviour {
 			}
 		}
 		return cells;
+	}
+
+	public bool VerifyCellMove (int positionX, int positionY, int dist, GameScript.Direction dir) {
+		GameObject[] cells = new GameObject[dist];
+		bool obstacleEncountered = false;
+		GameObject encounteredObstacle;
+		switch (dir) {
+		case GameScript.Direction.East:
+			for (int x = 0; x < dist; x++) {
+				GameObject cell = grid[positionX + x, positionY];
+				CellScript curCellScript = cell.GetComponent<CellScript>();
+				if (curCellScript.available != true) {
+					obstacleEncountered = true;
+					encounteredObstacle = cell;
+					break;
+				}
+			}
+			break;
+		case GameScript.Direction.West:
+			for (int x = 0; x < dist; x++) {
+				GameObject cell = grid[positionX - x, positionY];
+				CellScript curCellScript = cell.GetComponent<CellScript>();
+				if (curCellScript.available != true) {
+					obstacleEncountered = true;
+					encounteredObstacle = cell;
+					break;
+				}
+			}
+			break;
+		case GameScript.Direction.North:
+			for (int y = 0; y < dist; y++) {
+				GameObject cell = grid[positionX, positionY + y];
+				CellScript curCellScript = cell.GetComponent<CellScript>();
+				if (curCellScript.available != true) {
+					obstacleEncountered = true;
+					encounteredObstacle = cell;
+					break;
+				}
+			}
+			break;
+		case GameScript.Direction.South:
+			for (int y = 0; y < dist; y++) {
+				GameObject cell = grid[positionX, positionY - y];
+				CellScript curCellScript = cell.GetComponent<CellScript>();
+				if (curCellScript.available != true) {
+					obstacleEncountered = true;
+					encounteredObstacle = cell;
+					break;
+				}
+			}
+			break;
+		}
+		return obstacleEncountered;
 	}
 
 	// Adds given cell to current selection - returns FALSE if not a valid selection
