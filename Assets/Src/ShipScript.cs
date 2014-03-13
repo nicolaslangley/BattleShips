@@ -342,7 +342,7 @@ public class ShipScript : MonoBehaviour {
 					break;
 				}
 				//For debugging
-				gridScript.GetCell(cell.gridPositionX+xsign*w, cell.gridPositionY+sign*w).renderer.material.color = Color.magenta;
+				//gridScript.GetCell(cell.gridPositionX+xsign*w, cell.gridPositionY+sign*w).renderer.material.color = Color.magenta;
 			}
 		}
 
