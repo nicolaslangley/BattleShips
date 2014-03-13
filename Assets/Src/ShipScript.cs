@@ -93,7 +93,7 @@ public class ShipScript : MonoBehaviour {
 		rpcScript = system.GetComponent<RPCScript>();
 		// Change the size for each sub ship
 		shipSize = 2;
-		speed = 2;
+		speed = 4;
 		health = new int[shipSize];
 		InitArmor ();
 	}
@@ -448,25 +448,25 @@ public class ShipScript : MonoBehaviour {
 		int startY = frontCellScript.gridPositionY;
 		switch (curDir) {
 		case GameScript.Direction.East:
-			for (int i = 1; i <= shipSize; i++) {
+			for (int i = 0; i <= speed-1; i++) {
 				GameObject curCell = gridScript.grid[startX + i, startY];
 				curCell.GetComponent<CellScript>().renderer.material.color = setColor;
 			}
 			break;
 		case GameScript.Direction.West:
-			for (int i = 1; i <= shipSize; i++) {
+			for (int i = 0; i <= speed-1; i++) {
 				GameObject curCell = gridScript.grid[startX - i, startY];
 				curCell.GetComponent<CellScript>().renderer.material.color = setColor;
 			}
 			break;
 		case GameScript.Direction.North:
-			for (int i = 1; i <= shipSize; i++) {
+			for (int i = 0; i <= speed-1; i++) {
 				GameObject curCell = gridScript.grid[startX, startY + i];
 				curCell.GetComponent<CellScript>().renderer.material.color = setColor;
 			}
 			break;
 		case GameScript.Direction.South:
-			for (int i = 1; i <= shipSize; i++) {
+			for (int i = 0; i <= speed-1; i++) {
 				GameObject curCell = gridScript.grid[startX, startY - i];
 				curCell.GetComponent<CellScript>().renderer.material.color = setColor;
 			}
