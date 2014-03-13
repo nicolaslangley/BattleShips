@@ -233,7 +233,7 @@ public class GameLobbyScript : MonoBehaviour
     [RPC]
     void addPlayer(NetworkPlayer player, string username)
     {
-        Debug.Log("got addplayer" + username);
+        //Debug.Log("got addplayer" + username);
 
 		NetworkViewID newViewID = Network.AllocateViewID();
 

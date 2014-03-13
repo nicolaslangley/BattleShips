@@ -16,21 +16,20 @@ public class RPCScript : MonoBehaviour {
 		gridScript = system.GetComponent<GridScript>();
 		gameScript = system.GetComponent<GameScript>();
 	}
-	[RPC]
 
-
-	void OnConnectedToServer()
+	public void sendPlayerName(string playerName)
 	{
 		//Called on client
 		//Send everyone this clients data
-		string playerName = PlayerPrefs.GetString("playerName");
-		networkView.RPC("addPlayer", RPCMode.AllBuffered, Network.player, playerName);
+		networkView.RPC("RPCsendPlayerName", RPCMode.OthersBuffered, Network.player, playerName);
 	}
 
 	[RPC]
-	public void addPlayer(NetworkPlayer player, string username)
+	void RPCsendPlayerName(NetworkPlayer player, string username)
 	{
-		Debug.Log("got addplayer" + username);
+		gameScript.opponentname = username;
+		Debug.Log("opponent name is: " + gameScript.opponentname);
+
 	}
 	
 	public void SignalPlayer()
@@ -93,15 +92,15 @@ public class RPCScript : MonoBehaviour {
 
 	}
 
-	public void setShip(float startPosX, float startPosZ, float endPosX, float endPosZ)
+	public void setShip(float startPosX, float startPosZ, float endPosX, float endPosZ, string playerName)
 	{
-		networkView.RPC ("RPCSetShip",RPCMode.Others, startPosX, startPosZ, endPosX, endPosZ);
+		networkView.RPC ("RPCSetShip",RPCMode.Others, startPosX, startPosZ, endPosX, endPosZ, playerName);
 	}
 
 	[RPC]
-	void RPCSetShip(float startPosX, float startPosZ, float endPosX, float endPosZ)
+	void RPCSetShip(float startPosX, float startPosZ, float endPosX, float endPosZ, string playerName)
 	{
-		gridScript.PlaceShip(startPosX,startPosZ,endPosX,endPosZ,0);
+		gridScript.PlaceShip(startPosX,startPosZ,endPosX,endPosZ,0, playerName);
 	}
 	
 	public void fireCannon(string shipID, int x, int y)
