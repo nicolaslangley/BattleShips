@@ -85,6 +85,7 @@ public class ShipScript : MonoBehaviour {
 		system = GameObject.FindGameObjectWithTag("System");
 		gameScript = system.GetComponent<GameScript>();
 		gridScript = system.GetComponent<GridScript>();
+		rpcScript = system.GetComponent<RPCScript>();
 		// Change the size for each sub ship
 		shipSize = 2;
 		health = new int[shipSize];
@@ -163,6 +164,7 @@ public class ShipScript : MonoBehaviour {
 		// TODO: Check that destination cell is a valid destination and otherwise modify path
 		// TODO: Verify that destination cell is within correct range
 		StartCoroutine(MoveShipForward(destCell.transform.position));
+
 		// Update occupied cells
 		// Reset currently occupied cells
 		foreach (GameObject o in cells) {
@@ -213,8 +215,12 @@ public class ShipScript : MonoBehaviour {
 			o.GetComponent<CellScript>().selected = true;
 			o.GetComponent<CellScript>().DisplaySelection();
 		}
-		//Debug.Log("X: "+ destCell.gridPositionX + " Y: " + destCell.gridPositionY);
-		rpcScript.MoveShip(shipID,destCell.gridPositionX, destCell.gridPositionY);
+		Debug.Log("X: "+ destCell.gridPositionX + " Y: " + destCell.gridPositionY);
+
+		//rpcScript.NetworkMoveShip(shipID, destCell.gridPositionX, destCell.gridPositionY);
+		
+		
+
 	}
 
 	/*
@@ -243,6 +249,7 @@ public class ShipScript : MonoBehaviour {
 	 */
 	public void RotateShip(bool clockwise) {
 		//Calculate new turn direction
+		Debug.Log("Turning " + clockwise);
 		int curRot = (int)curDir;
 		int newRot;
 		if (!clockwise) {
@@ -284,7 +291,7 @@ public class ShipScript : MonoBehaviour {
 					break;
 				}
 				//For debugging
-				//gridScript.GetCell(cell.gridPositionX+xsign*w, cell.gridPositionY+sign*w).renderer.material.color = Color.magenta;
+				gridScript.GetCell(cell.gridPositionX+xsign*w, cell.gridPositionY+sign*w).renderer.material.color = Color.magenta;
 			}
 		}
 
@@ -299,6 +306,8 @@ public class ShipScript : MonoBehaviour {
 	public void FireCannon(CellScript targetCell) {
 		// Call coroutine to display fire outcome
 		StartCoroutine(DisplayCannon(targetCell.gameObject));
+		rpcScript.fireCannon(shipID,targetCell.gridPositionX, targetCell.gridPositionY);
+
 	}
 
 	// Set rotation of ship based on direction

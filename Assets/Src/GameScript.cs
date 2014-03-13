@@ -87,6 +87,17 @@ public class GameScript : MonoBehaviour {
 				Debug.Log ("Placing a Ship on selected square");
 				rpcScript.SignalPlayer();
 			}
+
+			if (GUI.Button (new Rect(10, 80, 100, 30), "Default Config")) {
+				gridScript.PlaceShip(5,10,7,10,1);
+				gridScript.PlaceShip(5,20,7,20,1);
+				gridScript.PlaceShip(5,15,7,15,1);
+
+				gridScript.PlaceShip(24,10,22,10,1);
+				gridScript.PlaceShip(24,20,22,20,1);
+				gridScript.PlaceShip(24,15,22,15,1);
+				
+			}
 			break;
 		case (GameState.Play):
 			// GUI to be displayed during playing phase

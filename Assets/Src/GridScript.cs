@@ -46,6 +46,7 @@ public class GridScript : MonoBehaviour {
 		system = GameObject.FindGameObjectWithTag("System");
 		gameScript = system.GetComponent<GameScript>();
 		rpcScript = system.GetComponent<RPCScript>();
+
 	}
 
 	public void setReefSeed(int seed)
@@ -59,14 +60,13 @@ public class GridScript : MonoBehaviour {
 			Vector3 startPos = currentSelection[0].transform.position;
 			Vector3 endPos = currentSelection[currentSelection.Count - 1].transform.position;
 
-			PlaceShip(startPos.x, startPos.z, endPos.x, endPos.z);
+			PlaceShip(startPos.x, startPos.z, endPos.x, endPos.z, 1);
 			currentSelection.Clear();
-			rpcScript.setShip(startPos.x, startPos.z, endPos.x, endPos.z);
 
 		}
 	}
 
-	public void PlaceShip (float startPosX, float startPosZ, float endPosX, float endPosZ) {
+	public void PlaceShip (float startPosX, float startPosZ, float endPosX, float endPosZ, int local) {
 //		if (currentSelection.Count == 2 && currentSelection.Count != 0) {
 			// Place ship over selected squares
 			// Get position of first item in currentSelection
@@ -79,6 +79,10 @@ public class GridScript : MonoBehaviour {
 //			float newX = ((endPos.x - startPos.x) / 2) + startPos.x - 0.5f;
 //			float newZ = ((endPos.z - startPos.z) / 2) + startPos.z - 0.5f;
 
+			if (local == 1)
+		{
+			rpcScript.setShip(startPosX, startPosZ, endPosX, endPosZ);
+		}
 			float newX = ((endPosX - startPosX)/2) + startPosX - 0.5f;
 			float newZ = ((endPosZ - startPosZ)/2) + startPosZ - 0.5f;
 			float newY = 0.5f;
