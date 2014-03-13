@@ -198,57 +198,59 @@ public class GridScript : MonoBehaviour {
 		return cells;
 	}
 
-	public bool VerifyCellMove (int positionX, int positionY, int dist, GameScript.Direction dir) {
-		GameObject[] cells = new GameObject[dist];
+	/*
+	 * Returns the valid destination cell within the given path
+	 */
+	public CellScript VerifyCellPath (int positionX, int positionY, int dist, GameScript.Direction dir, CellScript destCell) {
 		bool obstacleEncountered = false;
-		GameObject encounteredObstacle;
+		CellScript encounteredObstacle = destCell;
 		switch (dir) {
 		case GameScript.Direction.East:
-			for (int x = 0; x < dist; x++) {
+			for (int x = 1; x <= dist; x++) {
 				GameObject cell = grid[positionX + x, positionY];
 				CellScript curCellScript = cell.GetComponent<CellScript>();
 				if (curCellScript.available != true) {
 					obstacleEncountered = true;
-					encounteredObstacle = cell;
+					encounteredObstacle = grid[positionX + (x-1), positionY].GetComponent<CellScript>();
 					break;
 				}
 			}
 			break;
 		case GameScript.Direction.West:
-			for (int x = 0; x < dist; x++) {
+			for (int x = 1; x <= dist; x++) {
 				GameObject cell = grid[positionX - x, positionY];
 				CellScript curCellScript = cell.GetComponent<CellScript>();
 				if (curCellScript.available != true) {
 					obstacleEncountered = true;
-					encounteredObstacle = cell;
+					encounteredObstacle = cell.GetComponent<CellScript>();
 					break;
 				}
 			}
 			break;
 		case GameScript.Direction.North:
-			for (int y = 0; y < dist; y++) {
+			for (int y = 1; y <= dist; y++) {
 				GameObject cell = grid[positionX, positionY + y];
 				CellScript curCellScript = cell.GetComponent<CellScript>();
 				if (curCellScript.available != true) {
 					obstacleEncountered = true;
-					encounteredObstacle = cell;
+					encounteredObstacle = cell.GetComponent<CellScript>();
 					break;
 				}
 			}
 			break;
 		case GameScript.Direction.South:
-			for (int y = 0; y < dist; y++) {
+			for (int y = 1; y <= dist; y++) {
 				GameObject cell = grid[positionX, positionY - y];
 				CellScript curCellScript = cell.GetComponent<CellScript>();
 				if (curCellScript.available != true) {
 					obstacleEncountered = true;
-					encounteredObstacle = cell;
+					encounteredObstacle = cell.GetComponent<CellScript>();
 					break;
 				}
 			}
 			break;
 		}
-		return obstacleEncountered;
+		return encounteredObstacle;
 	}
 
 	// Adds given cell to current selection - returns FALSE if not a valid selection

@@ -7,7 +7,7 @@ public class GameScript : MonoBehaviour {
 
 	/** Enums **/
 
-	public enum GameState {Setup, Play, End};
+	public enum GameState {Setup, Play, Wait, End};
 	public enum Direction {North, East, South, West};
 	public enum CellState {Available, Mine, Reef, Ship, Base};
 	public enum PlayAction {Move, Cannon, Torpedo, DropMine, PickupMine, Repair, None};
@@ -23,6 +23,7 @@ public class GameScript : MonoBehaviour {
 
 	public string myname;
 	public string opponentname;
+	public bool waitTurn;
 
 	/** Current state of game **/
 	public GameState curGameState;
@@ -67,6 +68,8 @@ public class GameScript : MonoBehaviour {
 				ShipScript s = o.GetComponent<ShipScript>();
 				s.CustomPlayUpdate();
 			}
+			break;
+		case (GameState.Wait):
 			break;
 		case (GameState.End):
 			break;
