@@ -55,6 +55,7 @@ public class CellScript : MonoBehaviour {
 	// Use this for initialization
 	public void Init () {
 		gameObject.renderer.material.color = Color.blue;
+		available = true;
 		system = GameObject.FindGameObjectWithTag("System");
 		gridScript = system.GetComponent<GridScript>();
 		gameScript = system.GetComponent<GameScript>();

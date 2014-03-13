@@ -56,7 +56,7 @@ public class ShipScript : MonoBehaviour {
 			foreach (GameObject o in cells) {
 				CellScript cs = o.GetComponent<CellScript>();
 				cs.selected = false;
-				cs.DisplaySelection();
+				//cs.DisplaySelection();
 			}
 		} 
 	}
@@ -126,21 +126,26 @@ public class ShipScript : MonoBehaviour {
 		Vector3 start = transform.position;
 		Vector3 dest = transform.position;
 		float amount;
+		float offset = shipSize - 1;
 		switch(curDir) {
 		case GameScript.Direction.East:
 			amount = destPos.x - start.x;
+			amount -= offset;
 			dest.x += amount;
 			break;
 		case GameScript.Direction.North:
 			amount = destPos.z - start.z;
+			amount -= offset;
 			dest.z += amount;
 			break;
 		case GameScript.Direction.South:
 			amount = destPos.z - start.z;
+			amount -= offset;
 			dest.z += amount;
 			break;
 		case GameScript.Direction.West:
 			amount = destPos.x - start.x;
+			amount -= offset;
 			dest.x += amount;
 			break;
 		}
@@ -176,12 +181,13 @@ public class ShipScript : MonoBehaviour {
 		int distance = 0;
 		if (destCell.gridPositionX == startX) distance = destCell.gridPositionY - startY;
 		else if (destCell.gridPositionY == startY) distance = destCell.gridPositionX - startX;
+		// Verify that destination cell is within correct range
 		if (distance > speed) {
 			Debug.Log ("Cannot move that far");
 			return;
 		}
-		bool valid = gridScript.VerifyCellPath(startX, startY, distance, curDir);
-		if (!valid) {
+		CellScript validDestCell = gridScript.VerifyCellPath(startX, startY, distance, curDir, destCell);
+		if (validDestCell != destCell) {
 			Debug.Log ("Invalid path");
 			return;
 		}
@@ -203,7 +209,7 @@ public class ShipScript : MonoBehaviour {
 		cells.Add(destCell.gameObject);
 		switch(curDir) {
 		case GameScript.Direction.East:
-			for (int i = 1; i < shipSize; i++) {
+			for (int i = (-shipSize+1); i <= 0; i++) {
 				GameObject newCell = gridScript.grid[destCell.gridPositionX + i, destCell.gridPositionY];
 				CellScript newCellScript = newCell.GetComponent<CellScript>();
 				newCellScript.occupier = this.gameObject;
@@ -211,7 +217,7 @@ public class ShipScript : MonoBehaviour {
 			}
 			break;
 		case GameScript.Direction.North:
-			for (int i = 1; i < shipSize; i++) {
+			for (int i = (-shipSize+1); i <= 0; i++) {
 				GameObject newCell = gridScript.grid[destCell.gridPositionX, destCell.gridPositionY + i];
 				CellScript newCellScript = newCell.GetComponent<CellScript>();
 				newCellScript.occupier = this.gameObject;
@@ -219,7 +225,7 @@ public class ShipScript : MonoBehaviour {
 			}
 			break;
 		case GameScript.Direction.South:
-			for (int i = 1; i < shipSize; i++) {
+			for (int i = (-shipSize+1); i <= 0; i++) {
 				GameObject newCell = gridScript.grid[destCell.gridPositionX, destCell.gridPositionY - i];
 				CellScript newCellScript = newCell.GetComponent<CellScript>();
 				newCellScript.occupier = this.gameObject;
@@ -227,7 +233,7 @@ public class ShipScript : MonoBehaviour {
 			}
 			break;
 		case GameScript.Direction.West:
-			for (int i = 1; i < shipSize; i++) {
+			for (int i = (-shipSize); i <= 0; i++) {
 				GameObject newCell = gridScript.grid[destCell.gridPositionX - i, destCell.gridPositionY];
 				CellScript newCellScript = newCell.GetComponent<CellScript>();
 				newCellScript.occupier = this.gameObject;
@@ -324,7 +330,68 @@ public class ShipScript : MonoBehaviour {
 
 		if (!obstacle) {
 			curDir = (GameScript.Direction)newRot;
+			// Reset all except rotation base cells to be unoccupied
+			GameObject baseCell = cells[0];
+			foreach (GameObject o in cells) {
+				if (o == baseCell) continue;
+
+				CellScript oCellScript = o.GetComponent<CellScript>();
+				Debug.Log ("Resetting cell at position: " + oCellScript.gridPositionX + " " + oCellScript.gridPositionY);
+				oCellScript.occupier = null;
+				oCellScript.selected = false;
+				oCellScript.available = true;
+				oCellScript.curCellState = GameScript.CellState.Available;
+			}
+			cells.Clear();
+			cells.Add(baseCell);
+
+			CellScript baseCellScript = baseCell.GetComponent<CellScript>();
+			// Based on direction of ship set currently occupied cells
+			switch(curDir) {
+			case GameScript.Direction.East:
+				for (int i = 1; i < shipSize; i++) {
+					GameObject newCell = gridScript.grid[baseCellScript.gridPositionX + i, baseCellScript.gridPositionY];
+					CellScript newCellScript = newCell.GetComponent<CellScript>();
+					newCellScript.occupier = this.gameObject;
+					cells.Add (newCell);
+				}
+				break;
+			case GameScript.Direction.North:
+				for (int i = 1; i < shipSize; i++) {
+					Debug.Log (baseCellScript.gridPositionX + " " + baseCellScript.gridPositionY);
+					GameObject newCell = gridScript.grid[baseCellScript.gridPositionX, baseCellScript.gridPositionY + i];
+					CellScript newCellScript = newCell.GetComponent<CellScript>();
+					newCellScript.occupier = this.gameObject;
+					cells.Add (newCell);
+				}
+				break;
+			case GameScript.Direction.South:
+				for (int i = 1; i < shipSize; i++) {
+					GameObject newCell = gridScript.grid[baseCellScript.gridPositionX, baseCellScript.gridPositionY - i];
+					CellScript newCellScript = newCell.GetComponent<CellScript>();
+					newCellScript.occupier = this.gameObject;
+					cells.Add (newCell);
+				}
+				break;
+			case GameScript.Direction.West:
+				for (int i = 1; i < shipSize; i++) {
+					GameObject newCell = gridScript.grid[baseCellScript.gridPositionX - i, baseCellScript.gridPositionY];
+					CellScript newCellScript = newCell.GetComponent<CellScript>();
+					newCellScript.occupier = this.gameObject;
+					cells.Add (newCell);
+				}
+				break;
+			}
+			
+			foreach (GameObject o in cells) {
+				CellScript oCellScript = o.GetComponent<CellScript>();
+				oCellScript.occupier = this.gameObject;
+				oCellScript.available = false;
+				oCellScript.curCellState = GameScript.CellState.Ship;
+				o.GetComponent<CellScript>().selected = true;
+			}
 		} else {
+			Debug.Log ("Obstacle in rotation path");
 			//display an error message
 		}
 	}
