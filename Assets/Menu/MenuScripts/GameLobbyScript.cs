@@ -270,7 +270,7 @@ public class GameLobbyScript : MonoBehaviour
         // Don't allow any more players
         Network.maxConnections = -1;
 		MultiplayerFunctionScript.SP.UnregisterHost();
-        networkView.RPC("launchGame", RPCMode.Others);
+        networkView.RPC("launchGame", RPCMode.All);
     }
     [RPC]
     void launchGame()
