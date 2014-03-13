@@ -107,7 +107,7 @@ public class GridScript : MonoBehaviour {
 			newShipScript.Init();
 			newShipScript.curDir = shipDir;
 			newShipScript.SetRotation();
-			List<GameObject> shipCells = newShip.GetComponent<ShipScript>().cells;
+			List<GameObject> shipCells = newShipScript.cells;
 			
 			// Reset selection of ship and cells
 			foreach (GameObject o in currentSelection) {

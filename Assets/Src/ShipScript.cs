@@ -22,6 +22,7 @@ public class ShipScript : MonoBehaviour {
 	private GridScript gridScript;
 	private RPCScript rpcScript;
 	private int[] health;
+	private CellScript baseCell;
 
 	private int speed; 
 	private static int maxSpeed; //Speed at full health
@@ -170,9 +171,6 @@ public class ShipScript : MonoBehaviour {
 
 	// Handles movement of ship - INCOMPLETE
 	public void MoveShip (CellScript destCell) {
-		// TODO: Check that destination cell is a valid destination and otherwise modify path
-		// TODO: Verify that destination cell is within correct range
-		// Get starting position of ship
 		// Get front cell of ship
 		CellScript frontCellScript = cells[cells.Count - 1].GetComponent<CellScript>();
 		int startX = frontCellScript.gridPositionX;
@@ -188,6 +186,7 @@ public class ShipScript : MonoBehaviour {
 		}
 		CellScript validDestCell = gridScript.VerifyCellPath(startX, startY, distance, curDir, destCell);
 		if (validDestCell != destCell) {
+			// TODO: only move up until given cell
 			Debug.Log ("Invalid path");
 			return;
 		}
@@ -206,7 +205,6 @@ public class ShipScript : MonoBehaviour {
 		}
 		cells.Clear();
 		// Add newly occupied cells
-		cells.Add(destCell.gameObject);
 		switch(curDir) {
 		case GameScript.Direction.East:
 			for (int i = (-shipSize+1); i <= 0; i++) {
@@ -233,7 +231,7 @@ public class ShipScript : MonoBehaviour {
 			}
 			break;
 		case GameScript.Direction.West:
-			for (int i = (-shipSize); i <= 0; i++) {
+			for (int i = (-shipSize+1); i <= 0; i++) {
 				GameObject newCell = gridScript.grid[destCell.gridPositionX - i, destCell.gridPositionY];
 				CellScript newCellScript = newCell.GetComponent<CellScript>();
 				newCellScript.occupier = this.gameObject;
@@ -244,6 +242,7 @@ public class ShipScript : MonoBehaviour {
 
 		foreach (GameObject o in cells) {
 			CellScript oCellScript = o.GetComponent<CellScript>();
+			Debug.Log ("Index: " + cells.IndexOf(o) + " Position: " + oCellScript.gridPositionX + " " + oCellScript.gridPositionY);
 			oCellScript.occupier = this.gameObject;
 			oCellScript.available = false;
 			oCellScript.curCellState = GameScript.CellState.Ship;
