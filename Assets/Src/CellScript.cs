@@ -13,6 +13,7 @@ public class CellScript : MonoBehaviour {
 	public GameScript.CellState curCellState = GameScript.CellState.Available;
 	public int gridPositionX;
 	public int gridPositionY;
+	public int instanceID;
 
 	private GameObject system;
 	private GridScript gridScript;
@@ -24,6 +25,9 @@ public class CellScript : MonoBehaviour {
 
 	// Change selection status of cell and display it and it's neighbours if allowShipPlacement button has been pressed;
 	void OnMouseDown () {
+		Debug.Log ("Mouse click occured");
+		Debug.Log ("CurGameState is: " + gameScript.curGameState);
+		Debug.Log ("CurGameAction is: " + gameScript.curPlayAction);
 		// Don't act on mouse click if in wait state
 		if (gameScript.curGameState == GameScript.GameState.Wait) return;
 
@@ -36,6 +40,7 @@ public class CellScript : MonoBehaviour {
 		} else if (gameScript.curPlayAction == GameScript.PlayAction.Cannon) {
 			gameScript.selectedShip.FireCannon(this);
 		} else {
+			Debug.Log ("Selection changing");
 			selected = !selected;
 			if (selected == true) {
 				// Verify that selection is valid otherwise return
@@ -61,15 +66,20 @@ public class CellScript : MonoBehaviour {
 		gridScript = system.GetComponent<GridScript>();
 		gameScript = system.GetComponent<GameScript>();
 		rpcScript = gameScript.rpcScript;
+		instanceID = gameObject.GetInstanceID();
 	}
 
 	/** HELPER METHODS **/
 
 	// This method can be called on a cell to display it as selected and display it's neighbours
 	public void DisplaySelection () {
+		Debug.Log ("Display Selection running");
 		neighbours = gridScript.GetCellNeighbours(gameObject);
 		if (selected == true) {
+			Debug.Log ("Changing Color");
+			Debug.Log (this.gameObject.GetInstanceID());
 			gameObject.renderer.material.color = Color.red;
+			Debug.Log ("Color changed");
 			foreach (GameObject o in neighbours) {
 				if (o.renderer.material.color != Color.red) o.renderer.material.color = Color.green;
 				o.GetComponent<CellScript>().available = true;

@@ -7,6 +7,7 @@ public class GameLobbyScript : MonoBehaviour
 
     private bool launchingGame = false;
     private bool showMenu = false;
+	private int launchCount = 0;
 
     private ArrayList playerList = new ArrayList();
 
@@ -57,9 +58,10 @@ public class GameLobbyScript : MonoBehaviour
             StartCoroutine(leaveLobby());
         }
 
-        if (launchingGame)
-        {
-            launchingGameGUI();
+        if (launchingGame && launchCount == 0)
+        {	
+			launchCount = 1;
+    		launchingGameGUI();
 
         }
         else if (!Network.isServer && !Network.isClient)
@@ -268,7 +270,7 @@ public class GameLobbyScript : MonoBehaviour
         // Don't allow any more players
         Network.maxConnections = -1;
 		MultiplayerFunctionScript.SP.UnregisterHost();
-        networkView.RPC("launchGame", RPCMode.All);
+        networkView.RPC("launchGame", RPCMode.Others);
     }
     [RPC]
     void launchGame()
@@ -281,7 +283,7 @@ public class GameLobbyScript : MonoBehaviour
         //Show loading progress, ADD LOADINGSCREEN?
         GUI.Box(new Rect(Screen.width / 4 + 180, Screen.height / 2 - 30, 280, 50), "");
 		GUI.Label(new Rect(Screen.width / 4 + 200, Screen.height / 2 - 25, 285, 150), "Loaded, starting the game!");
-
+		Debug.Log ("Loading game GUI");
 
         if (Application.CanStreamedLevelBeLoaded("GridTest"))
         {
