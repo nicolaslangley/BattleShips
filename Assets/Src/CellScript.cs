@@ -60,7 +60,7 @@ public class CellScript : MonoBehaviour {
 		system = GameObject.FindGameObjectWithTag("System");
 		gridScript = system.GetComponent<GridScript>();
 		gameScript = system.GetComponent<GameScript>();
-		rpcScript = gameScript.rpcScript;
+		rpcScript = system.GetComponent<RPCScript>();
 	}
 
 	/** HELPER METHODS **/
