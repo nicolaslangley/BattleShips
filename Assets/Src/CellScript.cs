@@ -17,6 +17,7 @@ public class CellScript : MonoBehaviour {
 	private GameObject system;
 	private GridScript gridScript;
 	private GameScript gameScript;
+	private RPCScript rpcScript;
 	private bool isVisible = true;
 
 	/** UNITY METHODS **/
@@ -59,6 +60,7 @@ public class CellScript : MonoBehaviour {
 		system = GameObject.FindGameObjectWithTag("System");
 		gridScript = system.GetComponent<GridScript>();
 		gameScript = system.GetComponent<GameScript>();
+		rpcScript = gameScript.rpcScript;
 	}
 
 	/** HELPER METHODS **/

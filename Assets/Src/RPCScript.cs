@@ -5,7 +5,8 @@ public class RPCScript : MonoBehaviour {
 
 	// Use this for initialization
 
-	public GridScript gridScript;
+	private GridScript gridScript;
+	private GameScript gameScript;
 	private GameObject system;
 
 
@@ -13,7 +14,10 @@ public class RPCScript : MonoBehaviour {
 	{
 		system = GameObject.FindGameObjectWithTag("System");
 		gridScript = system.GetComponent<GridScript>();
+		gameScript = system.GetComponent<GameScript>();
 	}
+	[RPC]
+
 
 	void OnConnectedToServer()
 	{
@@ -22,10 +26,6 @@ public class RPCScript : MonoBehaviour {
 		string playerName = PlayerPrefs.GetString("playerName");
 		networkView.RPC("addPlayer", RPCMode.AllBuffered, Network.player, playerName);
 	}
-
-
-
-
 
 	[RPC]
 	public void addPlayer(NetworkPlayer player, string username)
@@ -62,15 +62,33 @@ public class RPCScript : MonoBehaviour {
 	}
 
 	//SHIP RPC
-	public void MoveShip(string shipID, int x, int y)
+	public void NetworkMoveShip(string shipdID, int x, int y)
 	{
-		networkView.RPC ("RPCMoveShip", RPCMode.All, shipID, x, y);
+
+		networkView.RPC ("RPCMoveShip", RPCMode.OthersBuffered,shipdID, x, y);
+		Debug.Log ("Sent move");
 	}
 
 	[RPC]
-	void RPCHMoveShip(string shipID, int x, int y)
+	void RPCMoveShip(string shipID, int x, int y, NetworkMessageInfo info)
 	{
 		Debug.Log("Ship: "+shipID+" moved to " + x + " ," + y);
+
+//		if (networkView.isMine)
+//		{
+//			Debug.Log("DID IT");
+//			foreach(GameObject obj in gameScript.ships)
+//			{
+//				ShipScript shipscript = obj.GetComponent<ShipScript>();
+//				if (shipscript.shipID == shipID)
+//				{
+//					GameObject destCellObject = gridScript.grid[x,y];
+//					CellScript destCell = destCellObject.GetComponent<CellScript>();
+//					shipscript.MoveShip(destCell);
+//					break;
+//				}
+//			}
+//		}
 	}
 
 	public void setShip(float startPosX, float startPosZ, float endPosX, float endPosZ)
@@ -81,9 +99,21 @@ public class RPCScript : MonoBehaviour {
 	[RPC]
 	void RPCSetShip(float startPosX, float startPosZ, float endPosX, float endPosZ)
 	{
-		gridScript.PlaceShip(startPosX,startPosZ,endPosX,endPosZ);
+		gridScript.PlaceShip(startPosX,startPosZ,endPosX,endPosZ,0);
 	}
 	
+	public void fireCannon(string shipID, int x, int y)
+	{
+		string playerName = PlayerPrefs.GetString("playerName");
+		networkView.RPC ("RPCFireCannon",RPCMode.Others, playerName,shipID, x,y);
+	}
+
+	[RPC]
+	void RPCFireCannon(string playerName, string shipID, int x, int y)
+	{
+		Debug.Log("Player: "+ playerName+ " Ship: "+shipID+" fired cannon at " + x + " ," + y);
+	}
+
 	// Update is called once per frame
 	void Update () {
 	
