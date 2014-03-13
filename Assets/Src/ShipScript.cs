@@ -171,8 +171,10 @@ public class ShipScript : MonoBehaviour {
 	/** HELPER METHODS **/
 
 	// Handles movement of ship - INCOMPLETE
-	public void MoveShip (CellScript destCell) {
+	public void MoveShip (CellScript destCell, int local) {
 		// Get front cell of ship
+
+		Debug.Log("cell count: "+ cells.Count.ToString());
 		CellScript frontCellScript = cells[cells.Count - 1].GetComponent<CellScript>();
 		int startX = frontCellScript.gridPositionX;
 		int startY = frontCellScript.gridPositionY;
@@ -253,8 +255,10 @@ public class ShipScript : MonoBehaviour {
 		}
 
 		Debug.Log("X: "+ destCell.gridPositionX + " Y: " + destCell.gridPositionY);
-		
-		//rpcScript.NetworkMoveShip(shipID, destCell.gridPositionX, destCell.gridPositionY);
+
+		if (local == 1) {
+			rpcScript.NetworkMoveShip(shipID, destCell.gridPositionX, destCell.gridPositionY);
+		}
 
 
 		// End the current turn

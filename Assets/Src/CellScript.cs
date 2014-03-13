@@ -33,7 +33,7 @@ public class CellScript : MonoBehaviour {
 
 		// Handle selection if moving ship
 		if (gameScript.curPlayAction == GameScript.PlayAction.Move) {
-			gameScript.selectedShip.MoveShip(this);
+			gameScript.selectedShip.MoveShip(this,1);
 			gameScript.curPlayAction = GameScript.PlayAction.None;
 			gameScript.waitTurn = true;
 			return;

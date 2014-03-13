@@ -74,21 +74,23 @@ public class RPCScript : MonoBehaviour {
 	{
 		Debug.Log("Ship: "+shipID+" moved to " + x + " ," + y);
 
-//		if (networkView.isMine)
-//		{
-//			Debug.Log("DID IT");
-//			foreach(GameObject obj in gameScript.ships)
-//			{
-//				ShipScript shipscript = obj.GetComponent<ShipScript>();
-//				if (shipscript.shipID == shipID)
-//				{
-//					GameObject destCellObject = gridScript.grid[x,y];
-//					CellScript destCell = destCellObject.GetComponent<CellScript>();
-//					shipscript.MoveShip(destCell);
-//					break;
-//				}
-//			}
-//		}
+
+		foreach(GameObject obj in gameScript.ships)
+		{
+			ShipScript shipscript = obj.GetComponent<ShipScript>();
+			if (shipscript.shipID == shipID)
+			{
+				Debug.Log ("Found correct ship");
+				GameObject destCellObject = gridScript.grid[x,y];
+				CellScript destCell = destCellObject.GetComponent<CellScript>();
+				Debug.Log("DestCell Value: " + destCell.gridPositionX);
+				shipscript.MoveShip(destCell,0);
+
+				break;
+			}
+		}
+
+
 	}
 
 	public void setShip(float startPosX, float startPosZ, float endPosX, float endPosZ)
