@@ -23,10 +23,14 @@ public class CellScript : MonoBehaviour {
 
 	// Change selection status of cell and display it and it's neighbours if allowShipPlacement button has been pressed;
 	void OnMouseDown () {
+		// Don't act on mouse click if in wait state
+		if (gameScript.curGameState == GameScript.GameState.Wait) return;
+
 		// Handle selection if moving ship
 		if (gameScript.curPlayAction == GameScript.PlayAction.Move) {
 			gameScript.selectedShip.MoveShip(this);
 			gameScript.curPlayAction = GameScript.PlayAction.None;
+			gameScript.waitTurn = true;
 			return;
 		} else if (gameScript.curPlayAction == GameScript.PlayAction.Cannon) {
 			gameScript.selectedShip.FireCannon(this);
@@ -34,7 +38,6 @@ public class CellScript : MonoBehaviour {
 			selected = !selected;
 			if (selected == true) {
 				// Verify that selection is valid otherwise return
-				gameObject.renderer.material.color = Color.cyan;
 				if (gridScript.AddToSelection(gameObject) == false) {
 					selected = false;
 					return;
@@ -100,6 +103,7 @@ public class CellScript : MonoBehaviour {
 
 	public void SetReef () {
 		curCellState = GameScript.CellState.Reef;
+		available = false;
 		gameObject.renderer.material.color = Color.black;
 	}
 }

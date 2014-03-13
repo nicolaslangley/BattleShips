@@ -194,7 +194,12 @@ public class GridScript : MonoBehaviour {
 		return cells;
 	}
 
-	public bool VerifyCellMove (int positionX, int positionY, int dist, GameScript.Direction dir) {
+	/*
+	 * Returns a boolean value determining if the cells within dist from the given position
+	 * and in the given direction are available or not
+	 * true = valid, false = invalid
+	 */
+	public bool VerifyCellPath (int positionX, int positionY, int dist, GameScript.Direction dir) {
 		GameObject[] cells = new GameObject[dist];
 		bool obstacleEncountered = false;
 		GameObject encounteredObstacle;
@@ -244,7 +249,7 @@ public class GridScript : MonoBehaviour {
 			}
 			break;
 		}
-		return obstacleEncountered;
+		return !obstacleEncountered;
 	}
 
 	// Adds given cell to current selection - returns FALSE if not a valid selection
