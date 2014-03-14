@@ -149,9 +149,8 @@ public class ShipScript : MonoBehaviour {
 			if (gameScript.curPlayAction == GameScript.PlayAction.Move) {
 				
 			}
-			SetRotation();
 		}
-
+		SetRotation();
 	}
 
 	public GameObject getSection(int section)
