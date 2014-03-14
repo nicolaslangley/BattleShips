@@ -31,8 +31,8 @@ public class ShipScript : MonoBehaviour {
 	private bool heavyArmor;
 	
 	public ShipScript() {
-		player = "Horatio";
-		shipID = "ABC";
+		//player = "Horatio";
+		//shipID = "ABC";
 	}
 
 	/** UNITY METHODS **/
