@@ -23,6 +23,8 @@ public class GameScript : MonoBehaviour {
 	
 	public string myname;
 	public string opponentname;
+	public string turn;
+
 	public bool waitTurn;
 
 	/** Current state of game **/
@@ -82,12 +84,23 @@ public class GameScript : MonoBehaviour {
 
 	// Display GUI overlay for game
 	void OnGUI () {
+		GUI.Label(new Rect(150, 50, 100, 100), "Player turn: "+turn);
 		switch(curGameState) {
 		case (GameState.Setup):
 			// GUI to be displayed during setup phase
 			if (GUI.Button(new Rect(10, 10, 100, 30), "Play Game")) {
 				curGameState = GameState.Play;
 				Debug.Log ("Moving to Play state");
+				if (Network.peerType == NetworkPeerType.Server)
+				{
+					curGameState = GameState.Play;
+					turn = myname;
+				} else {
+					curGameState = GameState.Wait;
+					turn = opponentname;
+				}
+				Debug.Log ("It is now "+ turn);
+
 			}
 			if (GUI.Button (new Rect(10, 50, 100, 30), "Place Ship")) {
 				gridScript.setShip();
@@ -110,6 +123,21 @@ public class GameScript : MonoBehaviour {
 			// GUI to be displayed during playing phase
 			break;
 		}
+	}
+
+	public void endTurn()
+	{
+		if (curGameState == GameState.Wait)
+		{
+			curGameState = GameState.Play;
+			turn = myname;
+
+		} else if (curGameState == GameState.Play) {
+			curGameState = GameState.Wait;
+			turn = opponentname;
+		}
+
+		Debug.Log ("It is now "+ turn);
 	}
 
 }
