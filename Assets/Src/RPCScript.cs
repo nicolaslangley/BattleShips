@@ -138,13 +138,34 @@ public class RPCScript : MonoBehaviour {
 	public void fireCannon(string shipID, int x, int y)
 	{
 		string playerName = PlayerPrefs.GetString("playerName");
-		networkView.RPC ("RPCFireCannon",RPCMode.Others, playerName,shipID, x,y);
+		networkView.RPC ("RPCFireCannon",RPCMode.All, playerName,shipID, x,y);
 	}
 
 	[RPC]
 	void RPCFireCannon(string playerName, string shipID, int x, int y)
 	{
 		Debug.Log("Player: "+ playerName+ " Ship: "+shipID+" fired cannon at " + x + " ," + y);
+		GameObject hitCell = gridScript.GetCell(x,y);
+		Debug.Log(hitCell.name);
+		CellScript hitCellScript = hitCell.GetComponent<CellScript>();
+
+		if (hitCellScript.curCellState != GameScript.CellState.Available)
+		{
+			Debug.Log ("Hit Something at " +x + ", " + y);
+			gameScript.messages = "Something hit at "+x+", "+y;
+		} else {
+			Debug.Log ("HIt Nothing");
+			gameScript.messages = "Hit Nothing";
+		}
+
+//		if (hitShipScript != null)
+//		{
+//			ShipScript hitShipScript = hitCellScript.occupier.GetComponent<ShipScript>();
+//			//int index = hitShipScript.cells.IndexOf(hitCell);
+//			//Debug.Log("Index of hit ship: "+ index);
+//		} else {
+//			Debug.Log("HIt nothin");
+//		}
 	}
 
 	// Update is called once per frame

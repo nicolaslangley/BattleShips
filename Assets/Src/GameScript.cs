@@ -25,6 +25,8 @@ public class GameScript : MonoBehaviour {
 	public string opponentname;
 	public string turn;
 
+	public string messages;
+
 	public bool waitTurn;
 
 	/** Current state of game **/
@@ -86,6 +88,8 @@ public class GameScript : MonoBehaviour {
 	// Display GUI overlay for game
 	void OnGUI () {
 		GUI.Label(new Rect(150, 50, 100, 100), "Player turn: "+turn);
+		GUI.Label(new Rect(100, 250, 100, 100), messages);
+
 		switch(curGameState) {
 		case (GameState.Setup):
 			// GUI to be displayed during setup phase

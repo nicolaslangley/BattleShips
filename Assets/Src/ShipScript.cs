@@ -195,7 +195,10 @@ public class ShipScript : MonoBehaviour {
 			target.renderer.material.color = Color.white; // lerp from A to B in one second
 			yield return 1; // wait for next frame
 		}
-		target.renderer.material.color = Color.blue;
+
+		CellScript targetCellScript = target.GetComponent<CellScript>();
+		if (targetCellScript.curCellState == GameScript.CellState.Reef) targetCellScript.renderer.material.color = Color.black;
+		else targetCellScript.renderer.material.color = Color.blue;
 	}
 
 	/** HELPER METHODS **/
