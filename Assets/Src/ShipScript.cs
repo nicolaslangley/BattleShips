@@ -15,13 +15,14 @@ public class ShipScript : MonoBehaviour {
 	public List<GameObject> cells;
 	public GameScript.Direction curDir;
 	public int shipSize;
+	public GameScript gameScript;
+	public GridScript gridScript;
+	public bool selected = false;
 
 	private List<GameObject> shipSections;
-
-	private bool selected = false;
+	
 	private GameObject system;
-	private GameScript gameScript;
-	private GridScript gridScript;
+
 	private RPCScript rpcScript;
 	private int[] health;
 	private CellScript baseCell;
@@ -47,32 +48,32 @@ public class ShipScript : MonoBehaviour {
 	/** UNITY METHODS **/
 
 	// Handle clicking on object
-	void OnMouseDown () {
-		// Don't act on mouse click if in wait state
-		if (gameScript.curGameState == GameScript.GameState.Wait) return;
-
-		selected = !selected;
-		if (selected == true) {
-			//TODO: Fix this on selection for gameobject
-			//gameObject.renderer.material.color = Color.cyan;
-			foreach (GameObject o in cells) {
-				CellScript cs = o.GetComponent<CellScript>();
-				cs.selected = true;
-				//cs.DisplaySelection();
-			}
-
-			gameScript.selectedShip = this;
-			
-
-		} else {
-			//gameObject.renderer.material.color = Color.white;
-			foreach (GameObject o in cells) {
-				CellScript cs = o.GetComponent<CellScript>();
-				cs.selected = false;
-				//cs.DisplaySelection();
-			}
-		} 
-	}
+//	void OnMouseDown () {
+//		// Don't act on mouse click if in wait state
+//		if (gameScript.curGameState == GameScript.GameState.Wait) return;
+//
+//		selected = !selected;
+//		if (selected == true) {
+//			//TODO: Fix this on selection for gameobject
+//			//gameObject.renderer.material.color = Color.cyan;
+//			foreach (GameObject o in cells) {
+//				CellScript cs = o.GetComponent<CellScript>();
+//				cs.selected = true;
+//				//cs.DisplaySelection();
+//			}
+//
+//			gameScript.selectedShip = this;
+//			
+//
+//		} else {
+//			//gameObject.renderer.material.color = Color.white;
+//			foreach (GameObject o in cells) {
+//				CellScript cs = o.GetComponent<CellScript>();
+//				cs.selected = false;
+//				//cs.DisplaySelection();
+//			}
+//		} 
+//	}
 
 	// Display movement options for selected ship
 	void OnGUI () {
@@ -298,10 +299,12 @@ public class ShipScript : MonoBehaviour {
 	/*
 	 * Add damage to ship and recalculate speed.
 	 */
-	public void HandleHit(int section) 
+	public void HandleHit(GameObject section) 
 	{
-		health [section] -= 1;
-		shipSections[section].renderer.material.color = Color.magenta;
+		DisplayCannonRange(false);
+		int sectionIndex = shipSections.IndexOf(section);
+		Debug.Log ("Hit handled on section: " + sectionIndex);
+		health [sectionIndex] -= 1;
 		int damageTotal = 0;
 		for (int i = 0; i < shipSize; i++) {
 			damageTotal += health[i];
