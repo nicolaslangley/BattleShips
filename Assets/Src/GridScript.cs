@@ -9,7 +9,7 @@ public class GridScript : MonoBehaviour {
 
 	//Prefabs
 	public GameObject gridCell;
-	public GameObject ship1;
+	public GameObject destroyer;
 	
 	public int gridSize;
 	public Vector2 cellSize;
@@ -86,7 +86,6 @@ public class GridScript : MonoBehaviour {
 		if (endPosX - startPosX == 0) {
 			if (endPosZ > startPosZ) shipDir = GameScript.Direction.North;
 			else shipDir = GameScript.Direction.South;
-		
 			newX += 0.5f;
 		}
 			// Ship is facing either East or West
@@ -98,7 +97,7 @@ public class GridScript : MonoBehaviour {
 		Vector3 pos = new Vector3(newX, newY, newZ);
 		// Create ship
 		// TODO: Place new ship at correct orientation
-		GameObject newShip = Instantiate(ship1, pos, Quaternion.identity) as GameObject;
+		GameObject newShip = Instantiate(destroyer, pos, Quaternion.identity) as GameObject;
 		// Add ship to list of ships in GameScript
 		gameScript.ships.Add(newShip);
 		ShipScript newShipScript = newShip.GetComponent<ShipScript>();
@@ -117,43 +116,51 @@ public class GridScript : MonoBehaviour {
 
 		switch(newShipScript.curDir) {
 		case GameScript.Direction.East:
-			for (int i = 0; i <= newShipScript.shipSize; i++) {
+			for (int i = 0; i < newShipScript.shipSize; i++) {
 				GameObject newCell = grid[roundedStartPosX + i, roundedStartPosZ];
 				CellScript newCellScript = newCell.GetComponent<CellScript>();
-				newCellScript.occupier = this.gameObject;
+				newCellScript.occupier = newShip;
 				newCellScript.selected = false;
+				newCellScript.available = false;
+				newCellScript.curCellState = GameScript.CellState.Ship;
 				newCellScript.DisplaySelection();
 
 				shipCells.Add (newCell);
 			}
 			break;
 		case GameScript.Direction.North:
-			for (int i = 0; i <= newShipScript.shipSize; i++) {
+			for (int i = 0; i < newShipScript.shipSize; i++) {
 				GameObject newCell = grid[roundedStartPosX, roundedStartPosZ + i];
 				CellScript newCellScript = newCell.GetComponent<CellScript>();
-				newCellScript.occupier = this.gameObject;
+				newCellScript.occupier = newShip;
 				newCellScript.selected = false;
+				newCellScript.available = false;
+				newCellScript.curCellState = GameScript.CellState.Ship;
 				newCellScript.DisplaySelection();
 
 				shipCells.Add (newCell);
 			}
 			break;
 		case GameScript.Direction.South:
-			for (int i = 0; i <= newShipScript.shipSize; i++) {
+			for (int i = 0; i < newShipScript.shipSize; i++) {
 				GameObject newCell = grid[roundedStartPosX, roundedStartPosZ - i];
 				CellScript newCellScript = newCell.GetComponent<CellScript>();
-				newCellScript.occupier = this.gameObject;
+				newCellScript.occupier = newShip;
 				newCellScript.selected = false;
+				newCellScript.available = false;
+				newCellScript.curCellState = GameScript.CellState.Ship;
 				newCellScript.DisplaySelection();
 				shipCells.Add (newCell);
 			}
 			break;
 		case GameScript.Direction.West:
-			for (int i = 0; i <= newShipScript.shipSize; i++) {
+			for (int i = 0; i < newShipScript.shipSize; i++) {
 				GameObject newCell = grid[roundedStartPosX - i, roundedStartPosZ];
 				CellScript newCellScript = newCell.GetComponent<CellScript>();
-				newCellScript.occupier = this.gameObject;
+				newCellScript.occupier = newShip;
 				newCellScript.selected = false;
+				newCellScript.available = false;
+				newCellScript.curCellState = GameScript.CellState.Ship;
 				newCellScript.DisplaySelection();
 				shipCells.Add (newCell);
 			}
@@ -188,8 +195,10 @@ public class GridScript : MonoBehaviour {
 			for (int j = 0; j < gridSize; j++) {
 				Vector3 cellPos = new Vector3(i * cellSize[0], 0, j * cellSize[1]);
 				GameObject newCell = Instantiate(gridCell, cellPos, Quaternion.identity) as GameObject;
-				newCell.GetComponent<CellScript>().Init();
-				newCell.GetComponent<CellScript>().SetGridPosition(i, j);
+				CellScript newCellScript = newCell.GetComponent<CellScript>();
+				newCellScript.Init();
+				newCellScript.SetGridPosition(i, j);
+				newCellScript.SetVisible(false);
 				newCell.transform.localScale = new Vector3(cellSize[0], 0.5f, cellSize[1]);
 				grid[i,j] = newCell;
 			}
@@ -214,6 +223,7 @@ public class GridScript : MonoBehaviour {
 				yVal = Random.Range(3, 27);
 			}
 			grid[xVal, yVal].GetComponent<CellScript>().SetReef();
+			grid[xVal, yVal].GetComponent<CellScript>().SetVisible(false);
 		}
 	}
 
@@ -330,5 +340,13 @@ public class GridScript : MonoBehaviour {
 	// Removes given cell from current selection - if cell is not in selection, does nothing
 	public void RemoveFromSelection (GameObject cell) {
 		if (currentSelection.Contains(cell)) currentSelection.Remove(cell);
+	}
+
+	public void ResetVisibility() {
+		for (int x = 0; x < 30; x++) {
+			for (int y = 0; y < 30; y++) {
+				grid[x, y].GetComponent<CellScript>().SetVisible(false);
+			}
+		}
 	}
 }

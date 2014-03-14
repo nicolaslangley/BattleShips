@@ -16,6 +16,8 @@ public class ShipScript : MonoBehaviour {
 	public GameScript.Direction curDir;
 	public int shipSize;
 
+	private List<GameObject> shipSections;
+
 	private bool selected = false;
 	private GameObject system;
 	private GameScript gameScript;
@@ -27,6 +29,13 @@ public class ShipScript : MonoBehaviour {
 	private int speed; 
 	private static int maxSpeed; //Speed at full health
 	private int rotSteps = 1; // increments of 90 degrees. Most ships have 1, Torpedo Boats have 2
+	// Values to determine range of cannon and radar
+	private int cannonRangeForward = 4;
+	private int cannonRangeSide = 4;
+	private int cannonRangeStart = -1;
+	private int radarRangeForward = 6;
+	private int radarRangeSide = 5;
+	private int radarRangeStart = -2;
 
 	private bool heavyArmor;
 	
@@ -76,6 +85,7 @@ public class ShipScript : MonoBehaviour {
 			if (GUI.Button(new Rect(Screen.width - 110, 50, 100, 30), "Fire Cannon")) {
 				gameScript.curPlayAction = GameScript.PlayAction.Cannon;
 				// Display cannon range in cells
+				DisplayCannonRange(true);
 			}
 			if (GUI.Button(new Rect(Screen.width - 110, 90, 100, 30), "Rotate Clockwise")) {
 				RotateShip(true,1);
@@ -86,6 +96,7 @@ public class ShipScript : MonoBehaviour {
 			if (GUI.Button(new Rect(Screen.width - 110, 170, 100, 30), "Cancel Action")) {
 				gameScript.curPlayAction = GameScript.PlayAction.None;
 				DisplayMoveRange(false);
+				DisplayCannonRange(false);
 			}
 		}
 	}
@@ -100,9 +111,14 @@ public class ShipScript : MonoBehaviour {
 		rpcScript = system.GetComponent<RPCScript>();
 		// Change the size for each sub ship
 		shipSize = 2;
-		speed = 4;
+		speed = 6;
 		health = new int[shipSize];
 		InitArmor ();
+		// Add all child sections ship
+		shipSections = new List<GameObject>();
+		foreach (Transform child in transform) {
+			shipSections.Add(child.gameObject);
+		}
 	}
 
 	/*
@@ -126,7 +142,7 @@ public class ShipScript : MonoBehaviour {
 
 
 
-
+		UpdateRadarVisibility(true);
 		if (gameScript.curPlayAction == GameScript.PlayAction.Move) {
 
 		}
@@ -140,6 +156,7 @@ public class ShipScript : MonoBehaviour {
 		Vector3 start = transform.position;
 		Vector3 dest = transform.position;
 		float amount;
+		// TODO: fix this to be a function of ship size
 		float offset = shipSize - 1;
 		switch(curDir) {
 		case GameScript.Direction.East:
@@ -287,6 +304,7 @@ public class ShipScript : MonoBehaviour {
 	public void HandleHit(int section) 
 	{
 		health [section] -= 1;
+		shipSections[section].renderer.material.color = Color.magenta;
 		int damageTotal = 0;
 		for (int i = 0; i < shipSize; i++) {
 			damageTotal += health[i];
@@ -429,6 +447,7 @@ public class ShipScript : MonoBehaviour {
 	// Fire cannon at targeted cell
 	public void FireCannon(CellScript targetCell) {
 		// Call coroutine to display fire outcome
+		DisplayCannonRange(false);
 		StartCoroutine(DisplayCannon(targetCell.gameObject));
 		rpcScript.fireCannon(shipID,targetCell.gridPositionX, targetCell.gridPositionY);
 
@@ -439,6 +458,7 @@ public class ShipScript : MonoBehaviour {
 		Quaternion tempRot = Quaternion.identity;
 		switch(curDir) {
 		case GameScript.Direction.East:
+
 			tempRot.eulerAngles = new Vector3(0, 90, 0);
 			break;
 		case GameScript.Direction.North:
@@ -453,6 +473,7 @@ public class ShipScript : MonoBehaviour {
 		default:
 			break;
 		}
+
 		transform.rotation = tempRot;
 	}
 
@@ -507,10 +528,10 @@ public class ShipScript : MonoBehaviour {
 		}
 	}
 
-	// TODO: Finish this function
+	// Display range of cannon
 	public void DisplayCannonRange (bool status) {
 		Color setColor;
-		if (status) setColor = Color.cyan;
+		if (status) setColor = Color.red;
 		else setColor = Color.blue;
 		
 		// Get front cell of ship
@@ -519,38 +540,97 @@ public class ShipScript : MonoBehaviour {
 		int startY = frontCellScript.gridPositionY;
 		switch (curDir) {
 		case GameScript.Direction.East:
-			for (int i = 1; i <= shipSize; i++) {
-				GameObject curCell = gridScript.grid[startX + i, startY];
-				CellScript curCellScript = curCell.GetComponent<CellScript>();
-				if (curCellScript.curCellState == GameScript.CellState.Reef) curCellScript.renderer.material.color = Color.black;
-				else curCellScript.renderer.material.color = setColor;
+			for (int x = -2; x <= 1; x++) {
+				for (int y = -2; y <= 2; y++) {
+					GameObject curCell = gridScript.grid[startX + x, startY + y];
+					CellScript curCellScript = curCell.GetComponent<CellScript>();
+					if (curCellScript.curCellState == GameScript.CellState.Reef && !status) 
+						curCellScript.renderer.material.color = Color.black;
+					else curCellScript.renderer.material.color = setColor;
+				}
 			}
 			break;
 		case GameScript.Direction.West:
-			for (int i = 0; i <= speed-1; i++) {
-				GameObject curCell = gridScript.grid[startX - i, startY];
-				CellScript curCellScript = curCell.GetComponent<CellScript>();
-				if (curCellScript.curCellState == GameScript.CellState.Reef) curCellScript.renderer.material.color = Color.black;
-				else curCellScript.renderer.material.color = setColor;
+			for (int x = -1; x <= 2; x++) {
+				for (int y = -2; y <= 2; y++) {
+					GameObject curCell = gridScript.grid[startX + x, startY + y];
+					CellScript curCellScript = curCell.GetComponent<CellScript>();
+					if (curCellScript.curCellState == GameScript.CellState.Reef && !status) 
+						curCellScript.renderer.material.color = Color.black;
+					else curCellScript.renderer.material.color = setColor;
+				}
 			}
 			break;
 		case GameScript.Direction.North:
-			for (int i = 0; i <= speed-1; i++) {
-				GameObject curCell = gridScript.grid[startX, startY + i];
-				CellScript curCellScript = curCell.GetComponent<CellScript>();
-				if (curCellScript.curCellState == GameScript.CellState.Reef) curCellScript.renderer.material.color = Color.black;
-				else curCellScript.renderer.material.color = setColor;
+			for (int x = -2; x <= 2; x++) {
+				for (int y = -2; y <= 1; y++) {
+					GameObject curCell = gridScript.grid[startX + x, startY + y];
+					CellScript curCellScript = curCell.GetComponent<CellScript>();
+					if (curCellScript.curCellState == GameScript.CellState.Reef && !status) 
+						curCellScript.renderer.material.color = Color.black;
+					else curCellScript.renderer.material.color = setColor;
+				}
 			}
 			break;
 		case GameScript.Direction.South:
-			for (int i = 0; i <= speed-1; i++) {
-				GameObject curCell = gridScript.grid[startX, startY - i];
-				CellScript curCellScript = curCell.GetComponent<CellScript>();
-				if (curCellScript.curCellState == GameScript.CellState.Reef) curCellScript.renderer.material.color = Color.black;
-				else curCellScript.renderer.material.color = setColor;
+			for (int x = -2; x <= 2; x++) {
+				for (int y = -1; y <= 2; y++) {
+					GameObject curCell = gridScript.grid[startX + x, startY + y];
+					CellScript curCellScript = curCell.GetComponent<CellScript>();
+					if (curCellScript.curCellState == GameScript.CellState.Reef && !status) 
+						curCellScript.renderer.material.color = Color.black;
+					else curCellScript.renderer.material.color = setColor;
+				}
 			}
 			break;
 		}
 	}
+
+	// Display range of cannon
+	public void UpdateRadarVisibility (bool status) {
+		// Get front cell of ship
+		CellScript frontCellScript = cells[cells.Count - 1].GetComponent<CellScript>();
+		int startX = frontCellScript.gridPositionX;
+		int startY = frontCellScript.gridPositionY;
+		switch (curDir) {
+		case GameScript.Direction.East:
+			for (int x = -3; x <= 2; x++) {
+				for (int y = -2; y <= 2; y++) {
+					GameObject curCell = gridScript.grid[startX + x, startY + y];
+					CellScript curCellScript = curCell.GetComponent<CellScript>();
+					curCellScript.SetVisible(true);
+				}
+			}
+			break;
+		case GameScript.Direction.West:
+			for (int x = -2; x <= 3; x++) {
+				for (int y = -2; y <= 2; y++) {
+					GameObject curCell = gridScript.grid[startX + x, startY + y];
+					CellScript curCellScript = curCell.GetComponent<CellScript>();
+					curCellScript.SetVisible(true);
+				}
+			}
+			break;
+		case GameScript.Direction.North:
+			for (int x = -2; x <= 2; x++) {
+				for (int y = -3; y <= 2; y++) {
+					GameObject curCell = gridScript.grid[startX + x, startY + y];
+					CellScript curCellScript = curCell.GetComponent<CellScript>();
+					curCellScript.SetVisible(true);
+				}
+			}
+			break;
+		case GameScript.Direction.South:
+			for (int x = -2; x <= 2; x++) {
+				for (int y = -2; y <= 3; y++) {
+					GameObject curCell = gridScript.grid[startX + x, startY + y];
+					CellScript curCellScript = curCell.GetComponent<CellScript>();
+					curCellScript.SetVisible(true);
+				}
+			}
+			break;
+		}
+	}
+
 
 }
