@@ -44,6 +44,17 @@ public class RPCScript : MonoBehaviour {
 		Debug.Log("setup ship for " + username);
 	}
 
+	public void EndTurn()
+	{
+		networkView.RPC ("RPCEndTurn",RPCMode.Others);
+	}
+
+	[RPC]
+	void RPCEndTurn()
+	{
+		Debug.Log ("Send End Turn");
+		gameScript.endTurn();
+	}
 
 	//GRID RPC
 

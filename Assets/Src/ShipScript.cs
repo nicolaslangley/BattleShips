@@ -51,7 +51,10 @@ public class ShipScript : MonoBehaviour {
 				cs.selected = true;
 				//cs.DisplaySelection();
 			}
+
 			gameScript.selectedShip = this;
+			
+
 		} else {
 			//gameObject.renderer.material.color = Color.white;
 			foreach (GameObject o in cells) {
@@ -271,7 +274,8 @@ public class ShipScript : MonoBehaviour {
 
 
 		// End the current turn
-		gameScript.curGameState = GameScript.GameState.Wait;
+//		gameScript.curGameState = GameScript.GameState.Wait;
+		rpcScript.EndTurn();
 	}
 
 	/*
