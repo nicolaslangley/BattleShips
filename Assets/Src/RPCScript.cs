@@ -35,7 +35,7 @@ public class RPCScript : MonoBehaviour {
 	public void SignalPlayer()
 	{
 		string playerName = PlayerPrefs.GetString("playerName");
-		networkView.RPC("RPCSignalPlayer", RPCMode.All, playerName);
+		networkView.RPC("RPCSignalPlayer", RPCMode.AllBuffered, playerName);
 	}
 
 	[RPC]
@@ -126,7 +126,7 @@ public class RPCScript : MonoBehaviour {
 
 	public void setShip(float startPosX, float startPosZ, float endPosX, float endPosZ, string playerName)
 	{
-		networkView.RPC ("RPCSetShip",RPCMode.Others, startPosX, startPosZ, endPosX, endPosZ, playerName);
+		networkView.RPC ("RPCSetShip",RPCMode.OthersBuffered, startPosX, startPosZ, endPosX, endPosZ, playerName);
 	}
 
 	[RPC]
@@ -138,7 +138,7 @@ public class RPCScript : MonoBehaviour {
 	public void fireCannonCell(string shipID, int x, int y)
 	{
 		string playerName = PlayerPrefs.GetString("playerName");
-		networkView.RPC ("RPCFireCannonCell",RPCMode.All, playerName,shipID, x,y);
+		networkView.RPC ("RPCFireCannonCell",RPCMode.AllBuffered, playerName,shipID, x,y);
 	}
 
 	[RPC]
@@ -170,7 +170,7 @@ public class RPCScript : MonoBehaviour {
 
 	public void fireCannonShip(string shipID, int section)
 	{
-		networkView.RPC ("RPCFireCannonShip",RPCMode.Others,shipID, section);
+		networkView.RPC ("RPCFireCannonShip",RPCMode.AllBuffered,shipID, section);
 	}
 
 	[RPC]
