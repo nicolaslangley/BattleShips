@@ -276,12 +276,14 @@ public class GridScript : MonoBehaviour {
 			}
 			break;
 		case GameScript.Direction.West:
-			for (int x = 1; x <= dist; x++) {
+			for (int x = 1; x <= -dist; x++) {
 				GameObject cell = grid[positionX - x, positionY];
+				Debug.Log ("Checking: " + (positionX - x) + " " + positionY);
 				CellScript curCellScript = cell.GetComponent<CellScript>();
 				if (curCellScript.available != true) {
+					Debug.Log ("Cell unavailable");
 					obstacleEncountered = true;
-					encounteredObstacle = cell.GetComponent<CellScript>();
+					encounteredObstacle = grid[positionX - (x-1), positionY].GetComponent<CellScript>();
 					break;
 				}
 			}
@@ -292,18 +294,18 @@ public class GridScript : MonoBehaviour {
 				CellScript curCellScript = cell.GetComponent<CellScript>();
 				if (curCellScript.available != true) {
 					obstacleEncountered = true;
-					encounteredObstacle = cell.GetComponent<CellScript>();
+					encounteredObstacle = grid[positionX, positionY + (y-1)].GetComponent<CellScript>();
 					break;
 				}
 			}
 			break;
 		case GameScript.Direction.South:
-			for (int y = 1; y <= dist; y++) {
+			for (int y = 1; y <= -dist; y++) {
 				GameObject cell = grid[positionX, positionY - y];
 				CellScript curCellScript = cell.GetComponent<CellScript>();
 				if (curCellScript.available != true) {
 					obstacleEncountered = true;
-					encounteredObstacle = cell.GetComponent<CellScript>();
+					encounteredObstacle = grid[positionX, positionY - (y-1)].GetComponent<CellScript>();
 					break;
 				}
 			}
