@@ -97,7 +97,7 @@ public class GameLobbyScript : MonoBehaviour
         showMenu = false;
     }
     private string hostSetting_title = "No server title";
-    private int hostSetting_players = 4;
+    private int hostSetting_players = 2;
     private string hostSetting_password = "";
     void hostSettings()
     {
@@ -108,7 +108,7 @@ public class GameLobbyScript : MonoBehaviour
         GUI.Label(new Rect(10, 20, 150, 20), "Server title");
         hostSetting_title = GUI.TextField(new Rect(175, 20, 160, 20), hostSetting_title);
 
-        GUI.Label(new Rect(10, 40, 150, 20), "Max. players (2-32)");
+        GUI.Label(new Rect(10, 40, 150, 20), "Max. players (2-4)");
         hostSetting_players = int.Parse(GUI.TextField(new Rect(175, 40, 160, 20), hostSetting_players + ""));
 
         GUI.Label(new Rect(10, 60, 150, 50), "Password\n");
@@ -283,7 +283,7 @@ public class GameLobbyScript : MonoBehaviour
         //Show loading progress, ADD LOADINGSCREEN?
         GUI.Box(new Rect(Screen.width / 4 + 180, Screen.height / 2 - 30, 280, 50), "");
 		GUI.Label(new Rect(Screen.width / 4 + 200, Screen.height / 2 - 25, 285, 150), "Loaded, starting the game!");
-		Debug.Log ("Loading game GUI");
+		//Debug.Log ("Loading game GUI");
 
         if (Application.CanStreamedLevelBeLoaded("GridTest"))
         {
