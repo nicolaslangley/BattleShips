@@ -33,7 +33,7 @@ public class CellScript : MonoBehaviour {
 
 		// Handle selection if moving ship
 		if (gameScript.curPlayAction == GameScript.PlayAction.Move) {
-			gameScript.selectedShip.MoveShip(this);
+			gameScript.selectedShip.MoveShip(this,1);
 			gameScript.curPlayAction = GameScript.PlayAction.None;
 			gameScript.waitTurn = true;
 			return;
@@ -76,10 +76,10 @@ public class CellScript : MonoBehaviour {
 		Debug.Log ("Display Selection running");
 		neighbours = gridScript.GetCellNeighbours(gameObject);
 		if (selected == true) {
-			Debug.Log ("Changing Color");
-			Debug.Log (this.gameObject.GetInstanceID());
+			//Debug.Log ("Changing Color");
+			//Debug.Log (this.gameObject.GetInstanceID());
 			gameObject.renderer.material.color = Color.red;
-			Debug.Log ("Color changed");
+			//Debug.Log ("Color changed");
 			foreach (GameObject o in neighbours) {
 				if (o.renderer.material.color != Color.red) o.renderer.material.color = Color.green;
 				o.GetComponent<CellScript>().available = true;

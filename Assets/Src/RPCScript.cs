@@ -16,21 +16,20 @@ public class RPCScript : MonoBehaviour {
 		gridScript = system.GetComponent<GridScript>();
 		gameScript = system.GetComponent<GameScript>();
 	}
-	[RPC]
 
-
-	void OnConnectedToServer()
+	public void sendPlayerName(string playerName)
 	{
 		//Called on client
 		//Send everyone this clients data
-		string playerName = PlayerPrefs.GetString("playerName");
-		networkView.RPC("addPlayer", RPCMode.AllBuffered, Network.player, playerName);
+		networkView.RPC("RPCsendPlayerName", RPCMode.OthersBuffered, Network.player, playerName);
 	}
 
 	[RPC]
-	public void addPlayer(NetworkPlayer player, string username)
+	void RPCsendPlayerName(NetworkPlayer player, string username)
 	{
-		Debug.Log("got addplayer" + username);
+		gameScript.opponentname = username;
+		Debug.Log("opponent name is: " + gameScript.opponentname);
+
 	}
 	
 	public void SignalPlayer()
@@ -74,32 +73,55 @@ public class RPCScript : MonoBehaviour {
 	{
 		Debug.Log("Ship: "+shipID+" moved to " + x + " ," + y);
 
-//		if (networkView.isMine)
-//		{
-//			Debug.Log("DID IT");
-//			foreach(GameObject obj in gameScript.ships)
-//			{
-//				ShipScript shipscript = obj.GetComponent<ShipScript>();
-//				if (shipscript.shipID == shipID)
-//				{
-//					GameObject destCellObject = gridScript.grid[x,y];
-//					CellScript destCell = destCellObject.GetComponent<CellScript>();
-//					shipscript.MoveShip(destCell);
-//					break;
-//				}
-//			}
-//		}
+
+		foreach(GameObject obj in gameScript.ships)
+		{
+			ShipScript shipscript = obj.GetComponent<ShipScript>();
+			if (shipscript.shipID == shipID)
+			{
+				Debug.Log ("Found correct ship");
+				GameObject destCellObject = gridScript.grid[x,y];
+				CellScript destCell = destCellObject.GetComponent<CellScript>();
+				Debug.Log("DestCell Value: " + destCell.gridPositionX);
+				shipscript.MoveShip(destCell,0);
+
+				break;
+			}
+		}
 	}
 
-	public void setShip(float startPosX, float startPosZ, float endPosX, float endPosZ)
+	public void NetworkRotateShip(string shipID, bool clockwise)
 	{
-		networkView.RPC ("RPCSetShip",RPCMode.Others, startPosX, startPosZ, endPosX, endPosZ);
+		networkView.RPC ("RPCRotateShip",RPCMode.OthersBuffered,shipID,clockwise);
 	}
 
 	[RPC]
-	void RPCSetShip(float startPosX, float startPosZ, float endPosX, float endPosZ)
+	void RPCRotateShip(string shipID, bool clockwise)
 	{
-		gridScript.PlaceShip(startPosX,startPosZ,endPosX,endPosZ,0);
+		Debug.Log("Ship: "+shipID+" Rotated: " + clockwise);
+		
+		
+		foreach(GameObject obj in gameScript.ships)
+		{
+			ShipScript shipscript = obj.GetComponent<ShipScript>();
+			if (shipscript.shipID == shipID)
+			{
+				Debug.Log ("Found correct ship");
+				shipscript.RotateShip(clockwise,0);
+				break;
+			}
+		}
+	}
+
+	public void setShip(float startPosX, float startPosZ, float endPosX, float endPosZ, string playerName)
+	{
+		networkView.RPC ("RPCSetShip",RPCMode.Others, startPosX, startPosZ, endPosX, endPosZ, playerName);
+	}
+
+	[RPC]
+	void RPCSetShip(float startPosX, float startPosZ, float endPosX, float endPosZ, string playerName)
+	{
+		gridScript.PlaceShip(startPosX,startPosZ,endPosX,endPosZ,0, playerName);
 	}
 	
 	public void fireCannon(string shipID, int x, int y)

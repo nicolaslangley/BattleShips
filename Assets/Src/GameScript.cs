@@ -20,7 +20,7 @@ public class GameScript : MonoBehaviour {
 	public GridScript gridScript;
 	public ShipScript selectedShip;
 	public RPCScript rpcScript;
-
+	
 	public string myname;
 	public string opponentname;
 	public bool waitTurn;
@@ -53,6 +53,10 @@ public class GameScript : MonoBehaviour {
 		// Run game initialization
 		gridScript.Init();
 
+		string playerName = PlayerPrefs.GetString("playerName");
+		myname = playerName;
+		rpcScript.sendPlayerName(myname);
+		
 	}
 	
 	// Update is called once per frame
@@ -92,13 +96,13 @@ public class GameScript : MonoBehaviour {
 			}
 
 			if (GUI.Button (new Rect(10, 80, 100, 30), "Default Config")) {
-				gridScript.PlaceShip(5,10,7,10,1);
-				gridScript.PlaceShip(5,20,7,20,1);
-				gridScript.PlaceShip(5,15,7,15,1);
+				gridScript.PlaceShip(5,10,7,10,1,myname);
+				gridScript.PlaceShip(5,20,7,20,1,myname);
+				gridScript.PlaceShip(5,15,7,15,1,myname);
 
-				gridScript.PlaceShip(24,10,22,10,1);
-				gridScript.PlaceShip(24,20,22,20,1);
-				gridScript.PlaceShip(24,15,22,15,1);
+				gridScript.PlaceShip(24,10,22,10,1,opponentname);
+				gridScript.PlaceShip(24,20,22,20,1,opponentname);
+				gridScript.PlaceShip(24,15,22,15,1,opponentname);
 				
 			}
 			break;

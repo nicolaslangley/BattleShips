@@ -18,10 +18,11 @@ public class GridScript : MonoBehaviour {
 
 	private GameObject system;
 	private GameScript gameScript;
-	public RPCScript rpcScript;
+	private RPCScript rpcScript;
+
 
 	private int reefSeed;
-
+	private Stack idSeedStack;
 
 	/** GAMELOOP METHODS **/
 
@@ -46,7 +47,12 @@ public class GridScript : MonoBehaviour {
 		system = GameObject.FindGameObjectWithTag("System");
 		gameScript = system.GetComponent<GameScript>();
 		rpcScript = system.GetComponent<RPCScript>();
-
+		idSeedStack = new Stack();
+		// CRUDE WAY OF MAKING ID. CHANGE LATER
+		for (int i=0; i<50;i++)
+		{
+			idSeedStack.Push(i);
+		}
 	}
 
 	public void setReefSeed(int seed)
@@ -60,66 +66,109 @@ public class GridScript : MonoBehaviour {
 			Vector3 startPos = currentSelection[0].transform.position;
 			Vector3 endPos = currentSelection[currentSelection.Count - 1].transform.position;
 
-			PlaceShip(startPos.x, startPos.z, endPos.x, endPos.z, 1);
+			PlaceShip(startPos.x, startPos.z, endPos.x, endPos.z, 1, gameScript.myname);
 			currentSelection.Clear();
 
 		}
 	}
 
-	public void PlaceShip (float startPosX, float startPosZ, float endPosX, float endPosZ, int local) {
-//		if (currentSelection.Count == 2 && currentSelection.Count != 0) {
-			// Place ship over selected squares
-			// Get position of first item in currentSelection
-
-//
-//			Vector3 startPos = currentSelection[0].transform.position;
-//			Vector3 endPos = currentSelection[currentSelection.Count - 1].transform.position;
-
-
-//			float newX = ((endPos.x - startPos.x) / 2) + startPos.x - 0.5f;
-//			float newZ = ((endPos.z - startPos.z) / 2) + startPos.z - 0.5f;
-
-			if (local == 1)
+	public void PlaceShip (float startPosX, float startPosZ, float endPosX, float endPosZ, int local, string Player) {
+		if (local == 1)
 		{
-			rpcScript.setShip(startPosX, startPosZ, endPosX, endPosZ);
+			rpcScript.setShip(startPosX, startPosZ, endPosX, endPosZ, Player);
 		}
-			float newX = ((endPosX - startPosX)/2) + startPosX - 0.5f;
-			float newZ = ((endPosZ - startPosZ)/2) + startPosZ - 0.5f;
-			float newY = 0.5f;
-			// Update newZ and newX based on orientation
-			GameScript.Direction shipDir = GameScript.Direction.East;
-			// Ship is facing either North or South
-			if (endPosX - startPosX == 0) {
-				if (endPosZ > startPosZ) shipDir = GameScript.Direction.North;
-				else shipDir = GameScript.Direction.South;
-
-				newX += 0.5f;
-			}
+		float newX = ((endPosX - startPosX)/2) + startPosX - 0.5f;
+		float newZ = ((endPosZ - startPosZ)/2) + startPosZ - 0.5f;
+		float newY = 0.5f;
+		// Update newZ and newX based on orientation
+		GameScript.Direction shipDir = GameScript.Direction.East;
+		// Ship is facing either North or South
+		if (endPosX - startPosX == 0) {
+			if (endPosZ > startPosZ) shipDir = GameScript.Direction.North;
+			else shipDir = GameScript.Direction.South;
+		
+			newX += 0.5f;
+		}
 			// Ship is facing either East or West
-			if (endPosZ - startPosZ == 0) { 
-				if (endPosX > startPosX) shipDir = GameScript.Direction.East;
-				else shipDir = GameScript.Direction.West;
-				newZ += 0.5f;
-			}
-			Vector3 pos = new Vector3(newX, newY, newZ);
-			// Create ship
-			// TODO: Place new ship at correct orientation
-			GameObject newShip = Instantiate(ship1, pos, Quaternion.identity) as GameObject;
-			// Add ship to list of ships in GameScript
-			gameScript.ships.Add(newShip);
-			ShipScript newShipScript = newShip.GetComponent<ShipScript>();
-			newShipScript.Init();
-			newShipScript.curDir = shipDir;
-			newShipScript.SetRotation();
-			List<GameObject> shipCells = newShipScript.cells;
+		if (endPosZ - startPosZ == 0) { 
+			if (endPosX > startPosX) shipDir = GameScript.Direction.East;
+			else shipDir = GameScript.Direction.West;
+			newZ += 0.5f;
+		}
+		Vector3 pos = new Vector3(newX, newY, newZ);
+		// Create ship
+		// TODO: Place new ship at correct orientation
+		GameObject newShip = Instantiate(ship1, pos, Quaternion.identity) as GameObject;
+		// Add ship to list of ships in GameScript
+		gameScript.ships.Add(newShip);
+		ShipScript newShipScript = newShip.GetComponent<ShipScript>();
+		newShipScript.Init();
+		newShipScript.curDir = shipDir;
+		newShipScript.SetRotation();
+		newShipScript.player = Player;
+		Debug.Log("Player: "+Player);
+		newShipScript.shipID = Player + idSeedStack.Pop().ToString();
+		Debug.Log("New Ship ID: "+ newShipScript.shipID);
+
+		List<GameObject> shipCells = newShipScript.cells;
 			
-			// Reset selection of ship and cells
-			foreach (GameObject o in currentSelection) {
-				CellScript cs = o.GetComponent<CellScript>();
-				cs.selected = false;
-				cs.DisplaySelection();
-				shipCells.Add(o);
+		int roundedStartPosX = (int)Mathf.RoundToInt(startPosX);
+		int roundedStartPosZ = (int)Mathf.RoundToInt(startPosZ);
+
+		switch(newShipScript.curDir) {
+		case GameScript.Direction.East:
+			for (int i = 0; i <= newShipScript.shipSize; i++) {
+				GameObject newCell = grid[roundedStartPosX + i, roundedStartPosZ];
+				CellScript newCellScript = newCell.GetComponent<CellScript>();
+				newCellScript.occupier = this.gameObject;
+				newCellScript.selected = false;
+				newCellScript.DisplaySelection();
+
+				shipCells.Add (newCell);
 			}
+			break;
+		case GameScript.Direction.North:
+			for (int i = 0; i <= newShipScript.shipSize; i++) {
+				GameObject newCell = grid[roundedStartPosX, roundedStartPosZ + i];
+				CellScript newCellScript = newCell.GetComponent<CellScript>();
+				newCellScript.occupier = this.gameObject;
+				newCellScript.selected = false;
+				newCellScript.DisplaySelection();
+
+				shipCells.Add (newCell);
+			}
+			break;
+		case GameScript.Direction.South:
+			for (int i = 0; i <= newShipScript.shipSize; i++) {
+				GameObject newCell = grid[roundedStartPosX, roundedStartPosZ - i];
+				CellScript newCellScript = newCell.GetComponent<CellScript>();
+				newCellScript.occupier = this.gameObject;
+				newCellScript.selected = false;
+				newCellScript.DisplaySelection();
+				shipCells.Add (newCell);
+			}
+			break;
+		case GameScript.Direction.West:
+			for (int i = 0; i <= newShipScript.shipSize; i++) {
+				GameObject newCell = grid[roundedStartPosX - i, roundedStartPosZ];
+				CellScript newCellScript = newCell.GetComponent<CellScript>();
+				newCellScript.occupier = this.gameObject;
+				newCellScript.selected = false;
+				newCellScript.DisplaySelection();
+				shipCells.Add (newCell);
+			}
+			break;
+		}
+		currentSelection.Clear();
+
+		
+		// Reset selection of ship and cells
+//			foreach (GameObject o in currentSelection) {
+//				CellScript cs = o.GetComponent<CellScript>();
+//				cs.selected = false;
+//				cs.DisplaySelection();
+//				shipCells.Add(o);
+//			}
 //			currentSelection.Clear();
 //		}
 	}
