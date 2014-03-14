@@ -88,8 +88,29 @@ public class RPCScript : MonoBehaviour {
 				break;
 			}
 		}
+	}
 
+	public void NetworkRotateShip(string shipID, bool clockwise)
+	{
+		networkView.RPC ("RPCRotateShip",RPCMode.OthersBuffered,shipID,clockwise);
+	}
 
+	[RPC]
+	void RPCRotateShip(string shipID, bool clockwise)
+	{
+		Debug.Log("Ship: "+shipID+" Rotated: " + clockwise);
+		
+		
+		foreach(GameObject obj in gameScript.ships)
+		{
+			ShipScript shipscript = obj.GetComponent<ShipScript>();
+			if (shipscript.shipID == shipID)
+			{
+				Debug.Log ("Found correct ship");
+				shipscript.RotateShip(clockwise,0);
+				break;
+			}
+		}
 	}
 
 	public void setShip(float startPosX, float startPosZ, float endPosX, float endPosZ, string playerName)

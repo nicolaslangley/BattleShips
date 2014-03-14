@@ -75,10 +75,10 @@ public class ShipScript : MonoBehaviour {
 				// Display cannon range in cells
 			}
 			if (GUI.Button(new Rect(Screen.width - 110, 90, 100, 30), "Rotate Clockwise")) {
-				RotateShip(true);
+				RotateShip(true,1);
 			}
 			if (GUI.Button(new Rect(Screen.width - 110, 130, 100, 30), "Rotate Counterclockwise")) {
-				RotateShip(false);
+				RotateShip(false,1);
 			}
 			if (GUI.Button(new Rect(Screen.width - 110, 170, 100, 30), "Cancel Action")) {
 				gameScript.curPlayAction = GameScript.PlayAction.None;
@@ -298,7 +298,7 @@ public class ShipScript : MonoBehaviour {
 	/*
 	 * Rotates the ship
 	 */
-	public void RotateShip(bool clockwise) {
+	public void RotateShip(bool clockwise, int local) {
 		//Calculate new turn direction
 		Debug.Log("Turning " + clockwise);
 		int curRot = (int)curDir;
@@ -411,6 +411,11 @@ public class ShipScript : MonoBehaviour {
 		} else {
 			Debug.Log ("Obstacle in rotation path");
 			//display an error message
+		}
+
+		if (local == 1)
+		{
+			rpcScript.NetworkRotateShip(shipID,clockwise);
 		}
 	}
 
