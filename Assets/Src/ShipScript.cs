@@ -12,6 +12,7 @@ public class ShipScript : MonoBehaviour {
 	public string shipID;
 
 	public string player;
+	//cells are ordered from first cell added when creating to last one
 	public List<GameObject> cells;
 	public GameScript.Direction curDir;
 	public int shipSize;
@@ -111,7 +112,7 @@ public class ShipScript : MonoBehaviour {
 		rpcScript = system.GetComponent<RPCScript>();
 		// Change the size for each sub ship
 		shipSize = 2;
-		speed = 6;
+		speed = 3;
 		health = new int[shipSize];
 		InitArmor ();
 		// Add all child sections ship
@@ -141,12 +142,15 @@ public class ShipScript : MonoBehaviour {
 		// Handle visibility update for all surrounding cells
 
 
-
-		UpdateRadarVisibility(true);
-		if (gameScript.curPlayAction == GameScript.PlayAction.Move) {
-
+		if (player == gameScript.myname)
+		{
+			UpdateRadarVisibility(true);
+			if (gameScript.curPlayAction == GameScript.PlayAction.Move) {
+				
+			}
+			SetRotation();
 		}
-		SetRotation();
+
 	}
 
 	/** COROUTINES **/
@@ -244,6 +248,7 @@ public class ShipScript : MonoBehaviour {
 		switch(curDir) {
 		case GameScript.Direction.East:
 			for (int i = (-shipSize+1); i <= 0; i++) {
+
 				GameObject newCell = gridScript.grid[destCell.gridPositionX + i, destCell.gridPositionY];
 				CellScript newCellScript = newCell.GetComponent<CellScript>();
 				newCellScript.occupier = this.gameObject;
@@ -490,7 +495,7 @@ public class ShipScript : MonoBehaviour {
 		int startY = frontCellScript.gridPositionY;
 		switch (curDir) {
 		case GameScript.Direction.East:
-			for (int i = 0; i <= speed-1; i++) {
+			for (int i = 0; i <= speed; i++) {
 				GameObject curCell = gridScript.grid[startX + i, startY];
 				CellScript curCellScript = curCell.GetComponent<CellScript>();
 				if (curCellScript.curCellState == GameScript.CellState.Reef && !status) 
@@ -499,7 +504,7 @@ public class ShipScript : MonoBehaviour {
 			}
 			break;
 		case GameScript.Direction.West:
-			for (int i = 1; i <= shipSize; i++) {
+			for (int i = 0; i <= speed; i++) {
 				GameObject curCell = gridScript.grid[startX - i, startY];
 				CellScript curCellScript = curCell.GetComponent<CellScript>();
 				if (curCellScript.curCellState == GameScript.CellState.Reef && !status) 
@@ -508,7 +513,7 @@ public class ShipScript : MonoBehaviour {
 			}
 			break;
 		case GameScript.Direction.North:
-			for (int i = 1; i <= shipSize; i++) {
+			for (int i = 0; i <= speed; i++) {
 				GameObject curCell = gridScript.grid[startX, startY + i];
 				CellScript curCellScript = curCell.GetComponent<CellScript>();
 				if (curCellScript.curCellState == GameScript.CellState.Reef && !status) 
@@ -517,7 +522,7 @@ public class ShipScript : MonoBehaviour {
 			}
 			break;
 		case GameScript.Direction.South:
-			for (int i = 1; i <= shipSize; i++) {
+			for (int i = 0; i <= speed; i++) {
 				GameObject curCell = gridScript.grid[startX, startY - i];
 				CellScript curCellScript = curCell.GetComponent<CellScript>();
 				if (curCellScript.curCellState == GameScript.CellState.Reef && !status) 
