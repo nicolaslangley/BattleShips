@@ -195,8 +195,10 @@ public class GridScript : MonoBehaviour {
 			for (int j = 0; j < gridSize; j++) {
 				Vector3 cellPos = new Vector3(i * cellSize[0], 0, j * cellSize[1]);
 				GameObject newCell = Instantiate(gridCell, cellPos, Quaternion.identity) as GameObject;
-				newCell.GetComponent<CellScript>().Init();
-				newCell.GetComponent<CellScript>().SetGridPosition(i, j);
+				CellScript newCellScript = newCell.GetComponent<CellScript>();
+				newCellScript.Init();
+				newCellScript.SetGridPosition(i, j);
+				newCellScript.SetVisible(false);
 				newCell.transform.localScale = new Vector3(cellSize[0], 0.5f, cellSize[1]);
 				grid[i,j] = newCell;
 			}
@@ -221,6 +223,7 @@ public class GridScript : MonoBehaviour {
 				yVal = Random.Range(3, 27);
 			}
 			grid[xVal, yVal].GetComponent<CellScript>().SetReef();
+			grid[xVal, yVal].GetComponent<CellScript>().SetVisible(false);
 		}
 	}
 
@@ -337,5 +340,13 @@ public class GridScript : MonoBehaviour {
 	// Removes given cell from current selection - if cell is not in selection, does nothing
 	public void RemoveFromSelection (GameObject cell) {
 		if (currentSelection.Contains(cell)) currentSelection.Remove(cell);
+	}
+
+	public void ResetVisibility() {
+		for (int x = 0; x < 30; x++) {
+			for (int y = 0; y < 30; y++) {
+				grid[x, y].GetComponent<CellScript>().SetVisible(false);
+			}
+		}
 	}
 }

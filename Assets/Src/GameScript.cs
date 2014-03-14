@@ -70,6 +70,7 @@ public class GameScript : MonoBehaviour {
 			break;
 		case (GameState.Play):
 			// Perform update to objects based on play state
+			gridScript.ResetVisibility();
 			foreach (GameObject o in ships) {
 				ShipScript s = o.GetComponent<ShipScript>();
 				s.CustomPlayUpdate();
