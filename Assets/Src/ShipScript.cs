@@ -466,6 +466,7 @@ public class ShipScript : MonoBehaviour {
 		{
 			rpcScript.NetworkRotateShip(shipID,clockwise);
 		}
+		rpcScript.EndTurn();
 	}
 
 	// Fire cannon at targeted cell
