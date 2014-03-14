@@ -135,14 +135,14 @@ public class RPCScript : MonoBehaviour {
 		gridScript.PlaceShip(startPosX,startPosZ,endPosX,endPosZ,0, playerName);
 	}
 	
-	public void fireCannon(string shipID, int x, int y)
+	public void fireCannonCell(string shipID, int x, int y)
 	{
 		string playerName = PlayerPrefs.GetString("playerName");
-		networkView.RPC ("RPCFireCannon",RPCMode.All, playerName,shipID, x,y);
+		networkView.RPC ("RPCFireCannonCell",RPCMode.All, playerName,shipID, x,y);
 	}
 
 	[RPC]
-	void RPCFireCannon(string playerName, string shipID, int x, int y)
+	void RPCFireCannonCell(string playerName, string shipID, int x, int y)
 	{
 		Debug.Log("Player: "+ playerName+ " Ship: "+shipID+" fired cannon at " + x + " ," + y);
 		GameObject hitCell = gridScript.GetCell(x,y);
@@ -166,6 +166,28 @@ public class RPCScript : MonoBehaviour {
 //		} else {
 //			Debug.Log("HIt nothin");
 //		}
+	}
+
+	public void fireCannonShip(string shipID, int section)
+	{
+		networkView.RPC ("RPCFireCannonShip",RPCMode.Others,shipID, section);
+	}
+
+	[RPC]
+	void RPCFireCannonShip(string shipID, int section)
+	{
+		foreach(GameObject obj in gameScript.ships)
+		{
+			ShipScript shipscript = obj.GetComponent<ShipScript>();
+			if (shipscript.shipID == shipID)
+			{
+				Debug.Log ("Found correct ship");
+				shipscript.HandleHit(shipscript.getSection(section),0);
+				gameScript.messages = "Hit ship with ID: " + shipID;
+
+				break;
+			}
+		}
 	}
 
 	// Update is called once per frame

@@ -4,9 +4,14 @@ using System.Collections;
 public class ShipSectionScript : MonoBehaviour {
 	
 	public ShipScript parent;
+	private RPCScript rpcScript;
+	private GameObject system;
+
 
 	void Start () {
 		parent = transform.parent.gameObject.GetComponent<ShipScript>();
+		system = GameObject.FindGameObjectWithTag("System");
+		rpcScript = system.GetComponent<RPCScript>();
 		if (this.name == "Bow") gameObject.renderer.material.color = Color.black;
 		if (this.name == "Stern") gameObject.renderer.material.color = Color.white;
 	}
@@ -20,7 +25,7 @@ public class ShipSectionScript : MonoBehaviour {
 		// Handle selection if moving ship
 		if (gameScript.curPlayAction == GameScript.PlayAction.Cannon) {
 			gameObject.renderer.material.color = Color.red;
-			parent.HandleHit(this.gameObject);
+			parent.HandleHit(this.gameObject,1);
 		} else {
 			parent.selected = !parent.selected;
 			if (parent.selected == true) {

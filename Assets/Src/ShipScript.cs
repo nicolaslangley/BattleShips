@@ -154,6 +154,11 @@ public class ShipScript : MonoBehaviour {
 
 	}
 
+	public GameObject getSection(int section)
+	{
+		return shipSections[section];
+	}
+
 	/** COROUTINES **/
 
 	// Coroutine for movement
@@ -307,7 +312,7 @@ public class ShipScript : MonoBehaviour {
 	/*
 	 * Add damage to ship and recalculate speed.
 	 */
-	public void HandleHit(GameObject section) 
+	public void HandleHit(GameObject section, int local) 
 	{
 		DisplayCannonRange(false);
 		int sectionIndex = shipSections.IndexOf(section);
@@ -315,17 +320,27 @@ public class ShipScript : MonoBehaviour {
 		health [sectionIndex] -= 1;
 		int damageTotal = 0;
 		for (int i = 0; i < shipSize; i++) {
+			Debug.Log ("health" + health[i]);
 			damageTotal += health[i];
 		}
+		Debug.Log ("DAmage total is: " + damageTotal);
 		if (damageTotal == 0) {
 			Destroy(gameObject);
 			//Take care of stats, etc.
 		} else {
+			section.renderer.material.color = Color.red;
 			if (heavyArmor)
 				speed = maxSpeed * (damageTotal / (2 * shipSize));
 			else
 				speed = maxSpeed * (damageTotal / shipSize);
 		}
+		if (local == 1)
+		{
+			Debug.Log("Local");
+			rpcScript.fireCannonShip(shipID,sectionIndex);
+		}
+		rpcScript.EndTurn();
+
 	}
 	
 	/*
@@ -457,7 +472,8 @@ public class ShipScript : MonoBehaviour {
 		// Call coroutine to display fire outcome
 		DisplayCannonRange(false);
 		StartCoroutine(DisplayCannon(targetCell.gameObject));
-		rpcScript.fireCannon(shipID,targetCell.gridPositionX, targetCell.gridPositionY);
+		rpcScript.fireCannonCell(shipID,targetCell.gridPositionX, targetCell.gridPositionY);
+		rpcScript.EndTurn();
 
 	}
 
