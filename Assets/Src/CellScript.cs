@@ -74,25 +74,23 @@ public class CellScript : MonoBehaviour {
 	// This method can be called on a cell to display it as selected and display it's neighbours
 	public void DisplaySelection () {
 		Debug.Log ("Display Selection running");
-		neighbours = gridScript.GetCellNeighbours(gameObject);
+//		neighbours = gridScript.GetCellNeighbours(gameObject);
 		if (selected == true) {
 			//Debug.Log ("Changing Color");
 			//Debug.Log (this.gameObject.GetInstanceID());
 			gameObject.renderer.material.color = Color.red;
 			//Debug.Log ("Color changed");
-			foreach (GameObject o in neighbours) {
-				if (o.renderer.material.color != Color.red) o.renderer.material.color = Color.green;
-				o.GetComponent<CellScript>().available = true;
-			}
+//			foreach (GameObject o in neighbours) {
+//				if (o.renderer.material.color != Color.red) o.renderer.material.color = Color.green;
+//			}
 		} else {
 			gameObject.renderer.material.color = Color.blue;
-			foreach (GameObject o in neighbours) {
-				o.renderer.material.color = Color.blue;
-				o.GetComponent<CellScript>().available = true;
-				if (o.GetComponent<CellScript>().selected == true) {
-					o.GetComponent<CellScript>().DisplaySelection();
-				}
-			}
+//			foreach (GameObject o in neighbours) {
+//				o.renderer.material.color = Color.blue;
+//				if (o.GetComponent<CellScript>().selected == true) {
+//					o.GetComponent<CellScript>().DisplaySelection();
+//				}
+//			}
 		}
 	}
 

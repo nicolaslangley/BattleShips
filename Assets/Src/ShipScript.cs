@@ -16,6 +16,8 @@ public class ShipScript : MonoBehaviour {
 	public GameScript.Direction curDir;
 	public int shipSize;
 
+	private List<GameObject> shipSections;
+
 	private bool selected = false;
 	private GameObject system;
 	private GameScript gameScript;
@@ -97,9 +99,14 @@ public class ShipScript : MonoBehaviour {
 		rpcScript = system.GetComponent<RPCScript>();
 		// Change the size for each sub ship
 		shipSize = 2;
-		speed = 4;
+		speed = 6;
 		health = new int[shipSize];
 		InitArmor ();
+		// Add all child sections ship
+		shipSections = new List<GameObject>();
+		foreach (Transform child in transform) {
+			shipSections.Add(child.gameObject);
+		}
 	}
 
 	/*
@@ -137,6 +144,7 @@ public class ShipScript : MonoBehaviour {
 		Vector3 start = transform.position;
 		Vector3 dest = transform.position;
 		float amount;
+		// TODO: fix this to be a function of ship size
 		float offset = shipSize - 1;
 		switch(curDir) {
 		case GameScript.Direction.East:
@@ -280,6 +288,7 @@ public class ShipScript : MonoBehaviour {
 	public void HandleHit(int section) 
 	{
 		health [section] -= 1;
+		shipSections[section].renderer.material.color = Color.magenta;
 		int damageTotal = 0;
 		for (int i = 0; i < shipSize; i++) {
 			damageTotal += health[i];
@@ -432,6 +441,7 @@ public class ShipScript : MonoBehaviour {
 		Quaternion tempRot = Quaternion.identity;
 		switch(curDir) {
 		case GameScript.Direction.East:
+
 			tempRot.eulerAngles = new Vector3(0, 90, 0);
 			break;
 		case GameScript.Direction.North:
@@ -446,6 +456,7 @@ public class ShipScript : MonoBehaviour {
 		default:
 			break;
 		}
+
 		transform.rotation = tempRot;
 	}
 
