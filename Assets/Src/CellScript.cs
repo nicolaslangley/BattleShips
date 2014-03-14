@@ -101,7 +101,8 @@ public class CellScript : MonoBehaviour {
 	 */
 	public void SetVisible(bool visibility) {
 		isVisible = visibility;
-		gameObject.renderer.material.color = Color.grey;
+		if (isVisible) gameObject.renderer.material.color = Color.blue;
+		else gameObject.renderer.material.color = Color.grey;
 	}
 
 	public void SetGridPosition (int x, int y) {

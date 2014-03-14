@@ -491,6 +491,7 @@ public class ShipScript : MonoBehaviour {
 		}
 	}
 
+	// TODO: Finish this function
 	public void DisplayCannonRange (bool status) {
 		Color setColor;
 		if (status) setColor = Color.cyan;
