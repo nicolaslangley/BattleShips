@@ -29,17 +29,19 @@ public class ShipScript : MonoBehaviour {
 	private CellScript baseCell;
 
 	private int speed; 
-	private static int maxSpeed; //Speed at full health
-	private int rotSteps = 1; // increments of 90 degrees. Most ships have 1, Torpedo Boats have 2
+	protected bool immobile = false;
+	protected int maxSpeed; //Speed at full health
+	protected int rotSteps = 1; // increments of 90 degrees. Most ships have 1, Torpedo Boats have 2
 	// Values to determine range of cannon and radar
-	private int cannonRangeForward = 4;
-	private int cannonRangeSide = 4;
-	private int cannonRangeStart = -1;
-	private int radarRangeForward = 6;
-	private int radarRangeSide = 5;
-	private int radarRangeStart = -2;
+	protected int cannonRangeForward = 4;
+	protected int cannonRangeSide = 4;
+	protected int cannonRangeStart = -1;
+	protected int radarRangeForward = 6;
+	protected int radarRangeSide = 5;
+	protected int radarRangeStart = -2;
 
-	private bool heavyArmor;
+	protected bool heavyCannon;
+	protected bool heavyArmor;
 	
 	public ShipScript() {
 		//player = "Horatio";
@@ -48,41 +50,15 @@ public class ShipScript : MonoBehaviour {
 
 	/** UNITY METHODS **/
 
-	// Handle clicking on object
-//	void OnMouseDown () {
-//		// Don't act on mouse click if in wait state
-//		if (gameScript.curGameState == GameScript.GameState.Wait) return;
-//
-//		selected = !selected;
-//		if (selected == true) {
-//			//TODO: Fix this on selection for gameobject
-//			//gameObject.renderer.material.color = Color.cyan;
-//			foreach (GameObject o in cells) {
-//				CellScript cs = o.GetComponent<CellScript>();
-//				cs.selected = true;
-//				//cs.DisplaySelection();
-//			}
-//
-//			gameScript.selectedShip = this;
-//			
-//
-//		} else {
-//			//gameObject.renderer.material.color = Color.white;
-//			foreach (GameObject o in cells) {
-//				CellScript cs = o.GetComponent<CellScript>();
-//				cs.selected = false;
-//				//cs.DisplaySelection();
-//			}
-//		} 
-//	}
-
 	// Display movement options for selected ship
 	void OnGUI () {
 		if (selected == true) {
-			if (GUI.Button(new Rect(Screen.width - 110, 10, 100, 30), "Move")) {
-				gameScript.curPlayAction = GameScript.PlayAction.Move;
-				// Display movement range in cells
-				DisplayMoveRange(true);
+			if (!immobile) {
+				if (GUI.Button(new Rect(Screen.width - 110, 10, 100, 30), "Move")) {
+					gameScript.curPlayAction = GameScript.PlayAction.Move;
+					// Display movement range in cells
+					DisplayMoveRange(true);
+				}
 			}
 			if (GUI.Button(new Rect(Screen.width - 110, 50, 100, 30), "Fire Cannon")) {
 				gameScript.curPlayAction = GameScript.PlayAction.Cannon;
@@ -95,7 +71,7 @@ public class ShipScript : MonoBehaviour {
 			if (GUI.Button(new Rect(Screen.width - 110, 130, 100, 30), "Rotate Counterclockwise")) {
 				RotateShip(false,1);
 			}
-			if (GUI.Button(new Rect(Screen.width - 110, 170, 100, 30), "Cancel Action")) {
+			if (GUI.Button(new Rect(Screen.width - 110, 210, 100, 30), "Cancel Action")) {
 				gameScript.curPlayAction = GameScript.PlayAction.None;
 				DisplayMoveRange(false);
 				DisplayCannonRange(false);
