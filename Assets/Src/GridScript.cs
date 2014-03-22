@@ -13,8 +13,8 @@ public class GridScript : MonoBehaviour {
 	
 	public int gridSize;
 	public Vector2 cellSize;
-	public GameObject[,] grid;
-	public List<GameObject> currentSelection;
+	public CellScript[,] grid;
+	public List<CellScript> currentSelection;
 
 	private GameObject system;
 	private GameScript gameScript;
@@ -43,7 +43,7 @@ public class GridScript : MonoBehaviour {
 		}*/
 
 		// Initialize references to system and current selection
-		currentSelection = new List<GameObject>();
+		currentSelection = new List<CellScript>();
 		system = GameObject.FindGameObjectWithTag("System");
 		gameScript = system.GetComponent<GameScript>();
 		rpcScript = system.GetComponent<RPCScript>();
@@ -109,7 +109,7 @@ public class GridScript : MonoBehaviour {
 		newShipScript.shipID = Player + idSeedStack.Pop().ToString();
 		Debug.Log("New Ship ID: "+ newShipScript.shipID);
 
-		List<GameObject> shipCells = newShipScript.cells;
+		List<CellScript> shipCells = newShipScript.cells;
 			
 		int roundedStartPosX = (int)Mathf.RoundToInt(startPosX);
 		int roundedStartPosZ = (int)Mathf.RoundToInt(startPosZ);
@@ -117,52 +117,48 @@ public class GridScript : MonoBehaviour {
 		switch(newShipScript.curDir) {
 		case GameScript.Direction.East:
 			for (int i = 0; i < newShipScript.shipSize; i++) {
-				GameObject newCell = grid[roundedStartPosX + i, roundedStartPosZ];
-				CellScript newCellScript = newCell.GetComponent<CellScript>();
+				CellScript newCellScript = grid[roundedStartPosX + i, roundedStartPosZ];
 				newCellScript.occupier = newShip;
 				newCellScript.selected = false;
 				newCellScript.available = false;
 				newCellScript.curCellState = GameScript.CellState.Ship;
 				newCellScript.DisplaySelection();
 
-				shipCells.Add (newCell);
+				shipCells.Add (newCellScript);
 			}
 			break;
 		case GameScript.Direction.North:
 			for (int i = 0; i < newShipScript.shipSize; i++) {
-				GameObject newCell = grid[roundedStartPosX, roundedStartPosZ + i];
-				CellScript newCellScript = newCell.GetComponent<CellScript>();
+				CellScript newCellScript = grid[roundedStartPosX, roundedStartPosZ + i];
 				newCellScript.occupier = newShip;
 				newCellScript.selected = false;
 				newCellScript.available = false;
 				newCellScript.curCellState = GameScript.CellState.Ship;
 				newCellScript.DisplaySelection();
 
-				shipCells.Add (newCell);
+				shipCells.Add (newCellScript);
 			}
 			break;
 		case GameScript.Direction.South:
 			for (int i = 0; i < newShipScript.shipSize; i++) {
-				GameObject newCell = grid[roundedStartPosX, roundedStartPosZ - i];
-				CellScript newCellScript = newCell.GetComponent<CellScript>();
+				CellScript newCellScript = grid[roundedStartPosX, roundedStartPosZ - i];
 				newCellScript.occupier = newShip;
 				newCellScript.selected = false;
 				newCellScript.available = false;
 				newCellScript.curCellState = GameScript.CellState.Ship;
 				newCellScript.DisplaySelection();
-				shipCells.Add (newCell);
+				shipCells.Add (newCellScript);
 			}
 			break;
 		case GameScript.Direction.West:
 			for (int i = 0; i < newShipScript.shipSize; i++) {
-				GameObject newCell = grid[roundedStartPosX - i, roundedStartPosZ];
-				CellScript newCellScript = newCell.GetComponent<CellScript>();
+				CellScript newCellScript = grid[roundedStartPosX - i, roundedStartPosZ];
 				newCellScript.occupier = newShip;
 				newCellScript.selected = false;
 				newCellScript.available = false;
 				newCellScript.curCellState = GameScript.CellState.Ship;
 				newCellScript.DisplaySelection();
-				shipCells.Add (newCell);
+				shipCells.Add (newCellScript);
 			}
 			break;
 		}
@@ -190,7 +186,7 @@ public class GridScript : MonoBehaviour {
 	// Initialize grid of specified size
 	private void CreateGrid () {
 		// Create cell objects to from grid
-		grid = new GameObject[gridSize,gridSize];
+		grid = new CellScript[gridSize,gridSize];
 		for (int i = 0; i < gridSize; i++) {
 			for (int j = 0; j < gridSize; j++) {
 				Vector3 cellPos = new Vector3(i * cellSize[0], 0, j * cellSize[1]);
@@ -200,36 +196,36 @@ public class GridScript : MonoBehaviour {
 				newCellScript.SetGridPosition(i, j);
 				newCellScript.SetVisible(false);
 				newCell.transform.localScale = new Vector3(cellSize[0], 0.5f, cellSize[1]);
-				grid[i,j] = newCell;
+				grid[i,j] = newCellScript;
 			}
 		}
 
 		// Create bases for each player
 		// Create base on grid for Player 1
 		for (int i = 0; i < 10; i++) {
-			grid[0, 10 + i].GetComponent<CellScript>().SetBase(Color.magenta);
+			grid[0, 10 + i].SetBase(Color.magenta);
 		}
 		// Create base on grid for Player 2
 		for (int i = 0; i < 10; i++) {
-			grid[29, 10 + i].GetComponent<CellScript>().SetBase(Color.cyan);
+			grid[29, 10 + i].SetBase(Color.cyan);
 		}
 		Random.seed = reefSeed;
 		// Create reefs on grid
 		for (int i = 0; i < 24; i++) {
 			int xVal = Random.Range(10, 20);
 			int yVal = Random.Range(3, 27);
-			while(grid[xVal, yVal].GetComponent<CellScript>().curCellState == GameScript.CellState.Reef) {
+			while(grid[xVal, yVal].curCellState == GameScript.CellState.Reef) {
 				xVal = Random.Range(10, 20);
 				yVal = Random.Range(3, 27);
 			}
-			grid[xVal, yVal].GetComponent<CellScript>().SetReef();
-			grid[xVal, yVal].GetComponent<CellScript>().SetVisible(false);
+			grid[xVal, yVal].SetReef();
+			grid[xVal, yVal].SetVisible(false);
 		}
 	}
 
 	// Returns the neighbours of the given cell in the grid
-	public List<GameObject> GetCellNeighbours (GameObject cell) {
-		List<GameObject> neighbours = new List<GameObject>();
+	public List<CellScript> GetCellNeighbours (CellScript cell) {
+		List<CellScript> neighbours = new List<CellScript>();
 		for (int i = 0; i < grid.GetLength(0); i++) {
 			for (int j = 0; j < grid.GetLength(1); j++) {
 				if (grid[i,j] == cell) {
@@ -247,8 +243,8 @@ public class GridScript : MonoBehaviour {
 	 * Returns the cells in a given rectangle on the grid, for the purposes of moving,
 	 * torpedo intersecting, and radar searching. 
 	 */
-	public GameObject[,] GetCellsInRange (int positionX, int positionY, int dx, int dy) {
-		GameObject[,] cells = new GameObject[dx, dy];
+	public CellScript[,] GetCellsInRange (int positionX, int positionY, int dx, int dy) {
+		CellScript[,] cells = new CellScript[dx, dy];
 		for (int x = 0; x < dx; x++) {
 			for (int y = 0; y < dy; y++) {
 				cells[x, y] = grid[positionX+x, positionY+y];
@@ -266,8 +262,7 @@ public class GridScript : MonoBehaviour {
 		switch (dir) {
 		case GameScript.Direction.East:
 			for (int x = 1; x <= dist; x++) {
-				GameObject cell = grid[positionX + x, positionY];
-				CellScript curCellScript = cell.GetComponent<CellScript>();
+				CellScript curCellScript = grid[positionX + x, positionY];
 				if (curCellScript.available != true) {
 					obstacleEncountered = true;
 					encounteredObstacle = grid[positionX + (x-1), positionY].GetComponent<CellScript>();
@@ -277,9 +272,8 @@ public class GridScript : MonoBehaviour {
 			break;
 		case GameScript.Direction.West:
 			for (int x = 1; x <= -dist; x++) {
-				GameObject cell = grid[positionX - x, positionY];
+				CellScript curCellScript = grid[positionX - x, positionY];
 				Debug.Log ("Checking: " + (positionX - x) + " " + positionY);
-				CellScript curCellScript = cell.GetComponent<CellScript>();
 				if (curCellScript.available != true) {
 					Debug.Log ("Cell unavailable");
 					obstacleEncountered = true;
@@ -290,8 +284,7 @@ public class GridScript : MonoBehaviour {
 			break;
 		case GameScript.Direction.North:
 			for (int y = 1; y <= dist; y++) {
-				GameObject cell = grid[positionX, positionY + y];
-				CellScript curCellScript = cell.GetComponent<CellScript>();
+				CellScript curCellScript = grid[positionX, positionY + y];
 				if (curCellScript.available != true) {
 					obstacleEncountered = true;
 					encounteredObstacle = grid[positionX, positionY + (y-1)].GetComponent<CellScript>();
@@ -301,8 +294,7 @@ public class GridScript : MonoBehaviour {
 			break;
 		case GameScript.Direction.South:
 			for (int y = 1; y <= -dist; y++) {
-				GameObject cell = grid[positionX, positionY - y];
-				CellScript curCellScript = cell.GetComponent<CellScript>();
+				CellScript curCellScript = grid[positionX, positionY - y];
 				if (curCellScript.available != true) {
 					obstacleEncountered = true;
 					encounteredObstacle = grid[positionX, positionY - (y-1)].GetComponent<CellScript>();
@@ -315,12 +307,12 @@ public class GridScript : MonoBehaviour {
 	}
 
 	// Adds given cell to current selection - returns FALSE if not a valid selection
-	public bool AddToSelection (GameObject cell) {
+	public bool AddToSelection (CellScript cell) {
 		bool valid = false;
 		if (currentSelection.Count > 0) {
-			List<GameObject> neighbours = GetCellNeighbours(cell);
-			foreach (GameObject o in currentSelection) {
-				if (neighbours.Contains(o)) {
+			List<CellScript> neighbours = GetCellNeighbours(cell);
+			foreach (CellScript oCellScript in currentSelection) {
+				if (neighbours.Contains(oCellScript)) {
 					valid = true;
 				}
 			}
@@ -335,19 +327,19 @@ public class GridScript : MonoBehaviour {
 		}
 	}
 
-	public GameObject GetCell(int x, int y) {
+	public CellScript GetCell(int x, int y) {
 		return grid [x, y];
 	}
 
 	// Removes given cell from current selection - if cell is not in selection, does nothing
-	public void RemoveFromSelection (GameObject cell) {
+	public void RemoveFromSelection (CellScript cell) {
 		if (currentSelection.Contains(cell)) currentSelection.Remove(cell);
 	}
 
 	public void ResetVisibility() {
 		for (int x = 0; x < 30; x++) {
 			for (int y = 0; y < 30; y++) {
-				grid[x, y].GetComponent<CellScript>().SetVisible(false);
+				grid[x, y].SetVisible(false);
 			}
 		}
 	}

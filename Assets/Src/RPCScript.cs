@@ -91,10 +91,9 @@ public class RPCScript : MonoBehaviour {
 			if (shipscript.shipID == shipID)
 			{
 				Debug.Log ("Found correct ship");
-				GameObject destCellObject = gridScript.grid[x,y];
-				CellScript destCell = destCellObject.GetComponent<CellScript>();
-				Debug.Log("DestCell Value: " + destCell.gridPositionX);
-				shipscript.MoveShip(destCell,0);
+				CellScript destCellScript = gridScript.grid[x,y];
+				Debug.Log("DestCell Value: " + destCellScript.gridPositionX);
+				shipscript.MoveShip(destCellScript,0);
 
 				break;
 			}
@@ -144,9 +143,8 @@ public class RPCScript : MonoBehaviour {
 	void RPCFireCannonCell(string playerName, string shipID, int x, int y)
 	{
 		Debug.Log("Player: "+ playerName+ " Ship: "+shipID+" fired cannon at " + x + " ," + y);
-		GameObject hitCell = gridScript.GetCell(x,y);
-		Debug.Log(hitCell.name);
-		CellScript hitCellScript = hitCell.GetComponent<CellScript>();
+		CellScript hitCellScript = gridScript.GetCell(x,y);
+		Debug.Log(hitCellScript.gameObject.name);
 
 		if (hitCellScript.curCellState != GameScript.CellState.Available)
 		{

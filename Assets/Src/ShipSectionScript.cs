@@ -30,9 +30,8 @@ public class ShipSectionScript : MonoBehaviour {
 			parent.selected = !parent.selected;
 			if (parent.selected == true) {
 				//gameObject.renderer.material.color = Color.cyan;
-				foreach (GameObject o in parent.cells) {
-					CellScript cs = o.GetComponent<CellScript>();
-					cs.selected = true;
+				foreach (CellScript oCellScript in parent.cells) {
+					oCellScript.selected = true;
 					//cs.DisplaySelection();
 				}
 				parent.gameScript.selectedShip = parent;

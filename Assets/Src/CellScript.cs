@@ -6,7 +6,7 @@ public class CellScript : MonoBehaviour {
 
 	/** PROPERTIES **/
 
-	public List<GameObject> neighbours;
+	public List<CellScript> neighbours;
 	public bool selected = false;
 	public bool available = false;
 	public GameObject occupier = null;
@@ -44,13 +44,13 @@ public class CellScript : MonoBehaviour {
 			selected = !selected;
 			if (selected == true) {
 				// Verify that selection is valid otherwise return
-				if (gridScript.AddToSelection(gameObject) == false) {
+				if (gridScript.AddToSelection(this) == false) {
 					selected = false;
 					return;
 				}
 				
 			} else {
-				gridScript.RemoveFromSelection(gameObject);
+				gridScript.RemoveFromSelection(this);
 			}
 			DisplaySelection();
 		}
