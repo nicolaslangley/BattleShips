@@ -6,7 +6,7 @@ public class CellScript : MonoBehaviour {
 
 	/** PROPERTIES **/
 
-	public List<GameObject> neighbours;
+	public List<CellScript> neighbours;
 	public bool selected = false;
 	public bool available = false;
 	public GameObject occupier = null;
