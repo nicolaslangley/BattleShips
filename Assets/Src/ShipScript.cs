@@ -142,7 +142,6 @@ public class ShipScript : MonoBehaviour {
 	{
 		// Handle visibility update for all surrounding cells
 
-
 		if (player == gameScript.myname)
 		{
 			UpdateRadarVisibility(true);
@@ -157,6 +156,7 @@ public class ShipScript : MonoBehaviour {
 	{
 		return shipSections[section];
 	}
+	
 
 	/** COROUTINES **/
 
@@ -215,6 +215,11 @@ public class ShipScript : MonoBehaviour {
 	// Handles movement of ship - INCOMPLETE
 	public void MoveShip (CellScript destCell, int local) {
 		// Get front cell of ship
+
+		if (local == 1) {
+			rpcScript.NetworkMoveShip(shipID, destCell.gridPositionX, destCell.gridPositionY);
+			return;
+		}
 
 		Debug.Log("cell count: "+ cells.Count.ToString());
 		CellScript frontCellScript = cells[cells.Count - 1].GetComponent<CellScript>();
@@ -299,14 +304,14 @@ public class ShipScript : MonoBehaviour {
 
 		Debug.Log("X: "+ destCell.gridPositionX + " Y: " + destCell.gridPositionY);
 
-		if (local == 1) {
-			rpcScript.NetworkMoveShip(shipID, destCell.gridPositionX, destCell.gridPositionY);
-		}
+
 
 
 		// End the current turn
 //		gameScript.curGameState = GameScript.GameState.Wait;
-		rpcScript.EndTurn();
+
+		gameScript.endTurn();
+		//rpcScript.EndTurn();
 	}
 
 	/*
@@ -314,8 +319,14 @@ public class ShipScript : MonoBehaviour {
 	 */
 	public void HandleHit(GameObject section, int local) 
 	{
-		DisplayCannonRange(false);
 		int sectionIndex = shipSections.IndexOf(section);
+		if (local == 1)
+		{
+			Debug.Log("Local");
+			rpcScript.fireCannonShip(shipID,sectionIndex);
+			return;
+		}
+		DisplayCannonRange(false);
 		Debug.Log ("Hit handled on section: " + sectionIndex);
 		health [sectionIndex] -= 1;
 		int damageTotal = 0;
@@ -334,12 +345,9 @@ public class ShipScript : MonoBehaviour {
 			else
 				speed = maxSpeed * (damageTotal / shipSize);
 		}
-		if (local == 1)
-		{
-			Debug.Log("Local");
-			rpcScript.fireCannonShip(shipID,sectionIndex);
-		}
-		rpcScript.EndTurn();
+
+		//rpcScript.EndTurn();
+		gameScript.endTurn();
 
 	}
 	
@@ -347,6 +355,13 @@ public class ShipScript : MonoBehaviour {
 	 * Rotates the ship
 	 */
 	public void RotateShip(bool clockwise, int local) {
+
+		if (local == 1)
+		{
+			rpcScript.NetworkRotateShip(shipID,clockwise);
+			return;
+		}
+
 		//Calculate new turn direction
 		Debug.Log("Turning " + clockwise);
 		int curRot = (int)curDir;
@@ -461,11 +476,9 @@ public class ShipScript : MonoBehaviour {
 			//display an error message
 		}
 
-		if (local == 1)
-		{
-			rpcScript.NetworkRotateShip(shipID,clockwise);
-		}
-		rpcScript.EndTurn();
+		//rpcScript.EndTurn();
+		SetRotation();
+		gameScript.endTurn();
 	}
 
 	// Fire cannon at targeted cell

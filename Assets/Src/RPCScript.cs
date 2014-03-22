@@ -46,7 +46,7 @@ public class RPCScript : MonoBehaviour {
 
 	public void EndTurn()
 	{
-		networkView.RPC ("RPCEndTurn",RPCMode.Others);
+		networkView.RPC ("RPCEndTurn",RPCMode.All);
 	}
 
 	[RPC]
@@ -75,7 +75,7 @@ public class RPCScript : MonoBehaviour {
 	public void NetworkMoveShip(string shipdID, int x, int y)
 	{
 
-		networkView.RPC ("RPCMoveShip", RPCMode.OthersBuffered,shipdID, x, y);
+		networkView.RPC ("RPCMoveShip", RPCMode.All,shipdID, x, y);
 		Debug.Log ("Sent move");
 	}
 
@@ -103,15 +103,14 @@ public class RPCScript : MonoBehaviour {
 
 	public void NetworkRotateShip(string shipID, bool clockwise)
 	{
-		networkView.RPC ("RPCRotateShip",RPCMode.OthersBuffered,shipID,clockwise);
+		networkView.RPC ("RPCRotateShip",RPCMode.AllBuffered,shipID,clockwise);
 	}
 
 	[RPC]
 	void RPCRotateShip(string shipID, bool clockwise)
 	{
 		Debug.Log("Ship: "+shipID+" Rotated: " + clockwise);
-		
-		
+	
 		foreach(GameObject obj in gameScript.ships)
 		{
 			ShipScript shipscript = obj.GetComponent<ShipScript>();

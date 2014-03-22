@@ -22,7 +22,7 @@ public class ShipSectionScript : MonoBehaviour {
 		// Don't act on mouse click if in wait state
 		if (gameScript.curGameState == GameScript.GameState.Wait) return;
 
-		// Handle selection if moving ship
+		// Handle selection if cannon ship
 		if (gameScript.curPlayAction == GameScript.PlayAction.Cannon) {
 			gameObject.renderer.material.color = Color.red;
 			parent.HandleHit(this.gameObject,1);
