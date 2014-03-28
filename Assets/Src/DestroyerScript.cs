@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Destroyer : ShipScript {
+public class DestroyerScript : ShipScript {
 
 	// Use this for initialization
 	void Start() {

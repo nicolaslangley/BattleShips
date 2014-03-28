@@ -114,8 +114,7 @@ public class ShipScript : MonoBehaviour {
 		}
 	}
 
-	public void CustomPlayUpdate () 
-	{
+	public void CustomPlayUpdate () {
 		// Handle visibility update for all surrounding cells
 
 		if (player == gameScript.myname)
@@ -201,10 +200,23 @@ public class ShipScript : MonoBehaviour {
 		CellScript frontCellScript = cells[cells.Count - 1];
 		int startX = frontCellScript.gridPositionX;
 		int startY = frontCellScript.gridPositionY;
+		CellScript backCellScript = cells[0];
+		int backX = backCellScript.gridPositionX;
+		int backY = backCellScript.gridPositionY;
 		// Calculate distance to movement cell
 		int distance = 0;
-		if (destCell.gridPositionX == startX) distance = destCell.gridPositionY - startY;
-		else if (destCell.gridPositionY == startY) distance = destCell.gridPositionX - startX;
+		bool up, down = false;
+		if (curDir == GameScript.Direction.East || curDir == GameScript.Direction.West) {
+			if (destCell.gridPositionY < startY) destCell = gridScript.GetCell(backX, backY - 1);
+			else if (destCell.gridPositionY > startY) destCell = gridScript.GetCell(backX, backY + 1);
+			else distance = destCell.gridPositionX - startX;
+		} else {
+			if (destCell.gridPositionX < startX) destCell = gridScript.GetCell(backX - 1, backY);
+			else if (destCell.gridPositionX > startX) destCell = gridScript.GetCell(backX + 1, backY);
+			else distance = destCell.gridPositionY - startY;
+		}
+
+		// TODO: Verify that sideways move is valid and handle backwards move properly
 		// Verify that destination cell is within correct range
 		if (distance > speed) {
 			Debug.Log ("Cannot move that far");
@@ -218,6 +230,8 @@ public class ShipScript : MonoBehaviour {
 		}
 		DisplayMoveRange(false);
 
+		// Start coroutine that moves ship prefab
+		// TODO: Handle coroutine for moving sideways and backwards
 		StartCoroutine(MoveShipForward(destCell.transform.position));
 
 		// Update occupied cells
@@ -345,6 +359,7 @@ public class ShipScript : MonoBehaviour {
 		//Check for obstacles
 		bool obstacle = false;
 		CellScript cell = cells[0];
+		// Perform check based on the orientation of the ship
 		if (curDir == GameScript.Direction.North || curDir == GameScript.Direction.South) {
 			int sign = 1;
 			if (curDir == GameScript.Direction.North && ! clockwise ||
@@ -400,7 +415,7 @@ public class ShipScript : MonoBehaviour {
 				for (int i = 1; i < shipSize; i++) {
 					CellScript newCellScript = gridScript.grid[baseCellScript.gridPositionX + i, baseCellScript.gridPositionY];
 					newCellScript.occupier = this.gameObject;
-					cells.Add (newCellScript);
+					cells.Add(newCellScript);
 				}
 				break;
 			case GameScript.Direction.North:
@@ -408,21 +423,21 @@ public class ShipScript : MonoBehaviour {
 					Debug.Log (baseCellScript.gridPositionX + " " + baseCellScript.gridPositionY);
 					CellScript newCellScript = gridScript.grid[baseCellScript.gridPositionX, baseCellScript.gridPositionY + i];
 					newCellScript.occupier = this.gameObject;
-					cells.Add (newCellScript);
+					cells.Add(newCellScript);
 				}
 				break;
 			case GameScript.Direction.South:
 				for (int i = 1; i < shipSize; i++) {
 					CellScript newCellScript = gridScript.grid[baseCellScript.gridPositionX, baseCellScript.gridPositionY - i];
 					newCellScript.occupier = this.gameObject;
-					cells.Add (newCellScript);
+					cells.Add(newCellScript);
 				}
 				break;
 			case GameScript.Direction.West:
 				for (int i = 1; i < shipSize; i++) {
 					CellScript newCellScript = gridScript.grid[baseCellScript.gridPositionX - i, baseCellScript.gridPositionY];
 					newCellScript.occupier = this.gameObject;
-					cells.Add (newCellScript);
+					cells.Add(newCellScript);
 				}
 				break;
 			}
@@ -480,48 +495,56 @@ public class ShipScript : MonoBehaviour {
 	/** DISPLAY **/
 
 	public void DisplayMoveRange (bool status) {
-		Color setColor;
-		if (status) setColor = Color.cyan;
-		else setColor = Color.blue;
 
-		// Get front cell of ship
+		// Display movement options in forward and backwards direction
 		CellScript frontCellScript = cells[cells.Count - 1];
-		int startX = frontCellScript.gridPositionX;
-		int startY = frontCellScript.gridPositionY;
+		int startXFront = frontCellScript.gridPositionX;
+		int startYFront = frontCellScript.gridPositionY;
+		CellScript backCellScript = cells[0];
+		int backX = backCellScript.gridPositionX;
+		int backY = backCellScript.gridPositionY;
+
+		// Display cell options based on direction that ship is facing
 		switch (curDir) {
 		case GameScript.Direction.East:
 			for (int i = 0; i <= speed; i++) {
-				CellScript curCellScript = gridScript.grid[startX + i, startY];
-				if (curCellScript.curCellState == GameScript.CellState.Reef && !status) 
-					curCellScript.renderer.material.color = Color.black;
-				else curCellScript.renderer.material.color = setColor;
+				gridScript.DisplayCellForMove(status, startXFront + i, startYFront);
 			}
+			gridScript.DisplayCellForMove(status, backX - 1, backY);
 			break;
 		case GameScript.Direction.West:
 			for (int i = 0; i <= speed; i++) {
-				CellScript curCellScript = gridScript.grid[startX - i, startY];
-				if (curCellScript.curCellState == GameScript.CellState.Reef && !status) 
-					curCellScript.renderer.material.color = Color.black;
-				else curCellScript.renderer.material.color = setColor;
+				gridScript.DisplayCellForMove(status, startXFront - i, startYFront);
 			}
+			gridScript.DisplayCellForMove(status, backX + 1, backY);
 			break;
 		case GameScript.Direction.North:
 			for (int i = 0; i <= speed; i++) {
-				CellScript curCellScript = gridScript.grid[startX, startY + i];
-				if (curCellScript.curCellState == GameScript.CellState.Reef && !status) 
-					curCellScript.renderer.material.color = Color.black;
-				else curCellScript.renderer.material.color = setColor;
+				gridScript.DisplayCellForMove(status, startXFront, startYFront + i);
 			}
+			gridScript.DisplayCellForMove(status, backX, backY - 1);
 			break;
 		case GameScript.Direction.South:
 			for (int i = 0; i <= speed; i++) {
-				CellScript curCellScript = gridScript.grid[startX, startY - i];
-				if (curCellScript.curCellState == GameScript.CellState.Reef && !status) 
-					curCellScript.renderer.material.color = Color.black;
-				else curCellScript.renderer.material.color = setColor;
+				gridScript.DisplayCellForMove(status, startXFront, startYFront - i);
 			}
+			gridScript.DisplayCellForMove(status, backX, backY + 1);
 			break;
 		}
+
+		// Display movement options to the side
+		if (curDir == GameScript.Direction.North || curDir == GameScript.Direction.South) {
+			foreach (CellScript cell in cells) {
+				gridScript.DisplayCellForMove(status, cell.gridPositionX + 1, cell.gridPositionY);
+				gridScript.DisplayCellForMove(status, cell.gridPositionX - 1, cell.gridPositionY);
+			}
+		} else {
+			foreach (CellScript cell in cells) {
+				gridScript.DisplayCellForMove(status, cell.gridPositionX, cell.gridPositionY + 1);
+				gridScript.DisplayCellForMove(status, cell.gridPositionX, cell.gridPositionY - 1);
+			}
+		}
+
 	}
 
 	// Display range of cannon
@@ -538,40 +561,28 @@ public class ShipScript : MonoBehaviour {
 		case GameScript.Direction.East:
 			for (int x = -2; x <= 1; x++) {
 				for (int y = -2; y <= 2; y++) {
-					CellScript curCellScript = gridScript.grid[startX + x, startY + y];
-					if (curCellScript.curCellState == GameScript.CellState.Reef && !status) 
-						curCellScript.renderer.material.color = Color.black;
-					else curCellScript.renderer.material.color = setColor;
+					gridScript.DisplayCellForShoot(status, startX + x, startY + y);
 				}
 			}
 			break;
 		case GameScript.Direction.West:
 			for (int x = -1; x <= 2; x++) {
 				for (int y = -2; y <= 2; y++) {
-					CellScript curCellScript = gridScript.grid[startX + x, startY + y];
-					if (curCellScript.curCellState == GameScript.CellState.Reef && !status) 
-						curCellScript.renderer.material.color = Color.black;
-					else curCellScript.renderer.material.color = setColor;
+					gridScript.DisplayCellForShoot(status, startX + x, startY + y);
 				}
 			}
 			break;
 		case GameScript.Direction.North:
 			for (int x = -2; x <= 2; x++) {
 				for (int y = -2; y <= 1; y++) {
-					CellScript curCellScript = gridScript.grid[startX + x, startY + y];
-					if (curCellScript.curCellState == GameScript.CellState.Reef && !status) 
-						curCellScript.renderer.material.color = Color.black;
-					else curCellScript.renderer.material.color = setColor;
+					gridScript.DisplayCellForShoot(status, startX + x, startY + y);
 				}
 			}
 			break;
 		case GameScript.Direction.South:
 			for (int x = -2; x <= 2; x++) {
 				for (int y = -1; y <= 2; y++) {
-					CellScript curCellScript = gridScript.grid[startX + x, startY + y];
-					if (curCellScript.curCellState == GameScript.CellState.Reef && !status) 
-						curCellScript.renderer.material.color = Color.black;
-					else curCellScript.renderer.material.color = setColor;
+					gridScript.DisplayCellForShoot(status, startX + x, startY + y);
 				}
 			}
 			break;

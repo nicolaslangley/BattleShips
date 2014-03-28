@@ -331,6 +331,30 @@ public class GridScript : MonoBehaviour {
 		return grid [x, y];
 	}
 
+	public void DisplayCellForMove(bool status, int x, int y) {
+		Color setColor;
+		if (status) setColor = Color.cyan;
+		else setColor = Color.blue;
+		CellScript cellScript = grid[x, y];
+		if (status) cellScript.availableForMove = true;
+		else cellScript.availableForMove = false;
+		if (cellScript.curCellState == GameScript.CellState.Reef && !status) 
+			cellScript.renderer.material.color = Color.black;
+		else cellScript.renderer.material.color = setColor;
+	}
+
+	public void DisplayCellForShoot(bool status, int x, int y) {
+		Color setColor;
+		if (status) setColor = Color.red;
+		else setColor = Color.blue;
+		CellScript cellScript = grid[x, y];
+		if (status) cellScript.availableForShoot = true;
+		else cellScript.availableForShoot = false;
+		if (cellScript.curCellState == GameScript.CellState.Reef && !status) 
+			cellScript.renderer.material.color = Color.black;
+		else cellScript.renderer.material.color = setColor;
+	}
+
 	// Removes given cell from current selection - if cell is not in selection, does nothing
 	public void RemoveFromSelection (CellScript cell) {
 		if (currentSelection.Contains(cell)) currentSelection.Remove(cell);

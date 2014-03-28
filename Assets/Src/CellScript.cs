@@ -9,6 +9,8 @@ public class CellScript : MonoBehaviour {
 	public List<CellScript> neighbours;
 	public bool selected = false;
 	public bool available = false;
+	public bool availableForMove = false;
+	public bool availableForShoot = false;
 	public GameObject occupier = null;
 	public GameScript.CellState curCellState = GameScript.CellState.Available;
 	public int gridPositionX;
@@ -33,12 +35,16 @@ public class CellScript : MonoBehaviour {
 
 		// Handle selection if moving ship
 		if (gameScript.curPlayAction == GameScript.PlayAction.Move) {
-			gameScript.selectedShip.MoveShip(this,1);
-			gameScript.curPlayAction = GameScript.PlayAction.None;
-			gameScript.waitTurn = true;
+			if (availableForMove) {
+				gameScript.selectedShip.MoveShip(this,1);
+				gameScript.curPlayAction = GameScript.PlayAction.None;
+				gameScript.waitTurn = true;
+			}
 			return;
 		} else if (gameScript.curPlayAction == GameScript.PlayAction.Cannon) {
-			gameScript.selectedShip.FireCannon(this);
+			if (availableForShoot) {
+				gameScript.selectedShip.FireCannon(this);
+			}
 		} else {
 			Debug.Log ("Selection changing");
 			selected = !selected;

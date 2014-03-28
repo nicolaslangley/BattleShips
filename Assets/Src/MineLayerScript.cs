@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MineLayer : ShipScript {
+public class MineLayerScript : ShipScript {
 
 	// Use this for initialization
 	void Start () {
@@ -17,11 +17,6 @@ public class MineLayer : ShipScript {
 		this.cannonRangeForward = 4;
 		this.cannonRangeSide = 5;
 		this.cannonRangeStart = -1;
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
 	}
 
 	void OnGui() {
