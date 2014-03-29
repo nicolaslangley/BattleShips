@@ -317,7 +317,7 @@ public class ShipScript : MonoBehaviour {
 			Debug.Log ("health" + health[i]);
 			damageTotal += health[i];
 		}
-		Debug.Log ("DAmage total is: " + damageTotal);
+		Debug.Log ("Damage total is: " + damageTotal);
 		if (damageTotal == 0) {
 			Destroy(gameObject);
 			//Take care of stats, etc.
@@ -631,5 +631,12 @@ public class ShipScript : MonoBehaviour {
 		}
 	}
 
+	/*
+	 * To make mine laying fit into the overall structure of Cellscript calling back to ShipScript,
+	 * we need to have this method in every ShipScript. 
+	 */
+	public virtual void LayMine(CellScript cell) {
+		Debug.LogWarning ("Attempted to drop a mine from a ship that is not a MineLayer. Something is horribly wrong.");
+	}
 
 }

@@ -22,7 +22,21 @@ public class MineLayerScript : ShipScript {
 	void OnGui() {
 		this.OnGui ();
 		if (GUI.Button(new Rect(Screen.width - 110, 1700, 100, 30), "Drop Mine")) {
-			Debug.Log ("Drop mine not implemented.");
+			DisplayMineRange(true);
+			gameScript.curPlayAction = GameScript.PlayAction.DropMine;
+		}
+	}
+	public override void LayMine(CellScript cell) {
+		cell.curCellState = GameScript.CellState.Mine;
+		DisplayMineRange (false);
+	}
+
+	void DisplayMineRange(bool display) {
+		foreach (CellScript cell in this.cells) {
+			foreach (CellScript neighbour in gridScript.GetCellNeighbours(cell)) {
+				if (neighbour.curCellState == GameScript.CellState.Available) 
+					gridScript.DisplayCellForShoot(display, neighbour);
+			}
 		}
 	}
 }

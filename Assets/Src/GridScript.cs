@@ -355,6 +355,17 @@ public class GridScript : MonoBehaviour {
 		else cellScript.renderer.material.color = setColor;
 	}
 
+	public void DisplayCellForShoot(bool status, CellScript cellScript) {
+		Color setColor;
+		if (status) setColor = Color.red;
+		else setColor = Color.blue;
+		if (status) cellScript.availableForShoot = true;
+		else cellScript.availableForShoot = false;
+		if (cellScript.curCellState == GameScript.CellState.Reef && !status) 
+			cellScript.renderer.material.color = Color.black;
+		else cellScript.renderer.material.color = setColor;
+	}
+
 	// Removes given cell from current selection - if cell is not in selection, does nothing
 	public void RemoveFromSelection (CellScript cell) {
 		if (currentSelection.Contains(cell)) currentSelection.Remove(cell);
