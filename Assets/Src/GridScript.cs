@@ -118,47 +118,29 @@ public class GridScript : MonoBehaviour {
 		case GameScript.Direction.East:
 			for (int i = 0; i < newShipScript.shipSize; i++) {
 				CellScript newCellScript = grid[roundedStartPosX + i, roundedStartPosZ];
-				newCellScript.occupier = newShip;
-				newCellScript.selected = false;
-				newCellScript.available = false;
-				newCellScript.curCellState = GameScript.CellState.Ship;
-				newCellScript.DisplaySelection();
-
-				shipCells.Add (newCellScript);
+				InitializeShipCell(newCellScript, newShip);
+				shipCells.Add(newCellScript);
 			}
 			break;
 		case GameScript.Direction.North:
 			for (int i = 0; i < newShipScript.shipSize; i++) {
 				CellScript newCellScript = grid[roundedStartPosX, roundedStartPosZ + i];
-				newCellScript.occupier = newShip;
-				newCellScript.selected = false;
-				newCellScript.available = false;
-				newCellScript.curCellState = GameScript.CellState.Ship;
-				newCellScript.DisplaySelection();
-
-				shipCells.Add (newCellScript);
+				InitializeShipCell(newCellScript, newShip);
+				shipCells.Add(newCellScript);
 			}
 			break;
 		case GameScript.Direction.South:
 			for (int i = 0; i < newShipScript.shipSize; i++) {
 				CellScript newCellScript = grid[roundedStartPosX, roundedStartPosZ - i];
-				newCellScript.occupier = newShip;
-				newCellScript.selected = false;
-				newCellScript.available = false;
-				newCellScript.curCellState = GameScript.CellState.Ship;
-				newCellScript.DisplaySelection();
-				shipCells.Add (newCellScript);
+				InitializeShipCell(newCellScript, newShip);
+				shipCells.Add(newCellScript);
 			}
 			break;
 		case GameScript.Direction.West:
 			for (int i = 0; i < newShipScript.shipSize; i++) {
 				CellScript newCellScript = grid[roundedStartPosX - i, roundedStartPosZ];
-				newCellScript.occupier = newShip;
-				newCellScript.selected = false;
-				newCellScript.available = false;
-				newCellScript.curCellState = GameScript.CellState.Ship;
-				newCellScript.DisplaySelection();
-				shipCells.Add (newCellScript);
+				InitializeShipCell(newCellScript, newShip);
+				shipCells.Add(newCellScript);
 			}
 			break;
 		}
@@ -182,6 +164,14 @@ public class GridScript : MonoBehaviour {
 	}
 
 	/** HELPER METHODS **/
+
+	private void InitializeShipCell(CellScript cell, GameObject ship) {
+		cell.occupier = ship;
+		cell.selected = false;
+		cell.available = false;
+		cell.curCellState = GameScript.CellState.Ship;
+		cell.DisplaySelection();
+	}
 
 	// Initialize grid of specified size
 	private void CreateGrid () {
@@ -306,6 +296,58 @@ public class GridScript : MonoBehaviour {
 		return encounteredObstacle;
 	}
 
+	/*
+	 * Returns a boolean value denoting whether side move is valid: true = valid, false = invalid
+	 */
+	public bool VerifySidewaysMove(int startX, int startY, int length, GameScript.Direction dir) {
+		bool obstacleEncountered = false;
+		switch (dir) {
+		case GameScript.Direction.East:
+			for (int i = 0; i < length; i++) {
+				CellScript curCellScript = grid[startX + i, startY];
+				if (curCellScript.available != true) {
+					obstacleEncountered = true;
+					break;
+				}
+			}
+			break;
+		case GameScript.Direction.West:
+			for (int i = 0; i < length; i++) {
+				CellScript curCellScript = grid[startX - i, startY];
+				if (curCellScript.available != true) {
+					obstacleEncountered = true;
+					break;
+				}
+			}
+			break;
+		case GameScript.Direction.North:
+			for (int i = 0; i < length; i++) {
+				CellScript curCellScript = grid[startX, startY + i];
+				if (curCellScript.available != true) {
+					obstacleEncountered = true;
+					break;
+				}
+			}
+			break;
+		case GameScript.Direction.South:
+			for (int i = 0; i < length; i++) {
+				CellScript curCellScript = grid[startX, startY - i];
+				if (curCellScript.available != true) {
+					obstacleEncountered = true;
+					break;
+				}
+			}
+			break;
+		}
+		return !obstacleEncountered;
+	}
+
+	// Verify that a single cell is available
+	public bool VerifyCell (int x, int y) {
+		CellScript curCellScript = grid[x, y];
+		return curCellScript.available;
+	}
+
 	// Adds given cell to current selection - returns FALSE if not a valid selection
 	public bool AddToSelection (CellScript cell) {
 		bool valid = false;
@@ -331,6 +373,7 @@ public class GridScript : MonoBehaviour {
 		return grid [x, y];
 	}
 
+	// Display cell as being available for movement based on status 
 	public void DisplayCellForMove(bool status, int x, int y) {
 		Color setColor;
 		if (status) setColor = Color.cyan;
@@ -343,6 +386,7 @@ public class GridScript : MonoBehaviour {
 		else cellScript.renderer.material.color = setColor;
 	}
 
+	// Display cell as being available to shoot based on status 
 	public void DisplayCellForShoot(bool status, int x, int y) {
 		Color setColor;
 		if (status) setColor = Color.red;
@@ -371,6 +415,7 @@ public class GridScript : MonoBehaviour {
 		if (currentSelection.Contains(cell)) currentSelection.Remove(cell);
 	}
 
+	// Reset the visibility of all cells to be false
 	public void ResetVisibility() {
 		for (int x = 0; x < 30; x++) {
 			for (int y = 0; y < 30; y++) {
