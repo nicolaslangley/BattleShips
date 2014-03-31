@@ -374,8 +374,10 @@ public class GridScript : MonoBehaviour {
 		return grid [x, y];
 	}
 
+	// TODO: Handle case where x and y are not on the grid.
 	// Display cell as being available for movement based on status 
 	public void DisplayCellForMove(bool status, int x, int y) {
+		if (x < 0 || x > 29 || y < 0 || y > 29) return;
 		Color setColor;
 		if (status) setColor = Color.cyan;
 		else setColor = Color.blue;
@@ -389,6 +391,7 @@ public class GridScript : MonoBehaviour {
 
 	// Display cell as being available to shoot based on status 
 	public void DisplayCellForShoot(bool status, int x, int y) {
+		if (x < 0 || x > 29 || y < 0 || y > 29) return;
 		Color setColor;
 		if (status) setColor = Color.red;
 		else setColor = Color.blue;
