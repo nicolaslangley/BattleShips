@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class KamikazeBoat : ShipScript {
+public class KamikazeBoatScript : ShipScript {
 
 	// Use this for initialization
 	void Start () {

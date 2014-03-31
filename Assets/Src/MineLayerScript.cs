@@ -5,7 +5,7 @@ public class MineLayerScript : ShipScript {
 
 	// Use this for initialization
 	void Start () {
-		this.shipSize = 2;
+		this.shipSize = 3;
 		this.heavyArmor = true;
 		this.heavyCannon = false;
 		this.maxSpeed = 6;

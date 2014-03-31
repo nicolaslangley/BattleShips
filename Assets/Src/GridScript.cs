@@ -10,6 +10,7 @@ public class GridScript : MonoBehaviour {
 	//Prefabs
 	public GameObject gridCell;
 	public GameObject destroyer;
+	public GameObject mineLayer;
 	
 	public int gridSize;
 	public Vector2 cellSize;
