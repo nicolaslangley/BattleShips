@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class RPCScript : MonoBehaviour {
@@ -53,7 +53,7 @@ public class RPCScript : MonoBehaviour {
 	void RPCEndTurn()
 	{
 		Debug.Log ("Send End Turn");
-		gameScript.endTurn();
+		gameScript.EndTurn();
 	}
 
 	//GRID RPC

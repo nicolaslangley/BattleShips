@@ -130,7 +130,7 @@ public class GameScript : MonoBehaviour {
 		}
 	}
 
-	public void endTurn()
+	public void EndTurn()
 	{
 		// Perform one last update to visibility before ending turn
 		gridScript.ResetVisibility();

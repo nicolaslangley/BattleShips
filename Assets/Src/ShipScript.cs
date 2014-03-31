@@ -52,6 +52,7 @@ public class ShipScript : MonoBehaviour {
 
 	// Display movement options for selected ship
 	void OnGUI () {
+		if (gameScript.curGameState == GameScript.GameState.Wait) return;
 		if (selected == true) {
 			if (!immobile) {
 				if (GUI.Button(new Rect(Screen.width - 110, 10, 100, 30), "Move")) {
@@ -386,7 +387,7 @@ public class ShipScript : MonoBehaviour {
 		// End the current turn
 //		gameScript.curGameState = GameScript.GameState.Wait;
 
-		gameScript.endTurn();
+		gameScript.EndTurn();
 		//rpcScript.EndTurn();
 	}
 
@@ -423,7 +424,7 @@ public class ShipScript : MonoBehaviour {
 		}
 
 		//rpcScript.EndTurn();
-		gameScript.endTurn();
+		gameScript.EndTurn();
 
 	}
 	
@@ -547,7 +548,7 @@ public class ShipScript : MonoBehaviour {
 
 		//rpcScript.EndTurn();
 		SetRotation();
-		gameScript.endTurn();
+		gameScript.EndTurn();
 	}
 
 	/*
