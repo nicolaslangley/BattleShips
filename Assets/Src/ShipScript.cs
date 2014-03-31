@@ -24,7 +24,7 @@ public class ShipScript : MonoBehaviour {
 	
 	private GameObject system;
 
-	private RPCScript rpcScript;
+	protected RPCScript rpcScript;
 	private int[] health;
 	private CellScript baseCell;
 
@@ -560,7 +560,6 @@ public class ShipScript : MonoBehaviour {
 		StartCoroutine(DisplayCannon(targetCell.gameObject));
 		rpcScript.fireCannonCell(shipID,targetCell.gridPositionX, targetCell.gridPositionY);
 		rpcScript.EndTurn();
-
 	}
 
 	/*

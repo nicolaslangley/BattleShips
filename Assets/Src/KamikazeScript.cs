@@ -22,12 +22,25 @@ public class KamikazeBoatScript : ShipScript {
 	void OnGui() {
 		this.OnGui ();
 		if (GUI.Button(new Rect(Screen.width - 170, 90, 100, 30), "Detonate")) {
-			Debug.Log ("Boom!! Not implemented.");
+			int startX = this.cells[0].gridPositionX;
+			int startY = this.cells[0].gridPositionY;
+
+			for (int x = (startX > 0 ? startX-1 : startX); x < 3 && x < this.gridScript.grid.GetLength(0); x++) {
+				for (int y = (startY > 0 ? startY-1 : startY); y < 3 && y < this.gridScript.grid.GetLength(1); y++) {
+					CellScript temp = this.gridScript.grid[x, y];
+					if (temp.curCellState == GameScript.CellState.Ship) {
+						if (temp.occupier != null) {
+							ShipSectionScript section = temp.occupier.GetComponent<ShipSectionScript>();
+							ShipScript ship = section.parent;
+							if (ship.player == gameScript.myname) {
+								ship.HandleHit(temp.occupier, 1);
+							} else {
+								this.rpcScript.fireCannonShip(ship.shipID, 0);
+							}
+						}
+					}
+				}
+			}
 		}
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
 	}
 }
