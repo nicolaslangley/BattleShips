@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class RadarBoat : ShipScript {
+public class RadarBoatScript : ShipScript {
 
 	// Use this for initialization
 	void Start () {

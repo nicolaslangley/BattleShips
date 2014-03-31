@@ -4,7 +4,7 @@ using System.Collections;
 public class MineLayerScript : ShipScript {
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		this.shipSize = 2;
 		this.heavyArmor = true;
 		this.heavyCannon = false;
@@ -12,7 +12,7 @@ public class MineLayerScript : ShipScript {
 		
 		this.radarRangeForward = 6;
 		this.radarRangeSide = 5;
-		this.radarRangeStart = 1;
+		this.radarRangeStart = -2;
 		
 		this.cannonRangeForward = 4;
 		this.cannonRangeSide = 5;
@@ -22,7 +22,21 @@ public class MineLayerScript : ShipScript {
 	void OnGui() {
 		this.OnGui ();
 		if (GUI.Button(new Rect(Screen.width - 110, 1700, 100, 30), "Drop Mine")) {
-			Debug.Log ("Drop mine not implemented.");
+			DisplayMineRange(true);
+			gameScript.curPlayAction = GameScript.PlayAction.DropMine;
+		}
+	}
+	public override void LayMine(CellScript cell) {
+		cell.curCellState = GameScript.CellState.Mine;
+		DisplayMineRange (false);
+	}
+
+	void DisplayMineRange(bool display) {
+		foreach (CellScript cell in this.cells) {
+			foreach (CellScript neighbour in gridScript.GetCellNeighbours(cell)) {
+				if (neighbour.curCellState == GameScript.CellState.Available) 
+					gridScript.DisplayCellForShoot(display, neighbour);
+			}
 		}
 	}
 }

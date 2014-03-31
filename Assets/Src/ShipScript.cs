@@ -24,7 +24,7 @@ public class ShipScript : MonoBehaviour {
 	
 	private GameObject system;
 
-	private RPCScript rpcScript;
+	protected RPCScript rpcScript;
 	private int[] health;
 	private CellScript baseCell;
 
@@ -40,7 +40,7 @@ public class ShipScript : MonoBehaviour {
 	protected int radarRangeSide = 5;
 	protected int radarRangeStart = -2;
 
-	protected bool heavyCannon;
+	public bool heavyCannon;
 	protected bool heavyArmor;
 	
 	public ShipScript() {
@@ -52,6 +52,7 @@ public class ShipScript : MonoBehaviour {
 
 	// Display movement options for selected ship
 	void OnGUI () {
+		if (gameScript.curGameState == GameScript.GameState.Wait) return;
 		if (selected == true) {
 			if (!immobile) {
 				if (GUI.Button(new Rect(Screen.width - 110, 10, 100, 30), "Move")) {
@@ -88,8 +89,7 @@ public class ShipScript : MonoBehaviour {
 		gridScript = system.GetComponent<GridScript>();
 		rpcScript = system.GetComponent<RPCScript>();
 		// Change the size for each sub ship
-		shipSize = 2;
-		speed = 3;
+		speed = maxSpeed;
 		health = new int[shipSize];
 		InitArmor ();
 		// Add all child sections ship
@@ -127,21 +127,13 @@ public class ShipScript : MonoBehaviour {
 		SetRotation();
 	}
 
-	public GameObject getSection(int section)
-	{
-		return shipSections[section];
-	}
-	
-
 	/** COROUTINES **/
 
-	// Coroutine for movement
+	// Coroutine for forward movement
 	IEnumerator MoveShipForward (Vector3 destPos) {
 		Vector3 start = transform.position;
 		Vector3 dest = transform.position;
 		float amount;
-		// TODO: fix this to be a function of ship size
-		// TODO: offset in East and South required?
 		float offset = shipSize - 1;
 		switch(curDir) {
 		case GameScript.Direction.East:
@@ -165,17 +157,69 @@ public class ShipScript : MonoBehaviour {
 			dest.x += amount;
 			break;
 		}
-		float startTime=Time.time; // Time.time contains current frame time, so remember starting point
-		while(Time.time-startTime<=1){ // until one second passed
-			transform.position=Vector3.Lerp(start,dest,Time.time-startTime); // lerp from A to B in one second
-			yield return 1; // wait for next frame
+		// Time.time contains current frame time, so remember starting point
+		float startTime=Time.time;
+		// Perform the following until 1 second has passed
+		while(Time.time-startTime <= 1) {
+			// lerp from A to B in one second
+			transform.position = Vector3.Lerp(start,dest,Time.time-startTime); 
+			// Wait for next frame
+			yield return 1; 
+		}
+	}
+
+	IEnumerator MoveShipSideways (Vector3 destPos) {
+		destPos.y += 0.5f;
+		Vector3 start = transform.position;
+		// Time.time contains current frame time, so remember starting point
+		float startTime=Time.time;
+		// Perform the following until 1 second has passed
+		while(Time.time-startTime <= 1) {
+			// lerp from A to B in one second
+			transform.position = Vector3.Lerp(start,destPos,Time.time-startTime); 
+			// Wait for next frame
+			yield return 1; 
+		}
+	}
+
+	// Move ship backwards
+	IEnumerator MoveShipBackward () {
+		Vector3 start = transform.position;
+		Vector3 dest = transform.position;
+		int amount = 0;
+		switch(curDir) {
+		case GameScript.Direction.East:
+			amount = -1;
+			dest.x += amount;
+			break;
+		case GameScript.Direction.North:
+			amount = -1;
+			dest.z += amount;
+			break;
+		case GameScript.Direction.South:
+			amount = 1;
+			dest.z += amount;
+			break;
+		case GameScript.Direction.West:
+			amount = 1;
+			dest.x += amount;
+			break;
+		}
+		// Time.time contains current frame time, so remember starting point
+		float startTime=Time.time;
+		// Perform the following until 1 second has passed
+		while(Time.time-startTime <= 1) {
+			// lerp from A to B in one second
+			transform.position = Vector3.Lerp(start,dest,Time.time-startTime); 
+			// Wait for next frame
+			yield return 1; 
 		}
 	}
 
 	// Display the effects of shooting the cannon over a period of time
 	IEnumerator DisplayCannon (GameObject target) {
 		float startTime=Time.time; // Time.time contains current frame time, so remember starting point
-		while(Time.time-startTime<=0.3){ // until one second passed
+		while(Time.time-startTime <= 0.3){ // until one second passed
 			target.renderer.material.color = Color.white; // lerp from A to B in one second
 			yield return 1; // wait for next frame
 		}
@@ -187,7 +231,15 @@ public class ShipScript : MonoBehaviour {
 
 	/** HELPER METHODS **/
 
-	// Handles movement of ship - INCOMPLETE
+	// Retrive object for section of ship
+	public GameObject getSection(int section) {
+		return shipSections[section];
+	}
+
+	/*
+	 * Handles movement of ship
+	 * Moves ship to target cell
+	 */
 	public void MoveShip (CellScript destCell, int local) {
 		// Get front cell of ship
 
@@ -205,34 +257,55 @@ public class ShipScript : MonoBehaviour {
 		int backY = backCellScript.gridPositionY;
 		// Calculate distance to movement cell
 		int distance = 0;
-		bool up, down = false;
+		bool forward = false;
+
 		if (curDir == GameScript.Direction.East || curDir == GameScript.Direction.West) {
 			if (destCell.gridPositionY < startY) destCell = gridScript.GetCell(backX, backY - 1);
 			else if (destCell.gridPositionY > startY) destCell = gridScript.GetCell(backX, backY + 1);
-			else distance = destCell.gridPositionX - startX;
+			else {
+
+				distance = destCell.gridPositionX - startX;
+			} 
 		} else {
 			if (destCell.gridPositionX < startX) destCell = gridScript.GetCell(backX - 1, backY);
 			else if (destCell.gridPositionX > startX) destCell = gridScript.GetCell(backX + 1, backY);
 			else distance = destCell.gridPositionY - startY;
 		}
 
-		// TODO: Verify that sideways move is valid and handle backwards move properly
-		// Verify that destination cell is within correct range
-		if (distance > speed) {
-			Debug.Log ("Cannot move that far");
-			return;
+		if (curDir == GameScript.Direction.West || curDir == GameScript.Direction.South) {
+			distance = -distance;
 		}
-		CellScript validDestCell = gridScript.VerifyCellPath(startX, startY, distance, curDir, destCell);
-		if (validDestCell != destCell) {
-			// TODO: only move up until given cell
-			Debug.Log ("Invalid path");
-			return;
+
+		// Distance will be 0 only if the move is sideways
+		if (distance == 0) {
+			bool validMove = gridScript.VerifySidewaysMove(destCell.gridPositionX, destCell.gridPositionY, shipSize, curDir);
+			if (!validMove) {
+				return;
+			}
+			StartCoroutine(MoveShipSideways(destCell.transform.position));
+		} else if (distance < 0) {
+			bool validMove = gridScript.VerifyCell(destCell.gridPositionX, destCell.gridPositionY);
+			if (!validMove) {
+				return;
+			}
+			StartCoroutine(MoveShipBackward());
+		} else {
+			// Verify that destination cell is within correct range
+			if (distance > speed) {
+				Debug.Log ("Cannot move that far");
+				return;
+			}
+		
+			CellScript validDestCell = gridScript.VerifyCellPath(startX, startY, distance, curDir, destCell);
+			if (validDestCell != destCell) {
+				// TODO: only move up until given cell
+				Debug.Log ("Invalid path");
+				return;
+			}
+			forward = true;
+			StartCoroutine(MoveShipForward(destCell.transform.position));
 		}
 		DisplayMoveRange(false);
-
-		// Start coroutine that moves ship prefab
-		// TODO: Handle coroutine for moving sideways and backwards
-		StartCoroutine(MoveShipForward(destCell.transform.position));
 
 		// Update occupied cells
 		// Reset currently occupied cells
@@ -244,34 +317,56 @@ public class ShipScript : MonoBehaviour {
 			//oCellScript.DisplaySelection();
 		}
 		cells.Clear();
+
+		// Get new cell that ship is on
+		CellScript shipCell = destCell;
+		int shipX = shipCell.gridPositionX;
+		int shipY = shipCell.gridPositionY;
+		Debug.Log ("Ship Vals: " + shipX + " " + shipY);
 		// Add newly occupied cells
 		switch(curDir) {
 		case GameScript.Direction.East:
-			for (int i = (-shipSize+1); i <= 0; i++) {
-				CellScript newCellScript = gridScript.grid[destCell.gridPositionX + i, destCell.gridPositionY];
+			if (forward) shipX -= shipSize-1;
+			Debug.Log ("Ship Vals: " + shipX + " " + shipY);
+			for (int i = 0; i < shipSize; i++) {
+				Debug.Log ("i: " + i);
+				CellScript newCellScript = gridScript.grid[shipX + i, shipY];
+				Debug.Log ("Cell: " + newCellScript.gridPositionX + " " + newCellScript.gridPositionY);
 				newCellScript.occupier = this.gameObject;
-				cells.Add (newCellScript);
+				cells.Add(newCellScript);
 			}
 			break;
 		case GameScript.Direction.North:
-			for (int i = (-shipSize+1); i <= 0; i++) {
-				CellScript newCellScript = gridScript.grid[destCell.gridPositionX, destCell.gridPositionY + i];
+			if (forward) shipY -= shipSize-1;
+			Debug.Log ("Ship Vals: " + shipX + " " + shipY);
+			for (int i = 0; i < shipSize; i++) {
+				Debug.Log ("i: " + i);
+				CellScript newCellScript = gridScript.grid[shipX, shipY + i];
+				Debug.Log ("Cell: " + newCellScript.gridPositionX + " " + newCellScript.gridPositionY);
 				newCellScript.occupier = this.gameObject;
-				cells.Add (newCellScript);
+				cells.Add(newCellScript);
 			}
 			break;
 		case GameScript.Direction.South:
-			for (int i = (-shipSize+1); i <= 0; i++) {
-				CellScript newCellScript = gridScript.grid[destCell.gridPositionX, destCell.gridPositionY - i];
+			if (forward) shipY += shipSize-1;
+			Debug.Log ("Ship Vals: " + shipX + " " + shipY);
+			for (int i = 0; i < shipSize; i++) {
+				Debug.Log ("i: " + i);
+				CellScript newCellScript = gridScript.grid[shipX, shipY - i];
+				Debug.Log ("Cell: " + newCellScript.gridPositionX + " " + newCellScript.gridPositionY);
 				newCellScript.occupier = this.gameObject;
-				cells.Add (newCellScript);
+				cells.Add(newCellScript);
 			}
 			break;
 		case GameScript.Direction.West:
-			for (int i = (-shipSize+1); i <= 0; i++) {
-				CellScript newCellScript = gridScript.grid[destCell.gridPositionX - i, destCell.gridPositionY];
+			if (forward) shipX += shipSize-1;
+			Debug.Log ("Ship Vals: " + shipX + " " + shipY);
+			for (int i = 0; i < shipSize; i++) {
+				Debug.Log ("i: " + i);
+				CellScript newCellScript = gridScript.grid[shipX - i, shipY];
+				Debug.Log ("Cell: " + newCellScript.gridPositionX + " " + newCellScript.gridPositionY);
 				newCellScript.occupier = this.gameObject;
-				cells.Add (newCellScript);
+				cells.Add(newCellScript);
 			}
 			break;
 		}
@@ -282,7 +377,6 @@ public class ShipScript : MonoBehaviour {
 			oCellScript.available = false;
 			oCellScript.curCellState = GameScript.CellState.Ship;
 			oCellScript.selected = true;
-			//o.GetComponent<CellScript>().DisplaySelection();
 		}
 
 		Debug.Log("X: "+ destCell.gridPositionX + " Y: " + destCell.gridPositionY);
@@ -293,31 +387,31 @@ public class ShipScript : MonoBehaviour {
 		// End the current turn
 //		gameScript.curGameState = GameScript.GameState.Wait;
 
-		gameScript.endTurn();
+		gameScript.EndTurn();
 		//rpcScript.EndTurn();
 	}
 
 	/*
 	 * Add damage to ship and recalculate speed.
 	 */
-	public void HandleHit(GameObject section, int local) 
+	public void HandleHit(GameObject section, int local, int damage) 
 	{
 		int sectionIndex = shipSections.IndexOf(section);
 		if (local == 1)
 		{
 			Debug.Log("Local");
-			rpcScript.fireCannonShip(shipID,sectionIndex);
+			rpcScript.fireCannonShip(shipID,sectionIndex, damage);
 			return;
 		}
 		DisplayCannonRange(false);
 		Debug.Log ("Hit handled on section: " + sectionIndex);
-		health [sectionIndex] -= 1;
+		health [sectionIndex] -= damage;
 		int damageTotal = 0;
 		for (int i = 0; i < shipSize; i++) {
 			Debug.Log ("health" + health[i]);
 			damageTotal += health[i];
 		}
-		Debug.Log ("DAmage total is: " + damageTotal);
+		Debug.Log ("Damage total is: " + damageTotal);
 		if (damageTotal == 0) {
 			Destroy(gameObject);
 			//Take care of stats, etc.
@@ -330,7 +424,7 @@ public class ShipScript : MonoBehaviour {
 		}
 
 		//rpcScript.EndTurn();
-		gameScript.endTurn();
+		gameScript.EndTurn();
 
 	}
 	
@@ -339,8 +433,7 @@ public class ShipScript : MonoBehaviour {
 	 */
 	public void RotateShip(bool clockwise, int local) {
 
-		if (local == 1)
-		{
+		if (local == 1){
 			rpcScript.NetworkRotateShip(shipID,clockwise);
 			return;
 		}
@@ -455,16 +548,24 @@ public class ShipScript : MonoBehaviour {
 
 		//rpcScript.EndTurn();
 		SetRotation();
-		gameScript.endTurn();
+		gameScript.EndTurn();
 	}
 
-	// Fire cannon at targeted cell
+	/*
+	 * Fire cannon at targeted cell
+	 */
 	public void FireCannon(CellScript targetCell) {
 		// Call coroutine to display fire outcome
 		DisplayCannonRange(false);
 		StartCoroutine(DisplayCannon(targetCell.gameObject));
 		rpcScript.fireCannonCell(shipID,targetCell.gridPositionX, targetCell.gridPositionY);
 		rpcScript.EndTurn();
+	}
+
+	/*
+	 * Fire a torpedo in the current direction that the ship is facing
+	 */
+	public void FireTorpedo() {
 
 	}
 
@@ -554,35 +655,36 @@ public class ShipScript : MonoBehaviour {
 		else setColor = Color.blue;
 		
 		// Get front cell of ship
-		CellScript frontCellScript = cells[cells.Count - 1];
-		int startX = frontCellScript.gridPositionX;
-		int startY = frontCellScript.gridPositionY;
+		CellScript backCellScript = cells[0];
+		int startX = backCellScript.gridPositionX;
+		int startY = backCellScript.gridPositionY;
+		int sideDist = cannonRangeSide / 2;
 		switch (curDir) {
 		case GameScript.Direction.East:
-			for (int x = -2; x <= 1; x++) {
-				for (int y = -2; y <= 2; y++) {
+			for (int x = cannonRangeStart; x < cannonRangeStart + cannonRangeForward; x++) {
+				for (int y = -sideDist; y <= sideDist; y++) {
 					gridScript.DisplayCellForShoot(status, startX + x, startY + y);
 				}
 			}
 			break;
 		case GameScript.Direction.West:
-			for (int x = -1; x <= 2; x++) {
-				for (int y = -2; y <= 2; y++) {
-					gridScript.DisplayCellForShoot(status, startX + x, startY + y);
+			for (int x = cannonRangeStart; x < cannonRangeStart + cannonRangeForward; x++) {
+				for (int y = -sideDist; y <= sideDist; y++) {
+					gridScript.DisplayCellForShoot(status, startX - x, startY + y);
 				}
 			}
 			break;
 		case GameScript.Direction.North:
-			for (int x = -2; x <= 2; x++) {
-				for (int y = -2; y <= 1; y++) {
+			for (int x = -sideDist; x <= sideDist; x++) {
+				for (int y = cannonRangeStart; y < cannonRangeStart + cannonRangeForward; y++) {
 					gridScript.DisplayCellForShoot(status, startX + x, startY + y);
 				}
 			}
 			break;
 		case GameScript.Direction.South:
-			for (int x = -2; x <= 2; x++) {
-				for (int y = -1; y <= 2; y++) {
-					gridScript.DisplayCellForShoot(status, startX + x, startY + y);
+			for (int x = -sideDist; x <= sideDist; x++) {
+				for (int y = cannonRangeStart; y < cannonRangeStart + cannonRangeForward; y++) {
+					gridScript.DisplayCellForShoot(status, startX + x, startY - y);
 				}
 			}
 			break;
@@ -592,38 +694,43 @@ public class ShipScript : MonoBehaviour {
 	// Display range of cannon
 	public void UpdateRadarVisibility (bool status) {
 		// Get front cell of ship
-		CellScript frontCellScript = cells[cells.Count - 1];
-		int startX = frontCellScript.gridPositionX;
-		int startY = frontCellScript.gridPositionY;
+		CellScript backCellScript = cells[0];
+		int startX = backCellScript.gridPositionX;
+		int startY = backCellScript.gridPositionY;
+		int sideDist = radarRangeSide / 2;
 		switch (curDir) {
 		case GameScript.Direction.East:
-			for (int x = -3; x <= 2; x++) {
-				for (int y = -2; y <= 2; y++) {
+			for (int x = radarRangeStart; x < radarRangeStart + radarRangeForward; x++) {
+				for (int y = -sideDist; y <= sideDist; y++) {
+					if (startX + x < 0 || startX + x > 29 || startY + y < 0 || startY + y > 29) continue;
 					CellScript curCellScript = gridScript.grid[startX + x, startY + y];
 					curCellScript.SetVisible(true);
 				}
 			}
 			break;
 		case GameScript.Direction.West:
-			for (int x = -2; x <= 3; x++) {
-				for (int y = -2; y <= 2; y++) {
-					CellScript curCellScript = gridScript.grid[startX + x, startY + y];
+			for (int x = radarRangeStart; x < radarRangeStart + radarRangeForward; x++) {
+				for (int y = -sideDist; y <= sideDist; y++) {
+					if (startX + x < 0 || startX + x > 29 || startY + y < 0 || startY + y > 29) continue;
+					CellScript curCellScript = gridScript.grid[startX - x, startY + y];
 					curCellScript.SetVisible(true);
 				}
 			}
 			break;
 		case GameScript.Direction.North:
-			for (int x = -2; x <= 2; x++) {
-				for (int y = -3; y <= 2; y++) {
+			for (int x = -sideDist; x <= sideDist; x++) {
+				for (int y = radarRangeStart; y < radarRangeStart + radarRangeForward; y++) {
+					if (startX + x < 0 || startX + x > 29 || startY + y < 0 || startY + y > 29) continue;
 					CellScript curCellScript = gridScript.grid[startX + x, startY + y];
 					curCellScript.SetVisible(true);
 				}
 			}
 			break;
 		case GameScript.Direction.South:
-			for (int x = -2; x <= 2; x++) {
-				for (int y = -2; y <= 3; y++) {
-					CellScript curCellScript = gridScript.grid[startX + x, startY + y];
+			for (int x = -sideDist; x <= sideDist; x++) {
+				for (int y = radarRangeStart; y < radarRangeStart + radarRangeForward; y++) {
+					if (startX + x < 0 || startX + x > 29 || startY + y < 0 || startY + y > 29) continue;
+					CellScript curCellScript = gridScript.grid[startX + x, startY - y];
 					curCellScript.SetVisible(true);
 				}
 			}
@@ -631,5 +738,12 @@ public class ShipScript : MonoBehaviour {
 		}
 	}
 
+	/*
+	 * To make mine laying fit into the overall structure of Cellscript calling back to ShipScript,
+	 * we need to have this method in every ShipScript. 
+	 */
+	public virtual void LayMine(CellScript cell) {
+		Debug.LogWarning ("Attempted to drop a mine from a ship that is not a MineLayer. Something is horribly wrong.");
+	}
 
 }

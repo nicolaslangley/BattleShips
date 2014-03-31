@@ -4,7 +4,7 @@ using System.Collections;
 public class DestroyerScript : ShipScript {
 
 	// Use this for initialization
-	void Start() {
+	void Awake () {
 		this.shipSize = 4;
 		this.heavyArmor = false;
 		this.heavyCannon = false;
