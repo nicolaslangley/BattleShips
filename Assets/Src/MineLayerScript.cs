@@ -4,7 +4,7 @@ using System.Collections;
 public class MineLayerScript : ShipScript {
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		this.shipSize = 2;
 		this.heavyArmor = true;
 		this.heavyCannon = false;
