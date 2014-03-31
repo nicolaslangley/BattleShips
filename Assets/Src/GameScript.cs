@@ -132,6 +132,13 @@ public class GameScript : MonoBehaviour {
 
 	public void endTurn()
 	{
+		// Perform one last update to visibility before ending turn
+		gridScript.ResetVisibility();
+		foreach (GameObject o in ships) {
+			ShipScript s = o.GetComponent<ShipScript>();
+			s.CustomPlayUpdate();
+		}
+
 		if (curGameState == GameState.Wait)
 		{
 			curGameState = GameState.Play;

@@ -133,8 +133,6 @@ public class ShipScript : MonoBehaviour {
 		Vector3 start = transform.position;
 		Vector3 dest = transform.position;
 		float amount;
-		// TODO: fix this to be a function of ship size
-		// TODO: offset in East and South required?
 		float offset = shipSize - 1;
 		switch(curDir) {
 		case GameScript.Direction.East:
@@ -220,7 +218,7 @@ public class ShipScript : MonoBehaviour {
 	// Display the effects of shooting the cannon over a period of time
 	IEnumerator DisplayCannon (GameObject target) {
 		float startTime=Time.time; // Time.time contains current frame time, so remember starting point
-		while(Time.time-startTime<=0.3){ // until one second passed
+		while(Time.time-startTime <= 0.3){ // until one second passed
 			target.renderer.material.color = Color.white; // lerp from A to B in one second
 			yield return 1; // wait for next frame
 		}
@@ -237,7 +235,10 @@ public class ShipScript : MonoBehaviour {
 		return shipSections[section];
 	}
 
-	// Handles movement of ship - INCOMPLETE
+	/*
+	 * Handles movement of ship
+	 * Moves ship to target cell
+	 */
 	public void MoveShip (CellScript destCell, int local) {
 		// Get front cell of ship
 
@@ -274,7 +275,6 @@ public class ShipScript : MonoBehaviour {
 			distance = -distance;
 		}
 
-		// TODO: Verify that sideways move is valid and handle backwards move properly
 		// Distance will be 0 only if the move is sideways
 		if (distance == 0) {
 			bool validMove = gridScript.VerifySidewaysMove(destCell.gridPositionX, destCell.gridPositionY, shipSize, curDir);
@@ -376,7 +376,6 @@ public class ShipScript : MonoBehaviour {
 			oCellScript.available = false;
 			oCellScript.curCellState = GameScript.CellState.Ship;
 			oCellScript.selected = true;
-			//o.GetComponent<CellScript>().DisplaySelection();
 		}
 
 		Debug.Log("X: "+ destCell.gridPositionX + " Y: " + destCell.gridPositionY);
@@ -433,8 +432,7 @@ public class ShipScript : MonoBehaviour {
 	 */
 	public void RotateShip(bool clockwise, int local) {
 
-		if (local == 1)
-		{
+		if (local == 1){
 			rpcScript.NetworkRotateShip(shipID,clockwise);
 			return;
 		}
@@ -552,13 +550,22 @@ public class ShipScript : MonoBehaviour {
 		gameScript.endTurn();
 	}
 
-	// Fire cannon at targeted cell
+	/*
+	 * Fire cannon at targeted cell
+	 */
 	public void FireCannon(CellScript targetCell) {
 		// Call coroutine to display fire outcome
 		DisplayCannonRange(false);
 		StartCoroutine(DisplayCannon(targetCell.gameObject));
 		rpcScript.fireCannonCell(shipID,targetCell.gridPositionX, targetCell.gridPositionY);
 		rpcScript.EndTurn();
+
+	}
+
+	/*
+	 * Fire a torpedo in the current direction that the ship is facing
+	 */
+	public void FireTorpedo() {
 
 	}
 
