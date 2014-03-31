@@ -579,8 +579,13 @@ public class ShipScript : MonoBehaviour {
 			Debug.Log ("Nothing was hit by the torpedo");
 		} else {
 			// Handle hit on object
-			if (hitCell.curCellState == GameScript.CellState.Ship || hitCell.curCellState == GameScript.CellState.Base) {
-				Debug.Log("Hit a ship or a base");
+			if (hitCell.curCellState == GameScript.CellState.Ship) {
+				Debug.Log("Hit a ship");
+				ShipScript hitShip = hitCell.occupier.GetComponent<ShipScript>();
+				hitShip.HandleHit(hitCell, 1);
+			} else if (hitCell.curCellState == GameScript.CellState.Base) {
+				Debug.Log("Hit a base");
+				BaseScript hitBase = hitCell.occupier.GetComponent<BaseScript>();
 			}
 			StartCoroutine(DisplayHit(hitCell.gameObject));
 		}
