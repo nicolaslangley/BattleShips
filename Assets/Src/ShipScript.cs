@@ -66,13 +66,16 @@ public class ShipScript : MonoBehaviour {
 				// Display cannon range in cells
 				DisplayCannonRange(true);
 			}
-			if (GUI.Button(new Rect(Screen.width - 110, 90, 100, 30), "Rotate Clockwise")) {
+			if (GUI.Button(new Rect(Screen.width - 110, 90, 100, 30), "Fire Torpedo")) {
+				FireTorpedo();
+			}
+			if (GUI.Button(new Rect(Screen.width - 110, 130, 100, 30), "Rotate Clockwise")) {
 				RotateShip(true,1);
 			}
-			if (GUI.Button(new Rect(Screen.width - 110, 130, 100, 30), "Rotate Counterclockwise")) {
+			if (GUI.Button(new Rect(Screen.width - 110, 170, 100, 30), "Rotate Counterclockwise")) {
 				RotateShip(false,1);
 			}
-			if (GUI.Button(new Rect(Screen.width - 110, 210, 100, 30), "Cancel Action")) {
+			if (GUI.Button(new Rect(Screen.width - 110, 230, 100, 30), "Cancel Action")) {
 				gameScript.curPlayAction = GameScript.PlayAction.None;
 				DisplayMoveRange(false);
 				DisplayCannonRange(false);
@@ -217,7 +220,7 @@ public class ShipScript : MonoBehaviour {
 	}
 
 	// Display the effects of shooting the cannon over a period of time
-	IEnumerator DisplayCannon (GameObject target) {
+	IEnumerator DisplayHit (GameObject target) {
 		float startTime=Time.time; // Time.time contains current frame time, so remember starting point
 		while(Time.time-startTime <= 0.3){ // until one second passed
 			target.renderer.material.color = Color.white; // lerp from A to B in one second
@@ -296,11 +299,11 @@ public class ShipScript : MonoBehaviour {
 				return;
 			}
 		
-			CellScript validDestCell = gridScript.VerifyCellPath(startX, startY, distance, curDir, destCell);
+			CellScript validDestCell = gridScript.VerifyCellPath(startX, startY, distance, curDir, destCell, "Move");
 			if (validDestCell != destCell) {
-				// TODO: only move up until given cell
-				Debug.Log ("Invalid path");
-				return;
+				Debug.Log ("Invalid path, moving up until collision");
+				// TODO: Potentially notify other player of reef collision? Does damage occur?
+				destCell = validDestCell;
 			}
 			forward = true;
 			StartCoroutine(MoveShipForward(destCell.transform.position));
@@ -557,7 +560,7 @@ public class ShipScript : MonoBehaviour {
 	public void FireCannon(CellScript targetCell) {
 		// Call coroutine to display fire outcome
 		DisplayCannonRange(false);
-		StartCoroutine(DisplayCannon(targetCell.gameObject));
+		StartCoroutine(DisplayHit(targetCell.gameObject));
 		rpcScript.fireCannonCell(shipID,targetCell.gridPositionX, targetCell.gridPositionY);
 		rpcScript.EndTurn();
 	}
@@ -566,7 +569,21 @@ public class ShipScript : MonoBehaviour {
 	 * Fire a torpedo in the current direction that the ship is facing
 	 */
 	public void FireTorpedo() {
-
+		// Compute distance of torpedo
+		CellScript frontCellScript = cells[cells.Count - 1];
+		int startX = frontCellScript.gridPositionX;
+		int startY = frontCellScript.gridPositionY;
+		CellScript hitCell = gridScript.VerifyCellPath(startX, startY, 30, curDir, null, "Torpedo");
+		if (hitCell == null) {
+			// Nothing was hit by the torpedo
+			Debug.Log ("Nothing was hit by the torpedo");
+		} else {
+			// Handle hit on object
+			if (hitCell.curCellState == GameScript.CellState.Ship || hitCell.curCellState == GameScript.CellState.Base) {
+				Debug.Log("Hit a ship or a base");
+			}
+			StartCoroutine(DisplayHit(hitCell.gameObject));
+		}
 	}
 
 	// Set rotation of ship based on direction
@@ -574,7 +591,6 @@ public class ShipScript : MonoBehaviour {
 		Quaternion tempRot = Quaternion.identity;
 		switch(curDir) {
 		case GameScript.Direction.East:
-
 			tempRot.eulerAngles = new Vector3(0, 90, 0);
 			break;
 		case GameScript.Direction.North:

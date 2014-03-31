@@ -247,48 +247,54 @@ public class GridScript : MonoBehaviour {
 	/*
 	 * Returns the valid destination cell within the given path
 	 */
-	public CellScript VerifyCellPath (int positionX, int positionY, int dist, GameScript.Direction dir, CellScript destCell) {
+	public CellScript VerifyCellPath (int positionX, int positionY, int dist, GameScript.Direction dir, CellScript destCell, string type) {
 		bool obstacleEncountered = false;
+		int offset = 0;
+		if (type == "Move") offset = 1;
 		CellScript encounteredObstacle = destCell;
 		switch (dir) {
 		case GameScript.Direction.East:
 			for (int x = 1; x <= dist; x++) {
+				if (positionX + x < 0 || positionX + x > 29) break;
 				CellScript curCellScript = grid[positionX + x, positionY];
 				if (curCellScript.available != true) {
 					obstacleEncountered = true;
-					encounteredObstacle = grid[positionX + (x-1), positionY].GetComponent<CellScript>();
+					encounteredObstacle = grid[positionX + (x-offset), positionY].GetComponent<CellScript>();
 					break;
 				}
 			}
 			break;
 		case GameScript.Direction.West:
 			for (int x = 1; x <= -dist; x++) {
+				if (positionX - x < 0 || positionX - x > 29) break;
 				CellScript curCellScript = grid[positionX - x, positionY];
 				Debug.Log ("Checking: " + (positionX - x) + " " + positionY);
 				if (curCellScript.available != true) {
 					Debug.Log ("Cell unavailable");
 					obstacleEncountered = true;
-					encounteredObstacle = grid[positionX - (x-1), positionY].GetComponent<CellScript>();
+					encounteredObstacle = grid[positionX - (x-offset), positionY].GetComponent<CellScript>();
 					break;
 				}
 			}
 			break;
 		case GameScript.Direction.North:
 			for (int y = 1; y <= dist; y++) {
+				if (positionY + y < 0 || positionY + y > 29) break;
 				CellScript curCellScript = grid[positionX, positionY + y];
 				if (curCellScript.available != true) {
 					obstacleEncountered = true;
-					encounteredObstacle = grid[positionX, positionY + (y-1)].GetComponent<CellScript>();
+					encounteredObstacle = grid[positionX, positionY + (y-offset)].GetComponent<CellScript>();
 					break;
 				}
 			}
 			break;
 		case GameScript.Direction.South:
 			for (int y = 1; y <= -dist; y++) {
+				if (positionY - y < 0 || positionY - y > 29) break;
 				CellScript curCellScript = grid[positionX, positionY - y];
 				if (curCellScript.available != true) {
 					obstacleEncountered = true;
-					encounteredObstacle = grid[positionX, positionY - (y-1)].GetComponent<CellScript>();
+					encounteredObstacle = grid[positionX, positionY - (y-offset	)].GetComponent<CellScript>();
 					break;
 				}
 			}
@@ -373,8 +379,7 @@ public class GridScript : MonoBehaviour {
 	public CellScript GetCell(int x, int y) {
 		return grid [x, y];
 	}
-
-	// TODO: Handle case where x and y are not on the grid.
+	
 	// Display cell as being available for movement based on status 
 	public void DisplayCellForMove(bool status, int x, int y) {
 		if (x < 0 || x > 29 || y < 0 || y > 29) return;
