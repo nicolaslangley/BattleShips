@@ -165,13 +165,13 @@ public class RPCScript : MonoBehaviour {
 //		}
 	}
 
-	public void fireCannonShip(string shipID, int section)
+	public void fireCannonShip(string shipID, int section, int damage)
 	{
-		networkView.RPC ("RPCFireCannonShip",RPCMode.AllBuffered,shipID, section);
+		networkView.RPC ("RPCFireCannonShip",RPCMode.AllBuffered,shipID, section, damage);
 	}
 
 	[RPC]
-	void RPCFireCannonShip(string shipID, int section)
+	void RPCFireCannonShip(string shipID, int section, int damage)
 	{
 		foreach(GameObject obj in gameScript.ships)
 		{
@@ -179,7 +179,7 @@ public class RPCScript : MonoBehaviour {
 			if (shipscript.shipID == shipID)
 			{
 				Debug.Log ("Found correct ship");
-				shipscript.HandleHit(shipscript.getSection(section),0);
+				shipscript.HandleHit(shipscript.getSection(section),0, damage);
 				gameScript.messages = "Hit ship with ID: " + shipID;
 
 				break;

@@ -33,9 +33,9 @@ public class KamikazeBoatScript : ShipScript {
 							ShipSectionScript section = temp.occupier.GetComponent<ShipSectionScript>();
 							ShipScript ship = section.parent;
 							if (ship.player == gameScript.myname) {
-								ship.HandleHit(temp.occupier, 1);
+								ship.HandleHit(temp.occupier, 1, 1);
 							} else {
-								this.rpcScript.fireCannonShip(ship.shipID, 0);
+								this.rpcScript.fireCannonShip(ship.shipID, 0, 1);
 							}
 						}
 					}

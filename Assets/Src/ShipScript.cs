@@ -40,7 +40,7 @@ public class ShipScript : MonoBehaviour {
 	protected int radarRangeSide = 5;
 	protected int radarRangeStart = -2;
 
-	protected bool heavyCannon;
+	public bool heavyCannon;
 	protected bool heavyArmor;
 	
 	public ShipScript() {
@@ -394,18 +394,18 @@ public class ShipScript : MonoBehaviour {
 	/*
 	 * Add damage to ship and recalculate speed.
 	 */
-	public void HandleHit(GameObject section, int local) 
+	public void HandleHit(GameObject section, int local, int damage) 
 	{
 		int sectionIndex = shipSections.IndexOf(section);
 		if (local == 1)
 		{
 			Debug.Log("Local");
-			rpcScript.fireCannonShip(shipID,sectionIndex);
+			rpcScript.fireCannonShip(shipID,sectionIndex, damage);
 			return;
 		}
 		DisplayCannonRange(false);
 		Debug.Log ("Hit handled on section: " + sectionIndex);
-		health [sectionIndex] -= 1;
+		health [sectionIndex] -= damage;
 		int damageTotal = 0;
 		for (int i = 0; i < shipSize; i++) {
 			Debug.Log ("health" + health[i]);
