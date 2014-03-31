@@ -294,7 +294,7 @@ public class GridScript : MonoBehaviour {
 				CellScript curCellScript = grid[positionX, positionY - y];
 				if (curCellScript.available != true) {
 					obstacleEncountered = true;
-					encounteredObstacle = grid[positionX, positionY - (y-offset	)].GetComponent<CellScript>();
+					encounteredObstacle = grid[positionX, positionY - (y-offset)].GetComponent<CellScript>();
 					break;
 				}
 			}
