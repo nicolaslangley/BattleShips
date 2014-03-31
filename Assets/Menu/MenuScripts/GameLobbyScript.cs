@@ -11,10 +11,14 @@ public class GameLobbyScript : MonoBehaviour
 
     private ArrayList playerList = new ArrayList();
 
+
     public class PlayerInfo
     {
         public string username;
         public NetworkPlayer player;
+        public int UID;
+		public int played;
+		public int won;
     }
 
     private int serverMaxPlayers = 4;
@@ -22,6 +26,9 @@ public class GameLobbyScript : MonoBehaviour
     private bool serverPasswordProtected = false;
 
     private string playerName = "";
+    private int playerUID = 0;
+	private int playerPlayed = 0;
+	private int playerWon = 0;
 
     private MainMenuScript mainMenuScript;
     void Awake()
@@ -35,6 +42,9 @@ public class GameLobbyScript : MonoBehaviour
     public void EnableLobby()
     {
         playerName = PlayerPrefs.GetString("playerName");
+        playerUID = PlayerPrefs.GetInt("UID");
+		playerPlayed = PlayerPrefs.GetInt ("Played");
+		playerWon = PlayerPrefs.GetInt("Won");
 
         lastRegTime = Time.time - 3600;
 
@@ -140,7 +150,8 @@ public class GameLobbyScript : MonoBehaviour
         int currentPlayerCount = 0;
         foreach (var playerInstance in playerList)
         {
-            players = (playerInstance as PlayerInfo).username + "\n" + players;
+			PlayerInfo p = (playerInstance as PlayerInfo);
+            players = p.username + " ("+p.won+"/" + p.played+") \n" + players;
             currentPlayerCount++;
         }
 
@@ -185,15 +196,22 @@ public class GameLobbyScript : MonoBehaviour
         //Called on client
         //Send everyone this clients data
         playerList = new ArrayList();
+
+
         playerName = PlayerPrefs.GetString("playerName");
-        networkView.RPC("addPlayer", RPCMode.AllBuffered, Network.player, playerName);
+		playerUID = PlayerPrefs.GetInt("UID");
+		playerPlayed = PlayerPrefs.GetInt ("Played");
+		playerWon = PlayerPrefs.GetInt("Won");
+	
+        networkView.RPC("addPlayer", RPCMode.AllBuffered, Network.player, playerName, playerWon, playerPlayed);
     }
     void OnServerInitialized()
     {
         //Called on host
         //Add hosts own data to the playerlist	
         playerList = new ArrayList();
-        networkView.RPC("addPlayer", RPCMode.AllBuffered, Network.player, playerName);
+
+		networkView.RPC("addPlayer", RPCMode.AllBuffered, Network.player, playerName, playerWon, playerPlayed);
 
         bool pProtected = false;
         if (Network.incomingPassword != null && Network.incomingPassword != "")
@@ -231,15 +249,16 @@ public class GameLobbyScript : MonoBehaviour
         chat.addGameChatMessage("A player left the lobby");
     }
     [RPC]
-    void addPlayer(NetworkPlayer player, string username)
+    void addPlayer(NetworkPlayer player, string username, int won, int played)
     {
-        //Debug.Log("got addplayer" + username);
 
 		NetworkViewID newViewID = Network.AllocateViewID();
 
         PlayerInfo playerInstance = new PlayerInfo();
         playerInstance.player = player;
         playerInstance.username = username;
+		playerInstance.played = played;
+		playerInstance.won = won;
         playerList.Add(playerInstance);
     }
     [RPC]
@@ -296,5 +315,4 @@ public class GameLobbyScript : MonoBehaviour
         }
 
     }
-
 }
