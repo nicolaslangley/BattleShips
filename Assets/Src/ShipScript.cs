@@ -427,6 +427,12 @@ public class ShipScript : MonoBehaviour {
 		gameScript.EndTurn();
 
 	}
+
+	//Handles Damage on ship given cell.
+	public void HandleHit(CellScript cell, int damage) {
+		int index = cells.IndexOf(cell);
+		HandleHit(shipSections[index],1,damage);
+	}
 	
 	/*
 	 * Rotates the ship
@@ -737,6 +743,8 @@ public class ShipScript : MonoBehaviour {
 			break;
 		}
 	}
+
+
 
 	/*
 	 * To make mine laying fit into the overall structure of Cellscript calling back to ShipScript,
