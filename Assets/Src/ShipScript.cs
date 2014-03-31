@@ -88,8 +88,7 @@ public class ShipScript : MonoBehaviour {
 		gridScript = system.GetComponent<GridScript>();
 		rpcScript = system.GetComponent<RPCScript>();
 		// Change the size for each sub ship
-		shipSize = 2;
-		speed = 3;
+		speed = maxSpeed;
 		health = new int[shipSize];
 		InitArmor ();
 		// Add all child sections ship
@@ -649,35 +648,36 @@ public class ShipScript : MonoBehaviour {
 		else setColor = Color.blue;
 		
 		// Get front cell of ship
-		CellScript frontCellScript = cells[cells.Count - 1];
-		int startX = frontCellScript.gridPositionX;
-		int startY = frontCellScript.gridPositionY;
+		CellScript backCellScript = cells[0];
+		int startX = backCellScript.gridPositionX;
+		int startY = backCellScript.gridPositionY;
+		int sideDist = cannonRangeSide / 2;
 		switch (curDir) {
 		case GameScript.Direction.East:
-			for (int x = -2; x <= 1; x++) {
-				for (int y = -2; y <= 2; y++) {
+			for (int x = cannonRangeStart; x < cannonRangeStart + cannonRangeForward; x++) {
+				for (int y = -sideDist; y <= sideDist; y++) {
 					gridScript.DisplayCellForShoot(status, startX + x, startY + y);
 				}
 			}
 			break;
 		case GameScript.Direction.West:
-			for (int x = -1; x <= 2; x++) {
-				for (int y = -2; y <= 2; y++) {
-					gridScript.DisplayCellForShoot(status, startX + x, startY + y);
+			for (int x = cannonRangeStart; x < cannonRangeStart + cannonRangeForward; x++) {
+				for (int y = -sideDist; y <= sideDist; y++) {
+					gridScript.DisplayCellForShoot(status, startX - x, startY + y);
 				}
 			}
 			break;
 		case GameScript.Direction.North:
-			for (int x = -2; x <= 2; x++) {
-				for (int y = -2; y <= 1; y++) {
+			for (int x = -sideDist; x <= sideDist; x++) {
+				for (int y = cannonRangeStart; y < cannonRangeStart + cannonRangeForward; y++) {
 					gridScript.DisplayCellForShoot(status, startX + x, startY + y);
 				}
 			}
 			break;
 		case GameScript.Direction.South:
-			for (int x = -2; x <= 2; x++) {
-				for (int y = -1; y <= 2; y++) {
-					gridScript.DisplayCellForShoot(status, startX + x, startY + y);
+			for (int x = -sideDist; x <= sideDist; x++) {
+				for (int y = cannonRangeStart; y < cannonRangeStart + cannonRangeForward; y++) {
+					gridScript.DisplayCellForShoot(status, startX + x, startY - y);
 				}
 			}
 			break;
@@ -687,38 +687,39 @@ public class ShipScript : MonoBehaviour {
 	// Display range of cannon
 	public void UpdateRadarVisibility (bool status) {
 		// Get front cell of ship
-		CellScript frontCellScript = cells[cells.Count - 1];
-		int startX = frontCellScript.gridPositionX;
-		int startY = frontCellScript.gridPositionY;
+		CellScript backCellScript = cells[0];
+		int startX = backCellScript.gridPositionX;
+		int startY = backCellScript.gridPositionY;
+		int sideDist = radarRangeSide / 2;
 		switch (curDir) {
 		case GameScript.Direction.East:
-			for (int x = -3; x <= 2; x++) {
-				for (int y = -2; y <= 2; y++) {
+			for (int x = radarRangeStart; x < radarRangeStart + radarRangeForward; x++) {
+				for (int y = -sideDist; y <= sideDist; y++) {
 					CellScript curCellScript = gridScript.grid[startX + x, startY + y];
 					curCellScript.SetVisible(true);
 				}
 			}
 			break;
 		case GameScript.Direction.West:
-			for (int x = -2; x <= 3; x++) {
-				for (int y = -2; y <= 2; y++) {
-					CellScript curCellScript = gridScript.grid[startX + x, startY + y];
+			for (int x = radarRangeStart; x < radarRangeStart + radarRangeForward; x++) {
+				for (int y = -sideDist; y <= sideDist; y++) {
+					CellScript curCellScript = gridScript.grid[startX - x, startY + y];
 					curCellScript.SetVisible(true);
 				}
 			}
 			break;
 		case GameScript.Direction.North:
-			for (int x = -2; x <= 2; x++) {
-				for (int y = -3; y <= 2; y++) {
+			for (int x = -sideDist; x <= sideDist; x++) {
+				for (int y = radarRangeStart; y < radarRangeStart + radarRangeForward; y++) {
 					CellScript curCellScript = gridScript.grid[startX + x, startY + y];
 					curCellScript.SetVisible(true);
 				}
 			}
 			break;
 		case GameScript.Direction.South:
-			for (int x = -2; x <= 2; x++) {
-				for (int y = -2; y <= 3; y++) {
-					CellScript curCellScript = gridScript.grid[startX + x, startY + y];
+			for (int x = -sideDist; x <= sideDist; x++) {
+				for (int y = radarRangeStart; y < radarRangeStart + radarRangeForward; y++) {
+					CellScript curCellScript = gridScript.grid[startX + x, startY - y];
 					curCellScript.SetVisible(true);
 				}
 			}
