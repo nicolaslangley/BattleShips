@@ -23,6 +23,7 @@ public class BaseScript : MonoBehaviour {
 		if (selected == true) {
 			if (GUI.Button(new Rect(Screen.width - 110, 30, 100, 30), "Repair Ship")) {
 				gameScript.curPlayAction = GameScript.PlayAction.Repair;
+				DisplayDockingRegion(true);
 				Debug.Log ("Entering repair mode");
 			}
 		}
@@ -64,7 +65,7 @@ public class BaseScript : MonoBehaviour {
 		if (local == 1)
 		{
 			Debug.Log("Local");
-			//rpcScript.fireCannonShip(shipID,sectionIndex, damage);
+			//TODO: rpcScript.fireCannonShip(shipID,sectionIndex, damage);
 			return;
 		}
 		Debug.Log ("Hit handled on section: " + sectionIndex);
@@ -84,7 +85,20 @@ public class BaseScript : MonoBehaviour {
 		
 		//rpcScript.EndTurn();
 		gameScript.EndTurn();
-		
+	}
+
+	public void DisplayDockingRegion(bool status) {
+		Color setColor;
+		if (status) setColor = Color.green;
+		else setColor = Color.blue;
+
+		if (cells[0].gridPositionX == 0) {
+			for (int i = 0; i < 10; i++) {
+				gridScript.grid[1, 10 + i].SetVisible(true);
+				gridScript.grid[1, 10 + i].availableForRepair = status;
+			}
+		}
+
 	}
 	
 }

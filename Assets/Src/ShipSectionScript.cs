@@ -29,7 +29,9 @@ public class ShipSectionScript : MonoBehaviour {
 				parent.HandleHit(this.gameObject, 1, 2);
 			else
 				parent.HandleHit(this.gameObject,1, 1);
-		} else {
+		} else if (gameScript.curPlayAction == GameScript.PlayAction.Repair) {
+			parent.HandleRepair(this.gameObject);
+		} {
 			parent.selected = !parent.selected;
 			if (parent.selected == true) {
 				//gameObject.renderer.material.color = Color.cyan;

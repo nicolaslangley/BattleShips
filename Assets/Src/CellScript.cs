@@ -11,6 +11,7 @@ public class CellScript : MonoBehaviour {
 	public bool available = false;
 	public bool availableForMove = false;
 	public bool availableForShoot = false;
+	public bool availableForRepair = false;
 	public GameObject occupier = null;
 	public GameScript.CellState curCellState = GameScript.CellState.Available;
 	public int gridPositionX;

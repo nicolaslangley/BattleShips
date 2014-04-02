@@ -436,7 +436,18 @@ public class ShipScript : MonoBehaviour {
 		int index = cells.IndexOf(cell);
 		HandleHit(shipSections[index],1,damage);
 	}
-	
+
+	// TODO: Flesh out this method - does it need local?
+	public void HandleRepair(GameObject section) {
+		// Check that ship is in range of base
+		Debug.Log ("Repair handled");
+		int index = shipSections.IndexOf(section);
+		CellScript cell = cells[index];
+		if (cell.availableForRepair) {
+			health[index] += 1;
+		}
+	}
+
 	/*
 	 * Rotates the ship
 	 */

@@ -19,7 +19,7 @@ public class BaseSectionScript : MonoBehaviour {
 		// Don't act on mouse click if in wait state
 		if (gameScript.curGameState == GameScript.GameState.Wait) return;
 		
-		// Handle selection if cannon ship
+		// Handle selection if in cannon state
 		if (gameScript.curPlayAction == GameScript.PlayAction.Cannon) {
 			gameObject.renderer.material.color = Color.red;
 			if (gameScript.selectedShip.heavyCannon)
@@ -27,12 +27,14 @@ public class BaseSectionScript : MonoBehaviour {
 			else
 				parent.HandleHit(this.gameObject,1, 1);
 		} else {
-			parent.selected = !parent.selected;
-			if (parent.selected == true) {
-				//gameObject.renderer.material.color = Color.cyan;
-				foreach (CellScript oCellScript in parent.cells) {
-					oCellScript.selected = true;
-					//cs.DisplaySelection();
+			if (parent.name == gameScript.myname) {
+				parent.selected = !parent.selected;
+				if (parent.selected == true) {
+					//gameObject.renderer.material.color = Color.cyan;
+					foreach (CellScript oCellScript in parent.cells) {
+						oCellScript.selected = true;
+						//cs.DisplaySelection();
+					}
 				}
 			}
 		}
