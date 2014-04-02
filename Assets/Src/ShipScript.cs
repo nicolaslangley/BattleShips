@@ -235,7 +235,7 @@ public class ShipScript : MonoBehaviour {
 	/** HELPER METHODS **/
 
 	// Retrive object for section of ship
-	public GameObject getSection(int section) {
+	public GameObject GetSection(int section) {
 		return shipSections[section];
 	}
 

@@ -179,7 +179,7 @@ public class RPCScript : MonoBehaviour {
 			if (shipscript.shipID == shipID)
 			{
 				Debug.Log ("Found correct ship");
-				shipscript.HandleHit(shipscript.getSection(section),0, damage);
+				shipscript.HandleHit(shipscript.GetSection(section),0, damage);
 				gameScript.messages = "Hit ship with ID: " + shipID;
 
 				break;
