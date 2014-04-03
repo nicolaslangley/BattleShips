@@ -25,6 +25,9 @@ public class CellSaverScript {
 	}
 
 	public void Restore(CellScript cell) {
-
+		cell.curCellState = curCellState;
+		cell.gridPositionX = gridPositionX;
+		cell.gridPositionY = gridPositionY;
+		cell.instanceID = instanceID;
 	}
 }
