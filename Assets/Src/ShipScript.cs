@@ -1,16 +1,12 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using System.Xml;
-using System.Xml.Serialization;
+
 
 public class ShipScript : MonoBehaviour {
-	[XmlAttribute("player")]
 
 	/** Properties **/
-
 	public string shipID;
-
 	public string player;
 	//cells are ordered from first cell added when creating to last one
 	public List<CellScript> cells;
@@ -19,16 +15,16 @@ public class ShipScript : MonoBehaviour {
 	public GameScript gameScript;
 	public GridScript gridScript;
 	public bool selected = false;
-
+	
 	private List<GameObject> shipSections;
 	
 	private GameObject system;
 
 	protected RPCScript rpcScript;
-	private int[] health;
-	private CellScript baseCell;
-
-	private int speed; 
+	public int[] health;
+	public CellScript baseCell;
+	
+	public int speed; 
 	protected bool immobile = false;
 	protected int maxSpeed; //Speed at full health
 	protected int rotSteps = 1; // increments of 90 degrees. Most ships have 1, Torpedo Boats have 2
@@ -42,11 +38,8 @@ public class ShipScript : MonoBehaviour {
 
 	public bool heavyCannon;
 	protected bool heavyArmor;
-	
-	public ShipScript() {
-		//player = "Horatio";
-		//shipID = "ABC";
-	}
+
+	public string shipType;
 
 	/** UNITY METHODS **/
 

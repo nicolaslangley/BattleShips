@@ -2,21 +2,17 @@
 using System.Collections;
 using System.Collections.Generic;
 
-
 public class GameScript : MonoBehaviour {
 
 	/** Enums **/
-
 	public enum GameState {Setup, Play, Wait, End};
 	public enum Direction {North, East, South, West};
 	public enum CellState {Available, Mine, Reef, Ship, Base};
 	public enum PlayAction {Move, Cannon, Torpedo, DropMine, PickupMine, Repair, None};
 
-
-
+	
 	/** Properties **/
-
-	public List<GameObject> ships;
+	public List<ShipScript> ships;
 	public GridScript gridScript;
 	public ShipScript selectedShip;
 	public RPCScript rpcScript;
@@ -73,8 +69,7 @@ public class GameScript : MonoBehaviour {
 		case (GameState.Play):
 			// Perform update to objects based on play state
 			gridScript.ResetVisibility();
-			foreach (GameObject o in ships) {
-				ShipScript s = o.GetComponent<ShipScript>();
+			foreach (ShipScript s in ships) {
 				s.CustomPlayUpdate();
 			}
 			break;
@@ -134,8 +129,7 @@ public class GameScript : MonoBehaviour {
 	{
 		// Perform one last update to visibility before ending turn
 		gridScript.ResetVisibility();
-		foreach (GameObject o in ships) {
-			ShipScript s = o.GetComponent<ShipScript>();
+		foreach (ShipScript s in ships) {
 			s.CustomPlayUpdate();
 		}
 
@@ -150,6 +144,11 @@ public class GameScript : MonoBehaviour {
 		}
 
 		Debug.Log ("It is now "+ turn);
+	}
+
+	public void Reload(GameScript gameScript) {
+		//Reset this gamescript from a previously saved one.
+		//Do nothing for now.
 	}
 
 }

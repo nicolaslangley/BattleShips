@@ -85,9 +85,8 @@ public class RPCScript : MonoBehaviour {
 		Debug.Log("Ship: "+shipID+" moved to " + x + " ," + y);
 
 
-		foreach(GameObject obj in gameScript.ships)
+		foreach(ShipScript shipscript in gameScript.ships)
 		{
-			ShipScript shipscript = obj.GetComponent<ShipScript>();
 			if (shipscript.shipID == shipID)
 			{
 				Debug.Log ("Found correct ship");
@@ -110,9 +109,8 @@ public class RPCScript : MonoBehaviour {
 	{
 		Debug.Log("Ship: "+shipID+" Rotated: " + clockwise);
 	
-		foreach(GameObject obj in gameScript.ships)
+		foreach(ShipScript shipscript in gameScript.ships)
 		{
-			ShipScript shipscript = obj.GetComponent<ShipScript>();
 			if (shipscript.shipID == shipID)
 			{
 				Debug.Log ("Found correct ship");
@@ -173,9 +171,8 @@ public class RPCScript : MonoBehaviour {
 	[RPC]
 	void RPCFireCannonShip(string shipID, int section, int damage)
 	{
-		foreach(GameObject obj in gameScript.ships)
+		foreach(ShipScript shipscript in gameScript.ships)
 		{
-			ShipScript shipscript = obj.GetComponent<ShipScript>();
 			if (shipscript.shipID == shipID)
 			{
 				Debug.Log ("Found correct ship");

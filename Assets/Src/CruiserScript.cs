@@ -17,6 +17,8 @@ public class CruiserScript : ShipScript {
 		this.cannonRangeForward = 15;
 		this.cannonRangeSide = 11;
 		this.cannonRangeStart = -5;
+
+		this.shipType = "cruiser";
 	}
 
 	// Update is called once per frame

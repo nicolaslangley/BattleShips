@@ -17,6 +17,7 @@ public class RadarBoatScript : ShipScript {
 		this.cannonRangeForward = 5;
 		this.cannonRangeSide = 3;
 		this.cannonRangeStart = -1;
+		this.shipType = "radarboat";
 	}
 
 	void ToggleLongRange() {

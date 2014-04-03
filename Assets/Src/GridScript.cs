@@ -74,7 +74,7 @@ public class GridScript : MonoBehaviour {
 		}
 	}
 
-	public void PlaceShip (float startPosX, float startPosZ, float endPosX, float endPosZ, int local, string Player) {
+	public ShipScript PlaceShip (float startPosX, float startPosZ, float endPosX, float endPosZ, int local, string Player) {
 		if (local == 1)
 		{
 			rpcScript.setShip(startPosX, startPosZ, endPosX, endPosZ, Player);
@@ -100,9 +100,9 @@ public class GridScript : MonoBehaviour {
 		// Create ship
 		// TODO: Place new ship at correct orientation
 		GameObject newShip = Instantiate(destroyer, pos, Quaternion.identity) as GameObject;
-		// Add ship to list of ships in GameScript
-		gameScript.ships.Add(newShip);
 		ShipScript newShipScript = newShip.GetComponent<ShipScript>();
+		// Add ship to list of ships in GameScript
+		gameScript.ships.Add(newShipScript);
 		newShipScript.Init();
 		newShipScript.curDir = shipDir;
 		newShipScript.SetRotation();
@@ -147,6 +147,8 @@ public class GridScript : MonoBehaviour {
 			break;
 		}
 		currentSelection.Clear();
+
+		return newShipScript;
 
 		
 		// Reset selection of ship and cells

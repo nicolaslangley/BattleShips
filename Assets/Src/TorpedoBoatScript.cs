@@ -19,6 +19,8 @@ public class TorpedoBoatScript : ShipScript {
 		this.cannonRangeStart = 5;
 
 		this.rotSteps = 2;
+
+		this.shipType = "torpedoboat";
 	}
 	
 	// Update is called once per frame
