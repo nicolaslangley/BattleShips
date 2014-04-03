@@ -10,9 +10,12 @@ public class GameSaverScript {
 	[XmlArrayItem("Ship")]
 	public List<ShipSaverScript> ships;
 
+	public GridSaverScript grid;
+
 	public GameSaverScript() {}
 
 	public GameSaverScript(GameScript gameScript)  {
+		grid = new GridSaverScript (gameScript.gridScript);
 		ships = new List<ShipSaverScript> ();
 		foreach (ShipScript ship in gameScript.ships) {
 			ships.Add (new ShipSaverScript(ship));
@@ -36,13 +39,21 @@ public class GameSaverScript {
 		}
 		//Set values from saver scripts
 
+		loader.grid.Restore (gameScript.gridScript);
+
 		foreach (ShipSaverScript shipSaver in loader.ships) {
 			ShipScript ship;
 			//I'm assuming this is how PlaceShip works.
-			float startPosX = shipSaver.cells[0].gridPositionX;
-			float startPosZ = shipSaver.cells[0].gridPositionY;
-			float endPosX = shipSaver.health.Length;
-			float endPosZ = shipSaver.health.Length;
+			int startX = shipSaver.cells[0].gridPositionX;
+			int startY = shipSaver.cells[0].gridPositionY;
+			int length = shipSaver.cells.Count;
+			int endX = shipSaver.cells[length-1].gridPositionX;
+			int endY = shipSaver.cells[length-1].gridPositionY;
+
+			float startPosX = gameScript.gridScript.grid[startX, startY].transform.position.x;
+			float startPosZ = gameScript.gridScript.grid[startX, startY].transform.position.z;
+			float endPosX = gameScript.gridScript.grid[endX, endY].transform.position.x;
+			float endPosZ = gameScript.gridScript.grid[endX, endY].transform.position.z;
 			int local = 1; //Not sure what to do about this...
 			ship = gameScript.gridScript.PlaceShip(startPosX, startPosZ, endPosX, endPosZ, local, shipSaver.player);
 
