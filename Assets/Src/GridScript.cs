@@ -486,7 +486,7 @@ public class GridScript : MonoBehaviour {
 		else cellScript.renderer.material.color = setColor;
 	}
 
-	public void DisplayCellForRepair(bool status, int x, int y) {
+	public void DisplayCellForDock(bool status, int x, int y) {
 		if (x < 0 || x > 29 || y < 0 || y > 29) return;
 		Color setColor;
 		if (status) setColor = Color.green;
