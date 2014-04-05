@@ -137,12 +137,12 @@ public class ShipScript : MonoBehaviour {
 		switch(curDir) {
 		case GameScript.Direction.East:
 			amount = destPos.x - start.x;
-			amount -= offset;
+			amount -= offset + shipSize;
 			dest.x += amount;
 			break;
 		case GameScript.Direction.North:
 			amount = destPos.z - start.z;
-			amount -= offset;
+			amount -= offset + shipSize;
 			dest.z += amount;
 			break;
 		case GameScript.Direction.South:
