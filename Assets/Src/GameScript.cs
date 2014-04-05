@@ -9,6 +9,8 @@ public class GameScript : MonoBehaviour {
 	public enum Direction {North, East, South, West};
 	public enum CellState {Available, Mine, Reef, Ship, Base};
 	public enum PlayAction {Move, Cannon, Torpedo, DropMine, PickupMine, Repair, None};
+	public enum ShipTypes {Cruiser, Destroyer, Torpedo, Mine, Radar, Kamikaze};
+
 
 	public enum PlayerType {Player1 =1, Player2=2}
 	/** Properties **/
@@ -74,8 +76,7 @@ public class GameScript : MonoBehaviour {
 		switch (curGameState) {
 
 		case (GameState.Connecting):
-			if (!string.IsNullOrEmpty(opponentname)) {
-
+			if (!string.IsNullOrEmpty(opponentname) && !string.IsNullOrEmpty(myname)) {
 				setPlayerType();
 				curGameState = GameState.Setup;
 			}
@@ -126,7 +127,8 @@ public class GameScript : MonoBehaviour {
 
 		switch(curGameState) {
 		case (GameState.Setup):
-			bases[(int)myPlayerType - 1].DisplayDockingRegion(true);
+			//Debug.Log ("Player type: " + ((int)myPlayerType-1));
+			bases[((int)myPlayerType - 1)].DisplayDockingRegion(true);
 			// GUI to be displayed during setup phase
 			if (GUI.Button(new Rect(10, 10, 100, 30), "Play Game")) {
 				setPlayerType();
@@ -145,20 +147,40 @@ public class GameScript : MonoBehaviour {
 				Debug.Log ("It is now "+ turn);
 
 			}
-			if (GUI.Button (new Rect(10, 50, 100, 30), "Place Ship")) {
-				gridScript.setShip();
-				Debug.Log ("Placing a Ship on selected square");
+//			if (GUI.Button (new Rect(10, 50, 100, 30), "Place Ship")) {
+//				gridScript.setShip();
+//				Debug.Log ("Placing a Ship on selected square");
+//				rpcScript.SignalPlayer();
+//			}
+
+			if (GUI.Button (new Rect(10,90,100,30), "Place Cruiser")) {
+				gridScript.setShip(ShipTypes.Cruiser);
 				rpcScript.SignalPlayer();
+
 			}
-
-			if (GUI.Button (new Rect(10, 80, 100, 30), "Default Config")) {
-				gridScript.PlaceShip(5,10,7,10,1,myname);
-				gridScript.PlaceShip(5,20,7,20,1,myname);
-				gridScript.PlaceShip(5,15,7,15,1,myname);
-
-				gridScript.PlaceShip(24,10,22,10,1,opponentname);
-				gridScript.PlaceShip(24,20,22,20,1,opponentname);
-				gridScript.PlaceShip(24,15,22,15,1,opponentname);
+			if (GUI.Button (new Rect(10,130,100,30), "Place Destoryer")) {
+				gridScript.setShip(ShipTypes.Destroyer);
+				rpcScript.SignalPlayer();
+				
+			}
+			if (GUI.Button (new Rect(10,170,100,30), "Place MineLayer")) {
+				gridScript.setShip(ShipTypes.Mine);
+				rpcScript.SignalPlayer();
+				
+			}
+			if (GUI.Button (new Rect(10,210,100,30), "Place Torpedo")) {
+				gridScript.setShip(ShipTypes.Torpedo);
+				rpcScript.SignalPlayer();
+				
+			}
+			if (GUI.Button (new Rect(10,250,100,30), "Place Radar")) {
+				gridScript.setShip(ShipTypes.Destroyer);
+				rpcScript.SignalPlayer();
+				
+			}
+			if (GUI.Button (new Rect(10,290,100,30), "Place Kamikaze")) {
+				gridScript.setShip(ShipTypes.Destroyer);
+				rpcScript.SignalPlayer();
 				
 			}
 			break;
