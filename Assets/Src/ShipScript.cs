@@ -133,26 +133,26 @@ public class ShipScript : MonoBehaviour {
 		Vector3 start = transform.position;
 		Vector3 dest = transform.position;
 		float amount;
-		float offset = shipSize - (shipSize - 1);
+		float offset = shipSize - 1;
 		switch(curDir) {
 		case GameScript.Direction.East:
 			amount = destPos.x - start.x;
-			amount -= offset + shipSize;
+			amount -= offset;
 			dest.x += amount;
 			break;
 		case GameScript.Direction.North:
 			amount = destPos.z - start.z;
-			amount -= offset + shipSize;
+			amount -= offset;
 			dest.z += amount;
 			break;
 		case GameScript.Direction.South:
 			amount = destPos.z - start.z;
-			amount -= offset - shipSize;
+			amount += offset;
 			dest.z += amount;
 			break;
 		case GameScript.Direction.West:
 			amount = destPos.x - start.x;
-			amount -= offset - shipSize;
+			amount += offset;
 			dest.x += amount;
 			break;
 		}
