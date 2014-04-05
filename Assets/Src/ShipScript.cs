@@ -90,13 +90,21 @@ public class ShipScript : MonoBehaviour {
 		health = new int[shipSize];
 		InitArmor ();
 		// Add all child sections ship
-		shipSections = new List<GameObject>();
+		GameObject[] tShipSection = new GameObject[shipSize];
 		//Correct Order of ship instantiation.
 		foreach (Transform child in transform) {
 			Debug.Log(child.name);
-			if (child.name == "Stern") shipSections.Insert(0, child.gameObject);
-			if (child.name == "Bow") shipSections.Insert(shipSize-1, gameObject);
+			Debug.Log ("Size: " + shipSize + "and arrysize: " + tShipSection.Length);
+			if (child.name == "Stern") tShipSection[0] = child.gameObject;
+			if (child.name == "Bow") tShipSection[shipSize-1] = child.gameObject;
+			string[] mid = child.name.Split('_');
+			if (mid[0] == "mid") {
+				int index = int.Parse(mid[1]);
+				shipSections[index] = child.gameObject;
+			}
 		}
+		shipSections = new List<GameObject>(tShipSection);
+
 	}
 
 	/*

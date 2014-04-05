@@ -94,12 +94,12 @@ public class BaseScript : MonoBehaviour {
 	public void DisplayDockingRegion(bool status) {
 
 		if (cells[0].gridPositionX == 0) {
-			Debug.Log ("Displaying docking region for base1");
+			//Debug.Log ("Displaying docking region for base1");
 			for (int i = 0; i < 10; i++) {
 				gridScript.DisplayCellForDock(status, 1, 10+i);
 			}
 		} else if (cells[0].gridPositionX == 29) {
-			Debug.Log ("Displaying docking region for base2");
+			//Debug.Log ("Displaying docking region for base2");
 			for (int i = 0; i < 10; i++) {
 				gridScript.DisplayCellForDock(status, 28, 10+i);
 			}
