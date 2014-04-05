@@ -213,7 +213,7 @@ public class RPCScript : MonoBehaviour {
 	void RPCHandleBaseDamage(string player, int section, int damage)
 	{
 		BaseScript baseScript;
-		if (gameScript.playerType == GameScript.PlayerType.Player1) {
+		if (gameScript.myPlayerType == GameScript.PlayerType.Player1) {
 			//Left base
 			baseScript = gameScript.bases[0];
 

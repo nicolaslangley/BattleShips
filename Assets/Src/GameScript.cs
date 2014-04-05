@@ -10,7 +10,7 @@ public class GameScript : MonoBehaviour {
 	public enum CellState {Available, Mine, Reef, Ship, Base};
 	public enum PlayAction {Move, Cannon, Torpedo, DropMine, PickupMine, Repair, None};
 
-	public enum PlayerType {Player1, Player2}
+	public enum PlayerType {Player1 =1, Player2=2}
 	/** Properties **/
 	public List<ShipScript> ships;
 	public List<BaseScript> bases;
@@ -22,7 +22,7 @@ public class GameScript : MonoBehaviour {
 	public string opponentname;
 	public string turn;
 
-	public PlayerType playerType;
+	public PlayerType myPlayerType;
 
 	public string messages;
 
@@ -132,9 +132,9 @@ public class GameScript : MonoBehaviour {
 	public void setPlayerType(){
 		//set alphabetically.
 		if (string.Compare(myname,opponentname) < 0) {
-			playerType = PlayerType.Player1;
+			myPlayerType = PlayerType.Player1;
 		} else {
-			playerType = PlayerType.Player2;
+			myPlayerType = PlayerType.Player2;
 		}
 	}
 
