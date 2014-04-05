@@ -25,6 +25,7 @@ public class ShipSectionScript : MonoBehaviour {
 		// Handle selection if cannon ship
 		if (gameScript.curPlayAction == GameScript.PlayAction.Cannon) {
 			gameObject.renderer.material.color = Color.red;
+			parent.DisplayCannonRange(false);
 			if (gameScript.selectedShip.heavyCannon) {
 				//parent.HandleHit(this.gameObject, 1, 2);
 				parent.HandleCannon(this.gameObject,1,2);
