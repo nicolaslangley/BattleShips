@@ -133,7 +133,7 @@ public class ShipScript : MonoBehaviour {
 		Vector3 start = transform.position;
 		Vector3 dest = transform.position;
 		float amount;
-		float offset = shipSize - 1;
+		float offset = shipSize - (shipSize - 1);
 		switch(curDir) {
 		case GameScript.Direction.East:
 			amount = destPos.x - start.x;
@@ -476,10 +476,12 @@ public class ShipScript : MonoBehaviour {
 			return;
 		}
 		CellScript cell = cells[index];
-		if (cell.availableForRepair) {
+		if (cell.availableForDock) {
 			health[index] += 1;
 			section.renderer.material.color = Color.yellow;
             // TODO: return cell to original color value
+		} else {
+			Debug.Log ("This square is not available for repair");
 		}
 	}
 

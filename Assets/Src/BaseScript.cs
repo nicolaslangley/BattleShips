@@ -88,17 +88,25 @@ public class BaseScript : MonoBehaviour {
 		gameScript.EndTurn();
 	}
 
+	/*
+	 * TODO: handle display for when part of base has been destroyed
+	 */
 	public void DisplayDockingRegion(bool status) {
 		Color setColor;
 		if (status) setColor = Color.green;
 		else setColor = Color.blue;
 
 		if (cells[0].gridPositionX == 0) {
+			Debug.Log ("Displaying docking region for base1");
 			for (int i = 0; i < 10; i++) {
-				gridScript.grid[1, 10 + i].SetVisible(true);
-				gridScript.grid[1, 10 + i].availableForRepair = status;
+				gridScript.DisplayCellForRepair(status, 1, 10+i);
 			}
-		}
+		} else if (cells[0].gridPositionX == 29) {
+			Debug.Log ("Displaying docking region for base2");
+			for (int i = 0; i < 10; i++) {
+				gridScript.DisplayCellForRepair(status, 28, 10+i);
+			}
+		} 
 
 	}
 	
