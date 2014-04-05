@@ -518,7 +518,7 @@ public class GridScript : MonoBehaviour {
 		CellScript cellScript = grid[x, y];
 		if (status) cellScript.availableForDock = true;
 		else cellScript.availableForDock = false;
-		cellScript.renderer.material.color = setColor;
+		if (!cellScript.selected)cellScript.renderer.material.color = setColor;
 	}
 
 	public void Explode(int centerX, int centerY, int t) {
