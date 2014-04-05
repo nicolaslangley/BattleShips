@@ -81,11 +81,26 @@ public class GridScript : MonoBehaviour {
 
 	public void setShip()
 	{
-		if (currentSelection.Count == 2 && currentSelection.Count != 0){
+		Debug.Log ("Set Ship called");
+		if (currentSelection.Count == 1 && currentSelection.Count != 0){
 			Vector3 startPos = currentSelection[0].transform.position;
-			Vector3 endPos = currentSelection[currentSelection.Count - 1].transform.position;
+			Vector3 endPos = startPos;
+			if (gameScript.myPlayerType == GameScript.PlayerType.Player1) {
+				endPos.x += 1;
+			} else {
+				endPos.x -= 1;
+			}
 
-			PlaceShip(startPos.x, startPos.z, endPos.x, endPos.z, 1, gameScript.myname);
+			CellScript startCell = grid[(int)startPos.x, (int)startPos.z];
+			Debug.Log ("Start Cell Pos: " + startCell.gridPositionX + " " + startCell.gridPositionY);
+			Debug.Log ("End Pos: " + endPos + " Start Pos: " + startPos);
+			if (startCell.availableForDock) {
+				Debug.Log ("Placing ship because cell is available for dock");
+				PlaceShip(startPos.x, startPos.z, endPos.x, endPos.z, 1, gameScript.myname);
+				int playerNum = (int)gameScript.myPlayerType - 1;
+				BaseScript myBase = gameScript.bases[playerNum];
+				myBase.DisplayDockingRegion(false);
+			}
 			currentSelection.Clear();
 
 		}
@@ -110,7 +125,10 @@ public class GridScript : MonoBehaviour {
 			// Ship is facing either East or West
 		if (endPosZ - startPosZ == 0) { 
 			if (endPosX > startPosX) shipDir = GameScript.Direction.East;
-			else shipDir = GameScript.Direction.West;
+			else { 
+				shipDir = GameScript.Direction.West;
+				newX += 1.0f;
+			}
 			newZ += 0.5f;
 		}
 		Vector3 pos = new Vector3(newX, newY, newZ);
@@ -399,6 +417,11 @@ public class GridScript : MonoBehaviour {
 		return curCellScript.available;
 	}
 
+	public bool VerifyCellForRepair (int x, int y) {
+		CellScript curCellScript = grid[x, y];
+		return curCellScript.availableForDock;
+	}
+
 	// Adds given cell to current selection - returns FALSE if not a valid selection
 	public bool AddToSelection (CellScript cell) {
 		bool valid = false;
@@ -461,6 +484,17 @@ public class GridScript : MonoBehaviour {
 		if (cellScript.curCellState == GameScript.CellState.Reef && !status) 
 			cellScript.renderer.material.color = Color.black;
 		else cellScript.renderer.material.color = setColor;
+	}
+
+	public void DisplayCellForRepair(bool status, int x, int y) {
+		if (x < 0 || x > 29 || y < 0 || y > 29) return;
+		Color setColor;
+		if (status) setColor = Color.green;
+		else setColor = Color.blue;
+		CellScript cellScript = grid[x, y];
+		if (status) cellScript.availableForDock = true;
+		else cellScript.availableForDock = false;
+		cellScript.renderer.material.color = setColor;
 	}
 
 	public void Explode(int centerX, int centerY, int t) {
