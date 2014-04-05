@@ -33,7 +33,7 @@ public class ShipSectionScript : MonoBehaviour {
 			}
 			gameScript.EndTurn();
 		} else if (gameScript.curPlayAction == GameScript.PlayAction.Repair) {
-			parent.HandleRepair(this.gameObject);
+			parent.HandleRepair(this.gameObject,1);
 		}  else {
 			parent.selected = !parent.selected;
 			if (parent.selected == true) {

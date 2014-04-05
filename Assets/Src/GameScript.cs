@@ -22,7 +22,7 @@ public class GameScript : MonoBehaviour {
 	public string opponentname;
 	public string turn;
 
-	public string playerType;
+	public PlayerType playerType;
 
 	public string messages;
 
