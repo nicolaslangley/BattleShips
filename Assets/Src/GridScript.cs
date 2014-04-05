@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 
+
 public class GridScript : MonoBehaviour {
 
 	/** PROPERTIES **/
@@ -34,9 +35,18 @@ public class GridScript : MonoBehaviour {
 	// Use this for initialization
 	public void Init () {
 		// Create grid of cells
-		reefSeed = 42;
+
+
+
+		System.DateTime current = System.DateTime.Now;
+		int hours = System.DateTime.Now.Hour;
+		int mins = System.DateTime.Now.Minute;
+
+		reefSeed = hours+mins;
+
+		Debug.Log("ReefSeed: " + reefSeed);
+
 		//rpcScript.shareReefSeed(reefSeed);
-		CreateGrid ();
 
 		/*For testing
 		CellScript[,] testCells = range (3, 4, 5, 2);
@@ -52,6 +62,10 @@ public class GridScript : MonoBehaviour {
 		system = GameObject.FindGameObjectWithTag("System");
 		gameScript = system.GetComponent<GameScript>();
 		rpcScript = system.GetComponent<RPCScript>();
+
+		CreateGrid ();
+
+
 		idSeedStack = new Stack();
 		// CRUDE WAY OF MAKING ID. CHANGE LATER
 		for (int i=0; i<50;i++)
@@ -201,6 +215,7 @@ public class GridScript : MonoBehaviour {
 		// Create base on grid for Player 1
 		GameObject player1Base = Instantiate(playerBase, new Vector3(0,0.5f,10), Quaternion.identity) as GameObject;
 		BaseScript player1BaseScript = player1Base.GetComponent<BaseScript>();
+		gameScript.bases.Add(player1BaseScript);
 		player1BaseScript.Init();
 		player1BaseScript.playerType = (int) GameScript.PlayerType.Player1;
 		for (int i = 0; i < 10; i++) {
@@ -212,6 +227,7 @@ public class GridScript : MonoBehaviour {
 		// Create base on grid for Player 2
 		GameObject player2Base = Instantiate(playerBase, new Vector3(29,0.5f,10), Quaternion.identity) as GameObject;
 		BaseScript player2BaseScript = player2Base.GetComponent<BaseScript>();
+		gameScript.bases.Add(player2BaseScript);
 		player2BaseScript.Init();
 		player2BaseScript.playerType = (int)GameScript.PlayerType.Player2;
 
@@ -221,21 +237,22 @@ public class GridScript : MonoBehaviour {
 			player2BaseScript.cells.Add(grid[29,10+i]);
 		}
 
-		gameScript.bases.Add(player1BaseScript);
-		gameScript.bases.Add(player2BaseScript);
+
 
 		Random.seed = reefSeed;
+		Debug.Log(Random.seed);
 		// Create reefs on grid
 		for (int i = 0; i < 24; i++) {
-			int xVal = Random.Range(10, 20);
+			int xVal = Random.Range(11, 20);
 			int yVal = Random.Range(3, 27);
 			while(grid[xVal, yVal].curCellState == GameScript.CellState.Reef) {
-				xVal = Random.Range(10, 20);
+				xVal = Random.Range(11, 20);
 				yVal = Random.Range(3, 27);
 			}
 			grid[xVal, yVal].SetReef();
 			grid[xVal, yVal].SetVisible(false);
 		}
+
 	}
 
 	// Returns the neighbours of the given cell in the grid
