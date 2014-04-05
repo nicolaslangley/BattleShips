@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class GameScript : MonoBehaviour {
 
 	/** Enums **/
-	public enum GameState {Setup,SetupWaiting, Play, Wait, End};
+	public enum GameState {Connecting, Setup,SetupWaiting, Play, Wait, End};
 	public enum Direction {North, East, South, West};
 	public enum CellState {Available, Mine, Reef, Ship, Base};
 	public enum PlayAction {Move, Cannon, Torpedo, DropMine, PickupMine, Repair, None};
@@ -31,6 +31,8 @@ public class GameScript : MonoBehaviour {
 
 	public bool waitTurn;
 
+	private bool gridInited;
+
 	/** Current state of game **/
 	public GameState curGameState;
 	public PlayAction curPlayAction;
@@ -54,9 +56,9 @@ public class GameScript : MonoBehaviour {
 
 		// Initialize game state variables
 		curPlayAction = PlayAction.None;
-		curGameState = GameState.Setup;
+		curGameState = GameState.Connecting;
 		// Run game initialization
-		gridScript.Init();
+		gridInited = false;
 
 		string playerName = PlayerPrefs.GetString("playerName");
 		myname = playerName;
@@ -70,8 +72,20 @@ public class GameScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		switch (curGameState) {
+
+		case (GameState.Connecting):
+			if (!string.IsNullOrEmpty(opponentname)) {
+
+				setPlayerType();
+				curGameState = GameState.Setup;
+			}
+			break;
 		case (GameState.Setup):
 			// Perform update to objects based on setup state
+			if (!gridInited) {
+				gridInited = true;
+				gridScript.Init();
+			}
 			gridScript.CustomSetupUpdate();
 			break;
 
