@@ -15,6 +15,7 @@ public class BaseSectionScript : MonoBehaviour {
 	
 	// Handle clicking on object
 	void OnMouseDown () {
+		Debug.Log ("Click on base section");
 		GameScript gameScript = parent.gameScript;
 		// Don't act on mouse click if in wait state
 		if (gameScript.curGameState == GameScript.GameState.Wait) return;
@@ -27,7 +28,9 @@ public class BaseSectionScript : MonoBehaviour {
 			else
 				parent.HandleHit(this.gameObject,1, 1);
 		} else {
-			if (parent.name == gameScript.myname) {
+			Debug.Log (parent.playerType + " " + gameScript.myPlayerType);
+			if ((int)parent.playerType == (int)(gameScript.myPlayerType)) {
+				Debug.Log("base selection changed");
 				parent.selected = !parent.selected;
 				if (parent.selected == true) {
 					//gameObject.renderer.material.color = Color.cyan;
