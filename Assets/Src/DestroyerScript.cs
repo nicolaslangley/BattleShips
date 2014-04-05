@@ -17,6 +17,8 @@ public class DestroyerScript : ShipScript {
 		this.cannonRangeForward = 12;
 		this.cannonRangeSide = 9;
 		this.cannonRangeStart = -4;
+
+		this.shipType = "destroyer";
 	}
 	
 	// Update is called once per frame

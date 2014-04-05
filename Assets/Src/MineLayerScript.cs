@@ -17,6 +17,7 @@ public class MineLayerScript : ShipScript {
 		this.cannonRangeForward = 4;
 		this.cannonRangeSide = 5;
 		this.cannonRangeStart = -1;
+		this.shipType = "minelayer";
 	}
 
 	void OnGui() {

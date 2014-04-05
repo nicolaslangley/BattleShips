@@ -25,12 +25,16 @@ public class ShipSectionScript : MonoBehaviour {
 		// Handle selection if cannon ship
 		if (gameScript.curPlayAction == GameScript.PlayAction.Cannon) {
 			gameObject.renderer.material.color = Color.red;
-			if (gameScript.selectedShip.heavyCannon)
+			if (gameScript.selectedShip.heavyCannon) {
 				parent.HandleHit(this.gameObject, 1, 2);
-			else
+
+			} else {
 				parent.HandleHit(this.gameObject,1, 1);
+			}
 			gameScript.EndTurn();
-		} else {
+		} else if (gameScript.curPlayAction == GameScript.PlayAction.Repair) {
+			parent.HandleRepair(this.gameObject);
+		}  else {
 			parent.selected = !parent.selected;
 			if (parent.selected == true) {
 				//gameObject.renderer.material.color = Color.cyan;

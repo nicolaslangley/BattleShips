@@ -17,6 +17,7 @@ public class KamikazeBoatScript : ShipScript {
 		this.cannonRangeForward = 3;
 		this.cannonRangeSide = 3;
 		this.cannonRangeStart = -1;
+		this.shipType = "kamikaze";
 	}
 
 	void OnGui() {

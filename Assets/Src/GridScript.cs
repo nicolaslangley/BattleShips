@@ -11,6 +11,7 @@ public class GridScript : MonoBehaviour {
 	public GameObject gridCell;
 	public GameObject destroyer;
 	public GameObject mineLayer;
+	public GameObject playerBase;
 	
 	public int gridSize;
 	public Vector2 cellSize;
@@ -76,7 +77,7 @@ public class GridScript : MonoBehaviour {
 		}
 	}
 
-	public void PlaceShip (float startPosX, float startPosZ, float endPosX, float endPosZ, int local, string Player) {
+	public ShipScript PlaceShip (float startPosX, float startPosZ, float endPosX, float endPosZ, int local, string Player) {
 		if (local == 1)
 		{
 			rpcScript.setShip(startPosX, startPosZ, endPosX, endPosZ, Player);
@@ -102,9 +103,9 @@ public class GridScript : MonoBehaviour {
 		// Create ship
 		// TODO: Place new ship at correct orientation
 		GameObject newShip = Instantiate(destroyer, pos, Quaternion.identity) as GameObject;
-		// Add ship to list of ships in GameScript
-		gameScript.ships.Add(newShip);
 		ShipScript newShipScript = newShip.GetComponent<ShipScript>();
+		// Add ship to list of ships in GameScript
+		gameScript.ships.Add(newShipScript);
 		newShipScript.Init();
 		newShipScript.curDir = shipDir;
 		newShipScript.SetRotation();
@@ -149,6 +150,8 @@ public class GridScript : MonoBehaviour {
 			break;
 		}
 		currentSelection.Clear();
+
+		return newShipScript;
 
 		
 		// Reset selection of ship and cells
@@ -196,13 +199,26 @@ public class GridScript : MonoBehaviour {
 
 		// Create bases for each player
 		// Create base on grid for Player 1
+		GameObject player1Base = Instantiate(playerBase, new Vector3(0,0.5f,10), Quaternion.identity) as GameObject;
+		BaseScript player1BaseScript = player1Base.GetComponent<BaseScript>();
+		player1BaseScript.Init();
 		for (int i = 0; i < 10; i++) {
 			grid[0, 10 + i].SetBase(Color.magenta);
+			player1BaseScript.GetSection(i).renderer.material.color = Color.magenta;
+			player1BaseScript.cells.Add(grid[0,10+i]);
 		}
+
 		// Create base on grid for Player 2
+		GameObject player2Base = Instantiate(playerBase, new Vector3(29,0.5f,10), Quaternion.identity) as GameObject;
+		BaseScript player2BaseScript = player2Base.GetComponent<BaseScript>();
+		player2BaseScript.Init();
 		for (int i = 0; i < 10; i++) {
 			grid[29, 10 + i].SetBase(Color.cyan);
+			player2BaseScript.GetSection(i).renderer.material.color = Color.cyan;
+			player2BaseScript.cells.Add(grid[29,10+i]);
 		}
+
+
 		Random.seed = reefSeed;
 		// Create reefs on grid
 		for (int i = 0; i < 24; i++) {
@@ -250,48 +266,54 @@ public class GridScript : MonoBehaviour {
 	/*
 	 * Returns the valid destination cell within the given path
 	 */
-	public CellScript VerifyCellPath (int positionX, int positionY, int dist, GameScript.Direction dir, CellScript destCell) {
+	public CellScript VerifyCellPath (int positionX, int positionY, int dist, GameScript.Direction dir, CellScript destCell, string type) {
 		bool obstacleEncountered = false;
+		int offset = 0;
+		if (type == "Move") offset = 1;
 		CellScript encounteredObstacle = destCell;
 		switch (dir) {
 		case GameScript.Direction.East:
 			for (int x = 1; x <= dist; x++) {
+				if (positionX + x < 0 || positionX + x > 29) break;
 				CellScript curCellScript = grid[positionX + x, positionY];
 				if (curCellScript.available != true) {
 					obstacleEncountered = true;
-					encounteredObstacle = grid[positionX + (x-1), positionY].GetComponent<CellScript>();
+					encounteredObstacle = grid[positionX + (x-offset), positionY].GetComponent<CellScript>();
 					break;
 				}
 			}
 			break;
 		case GameScript.Direction.West:
 			for (int x = 1; x <= -dist; x++) {
+				if (positionX - x < 0 || positionX - x > 29) break;
 				CellScript curCellScript = grid[positionX - x, positionY];
 				Debug.Log ("Checking: " + (positionX - x) + " " + positionY);
 				if (curCellScript.available != true) {
 					Debug.Log ("Cell unavailable");
 					obstacleEncountered = true;
-					encounteredObstacle = grid[positionX - (x-1), positionY].GetComponent<CellScript>();
+					encounteredObstacle = grid[positionX - (x-offset), positionY].GetComponent<CellScript>();
 					break;
 				}
 			}
 			break;
 		case GameScript.Direction.North:
 			for (int y = 1; y <= dist; y++) {
+				if (positionY + y < 0 || positionY + y > 29) break;
 				CellScript curCellScript = grid[positionX, positionY + y];
 				if (curCellScript.available != true) {
 					obstacleEncountered = true;
-					encounteredObstacle = grid[positionX, positionY + (y-1)].GetComponent<CellScript>();
+					encounteredObstacle = grid[positionX, positionY + (y-offset)].GetComponent<CellScript>();
 					break;
 				}
 			}
 			break;
 		case GameScript.Direction.South:
 			for (int y = 1; y <= -dist; y++) {
+				if (positionY - y < 0 || positionY - y > 29) break;
 				CellScript curCellScript = grid[positionX, positionY - y];
 				if (curCellScript.available != true) {
 					obstacleEncountered = true;
-					encounteredObstacle = grid[positionX, positionY - (y-1)].GetComponent<CellScript>();
+					encounteredObstacle = grid[positionX, positionY - (y-offset)].GetComponent<CellScript>();
 					break;
 				}
 			}
@@ -376,8 +398,7 @@ public class GridScript : MonoBehaviour {
 	public CellScript GetCell(int x, int y) {
 		return grid [x, y];
 	}
-
-	// TODO: Handle case where x and y are not on the grid.
+	
 	// Display cell as being available for movement based on status 
 	public void DisplayCellForMove(bool status, int x, int y) {
 		if (x < 0 || x > 29 || y < 0 || y > 29) return;

@@ -1,20 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml;
+using System.Xml.Serialization;
 
 public class CellScript : MonoBehaviour {
 
 	/** PROPERTIES **/
 
+	//[XmlArray("neighbours")]
 	public List<CellScript> neighbours;
 	public bool selected = false;
 	public bool available = false;
 	public bool availableForMove = false;
 	public bool availableForShoot = false;
+	public bool availableForRepair = false;
 	public GameObject occupier = null;
+	//[XmlAttribute("cell_state")]
 	public GameScript.CellState curCellState = GameScript.CellState.Available;
+	[XmlAttribute("gridPositionX")]
 	public int gridPositionX;
+	[XmlAttribute("gridPositionY")]
 	public int gridPositionY;
+	[XmlAttribute("instanceID")]
 	public int instanceID;
 
 	private GameObject system;
@@ -57,6 +65,10 @@ public class CellScript : MonoBehaviour {
 			if (availableForShoot) {
 				gameScript.selectedShip.FireCannon(this);
 			}
+		} 
+		else if (gameScript.curPlayAction == GameScript.PlayAction.DropMine) {
+			if (availableForShoot)
+				gameScript.selectedShip.LayMine(this);
 		} else {
 			Debug.Log ("Selection changing");
 			selected = !selected;
