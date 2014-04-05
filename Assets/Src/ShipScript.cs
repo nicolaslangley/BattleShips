@@ -94,7 +94,8 @@ public class ShipScript : MonoBehaviour {
 		//Correct Order of ship instantiation.
 		foreach (Transform child in transform) {
 			Debug.Log(child.name);
-			shipSections.Add(child.gameObject);
+			if (child.name == "Stern") shipSections.Insert(0, child.gameObject);
+			if (child.name == "Bow") shipSections.Insert(shipSize-1, gameObject);
 		}
 	}
 
