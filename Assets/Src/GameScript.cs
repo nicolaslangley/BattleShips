@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class GameScript : MonoBehaviour {
 
 	/** Enums **/
-	public enum GameState {Setup, Play, Wait, End};
+	public enum GameState {Setup,SetupWaiting, Play, Wait, End};
 	public enum Direction {North, East, South, West};
 	public enum CellState {Available, Mine, Reef, Ship, Base};
 	public enum PlayAction {Move, Cannon, Torpedo, DropMine, PickupMine, Repair, None};
@@ -25,6 +25,9 @@ public class GameScript : MonoBehaviour {
 	public PlayerType myPlayerType;
 
 	public string messages;
+
+	public bool player1SetupDone;
+	public bool player2SetupDone;
 
 	public bool waitTurn;
 
@@ -52,7 +55,6 @@ public class GameScript : MonoBehaviour {
 		// Initialize game state variables
 		curPlayAction = PlayAction.None;
 		curGameState = GameState.Setup;
-
 		// Run game initialization
 		gridScript.Init();
 
@@ -61,6 +63,8 @@ public class GameScript : MonoBehaviour {
 		rpcScript.sendPlayerName(myname);
 
 		setPlayerType();
+		player1SetupDone = false;
+		player2SetupDone = false;
 	}
 	
 	// Update is called once per frame
@@ -69,6 +73,12 @@ public class GameScript : MonoBehaviour {
 		case (GameState.Setup):
 			// Perform update to objects based on setup state
 			gridScript.CustomSetupUpdate();
+			break;
+
+		case (GameState.SetupWaiting):
+			if (player1SetupDone && player2SetupDone) {
+				curGameState = GameState.Play;
+			}
 			break;
 		case (GameState.Play):
 			// Perform update to objects based on play state
@@ -93,8 +103,9 @@ public class GameScript : MonoBehaviour {
 		case (GameState.Setup):
 			// GUI to be displayed during setup phase
 			if (GUI.Button(new Rect(10, 10, 100, 30), "Play Game")) {
-				curGameState = GameState.Play;
-				Debug.Log ("Moving to Play state");
+				rpcScript.SetupDone((int)myPlayerType);
+				curGameState = GameState.SetupWaiting;
+				Debug.Log ("Moving to SetupWait state");
 				if (Network.peerType == NetworkPeerType.Server)
 				{
 					curGameState = GameState.Play;
@@ -123,12 +134,15 @@ public class GameScript : MonoBehaviour {
 				
 			}
 			break;
+
+		case (GameState.SetupWaiting):
+			break;
 		case (GameState.Play):
 			// GUI to be displayed during playing phase
 			break;
 		}
 	}
-
+	
 	public void setPlayerType(){
 		//set alphabetically.
 		if (string.Compare(myname,opponentname) < 0) {

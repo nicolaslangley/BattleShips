@@ -218,6 +218,8 @@ public class GridScript : MonoBehaviour {
 		gameScript.bases.Add(player1BaseScript);
 		player1BaseScript.Init();
 		player1BaseScript.playerType = (int) GameScript.PlayerType.Player1;
+		Debug.Log("Player1 Playertype: " + player1BaseScript.playerType);
+
 		for (int i = 0; i < 10; i++) {
 			grid[0, 10 + i].SetBase(Color.magenta);
 			player1BaseScript.GetSection(i).renderer.material.color = Color.magenta;
@@ -230,6 +232,7 @@ public class GridScript : MonoBehaviour {
 		gameScript.bases.Add(player2BaseScript);
 		player2BaseScript.Init();
 		player2BaseScript.playerType = (int)GameScript.PlayerType.Player2;
+		Debug.Log("Player2 Playertype: " + player2BaseScript.playerType);
 
 		for (int i = 0; i < 10; i++) {
 			grid[29, 10 + i].SetBase(Color.cyan);

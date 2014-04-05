@@ -38,10 +38,26 @@ public class RPCScript : MonoBehaviour {
 		networkView.RPC("RPCSignalPlayer", RPCMode.AllBuffered, playerName);
 	}
 
+
 	[RPC]
 	void RPCSignalPlayer(string username)
 	{
 		Debug.Log("setup ship for " + username);
+	}
+
+	public void SetupDone(int playerType)
+	{
+		networkView.RPC("RPCSetupDone",RPCMode.AllBuffered,playerType);
+	}
+
+	[RPC]
+	void RPCSetupDone(int playerType) {
+		if (playerType == 1) {
+			gameScript.player1SetupDone = true;
+		}
+		if (playerType == 2) {
+			gameScript.player2SetupDone = true;
+		}
 	}
 
 	public void EndTurn()
