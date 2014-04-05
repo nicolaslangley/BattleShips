@@ -25,6 +25,9 @@ public class GridScript : MonoBehaviour {
 	private int reefSeed;
 	private Stack idSeedStack;
 
+	public enum ExplodeType {Mine = 0, Kamikaze = 1};
+
+
 	/** GAMELOOP METHODS **/
 
 	// Use this for initialization
@@ -414,6 +417,19 @@ public class GridScript : MonoBehaviour {
 		else cellScript.renderer.material.color = setColor;
 	}
 
+	public void Explode(int centerX, int centerY, int t) {
+		Debug.Log("explode with " + centerX);
+		ExplodeType type = (ExplodeType) t;
+		//Tell cells around it that it was hit by explosion
+
+
+		for (int x = (centerX > 0 ? centerX-1 : centerX); x <= centerX+1 && x < this.grid.GetLength(0); x++) {
+			for (int y = (centerY > 0 ? centerY-1 : centerY); y <= centerY+1 && y < this.grid.GetLength(1); y++) {
+				GetCell(x,y).handleCellDamage(2,type,GetCell(centerX,centerY));
+			}
+		}
+	}
+	
 	// Removes given cell from current selection - if cell is not in selection, does nothing
 	public void RemoveFromSelection (CellScript cell) {
 		if (currentSelection.Contains(cell)) currentSelection.Remove(cell);

@@ -187,6 +187,17 @@ public class RPCScript : MonoBehaviour {
 		}
 	}
 
+	public void Explosion(int x, int y, GridScript.ExplodeType type)
+	{
+		networkView.RPC ("RPCExplosion",RPCMode.AllBuffered,x,y,(int)type);
+	}
+
+	[RPC]
+	void RPCExplosion(int x, int y, int type)
+	{
+		gridScript.Explode(x,y,type);
+	}
+
 	// Update is called once per frame
 	void Update () {
 	

@@ -23,7 +23,19 @@ public class CellScript : MonoBehaviour {
 	private RPCScript rpcScript;
 	private bool isVisible = true;
 
+
+
 	/** UNITY METHODS **/
+
+	void OnGUI () {
+		if (gameScript.curGameState == GameScript.GameState.Wait) return;
+		if (selected == true) {
+			if (GUI.Button(new Rect(Screen.width - 110, 10, 100, 30), "Explode")) {
+				rpcScript.Explosion(gridPositionX,gridPositionY,GridScript.ExplodeType.Kamikaze);
+			}
+		}
+	}
+	
 
 	// Change selection status of cell and display it and it's neighbours if allowShipPlacement button has been pressed;
 	void OnMouseDown () {
@@ -130,5 +142,21 @@ public class CellScript : MonoBehaviour {
 		curCellState = GameScript.CellState.Reef;
 		available = false;
 		gameObject.renderer.material.color = Color.black;
+	}
+
+	public void handleCellDamage(int damage, GridScript.ExplodeType type, CellScript origin) {
+		if (occupier != null) {
+			ShipScript ship = occupier.GetComponent<ShipScript>();
+			//Do one for base as well
+			if (ship != null )
+			{
+				if (type == GridScript.ExplodeType.Mine) {
+					ship.HandleMine(this,damage, origin);
+				} else {
+					ship.HandleHit(this,damage);
+				}
+			}
+			//Occupier handles explosion
+		}
 	}
 }

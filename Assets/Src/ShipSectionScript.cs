@@ -29,6 +29,7 @@ public class ShipSectionScript : MonoBehaviour {
 				parent.HandleHit(this.gameObject, 1, 2);
 			else
 				parent.HandleHit(this.gameObject,1, 1);
+			gameScript.EndTurn();
 		} else {
 			parent.selected = !parent.selected;
 			if (parent.selected == true) {
@@ -41,4 +42,5 @@ public class ShipSectionScript : MonoBehaviour {
 			}
 		}
 	}
+	
 }

@@ -94,7 +94,9 @@ public class ShipScript : MonoBehaviour {
 		InitArmor ();
 		// Add all child sections ship
 		shipSections = new List<GameObject>();
+		//Correct Order of ship instantiation.
 		foreach (Transform child in transform) {
+			Debug.Log(child.name);
 			shipSections.Add(child.gameObject);
 		}
 	}
@@ -406,6 +408,7 @@ public class ShipScript : MonoBehaviour {
 		DisplayCannonRange(false);
 		Debug.Log ("Hit handled on section: " + sectionIndex);
 		health [sectionIndex] -= damage;
+		if (health [sectionIndex] < 0) { health[sectionIndex]=0;}
 		int damageTotal = 0;
 		for (int i = 0; i < shipSize; i++) {
 			Debug.Log ("health" + health[i]);
@@ -424,16 +427,33 @@ public class ShipScript : MonoBehaviour {
 		}
 
 		//rpcScript.EndTurn();
-		gameScript.EndTurn();
+//		gameScript.EndTurn();
 
 	}
 
 	//Handles Damage on ship given cell.
 	public void HandleHit(CellScript cell, int damage) {
 		int index = cells.IndexOf(cell);
-		HandleHit(shipSections[index],1,damage);
+		Debug.Log("Handing on index: "+index);
+		HandleHit(shipSections[index],0,damage);
 	}
-	
+
+	public void HandleMine(CellScript cell, int damage, CellScript origin) {
+		int index = cells.IndexOf(origin);
+		int originIndex = cells.IndexOf(origin);
+		Debug.Log ("Handling mine for index: "+ index);
+		//Hits front of ship, then remove front and one behind.
+		if (shipSize == 1) {
+			HandleHit(shipSections[index],0,damage);
+		} else if (index == shipSize - 1) {
+			HandleHit(shipSections[index],0,damage);
+			HandleHit(shipSections[index-1],0,damage);
+		} else {
+			HandleHit(shipSections[index],0,damage);
+			HandleHit(shipSections[index+1],0,damage);
+		}
+	}
+
 	/*
 	 * Rotates the ship
 	 */
