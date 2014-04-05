@@ -389,12 +389,23 @@ public class ShipScript : MonoBehaviour {
 		//rpcScript.EndTurn();
 	}
 
+	public void HandleCannon(GameObject section, int local, int damage) {
+		int sectionIndex = shipSections.IndexOf(section);
+		if (local==1) {
+			rpcScript.fireCannonShip(shipID,sectionIndex,damage);
+			return;
+		}
+
+		HandleHit(section,local,damage);
+		gameScript.EndTurn();
+
+	}
+
 	/*
 	 * Add damage to ship and recalculate speed.
 	 */
 	public void HandleHit(GameObject section, int local, int damage) 
 	{
-		int sectionIndex = shipSections.IndexOf(section);
 		if (local == 1)
 		{
 			Debug.Log("Local");

@@ -26,12 +26,13 @@ public class ShipSectionScript : MonoBehaviour {
 		if (gameScript.curPlayAction == GameScript.PlayAction.Cannon) {
 			gameObject.renderer.material.color = Color.red;
 			if (gameScript.selectedShip.heavyCannon) {
-				parent.HandleHit(this.gameObject, 1, 2);
+				//parent.HandleHit(this.gameObject, 1, 2);
+				parent.HandleCannon(this.gameObject,1,2);
 
 			} else {
-				parent.HandleHit(this.gameObject,1, 1);
+				//parent.HandleHit(this.gameObject,1, 1);
+				parent.HandleCannon(this.gameObject,1,1);
 			}
-			gameScript.EndTurn();
 		} else if (gameScript.curPlayAction == GameScript.PlayAction.Repair) {
 			parent.HandleRepair(this.gameObject,1);
 		}  else {
