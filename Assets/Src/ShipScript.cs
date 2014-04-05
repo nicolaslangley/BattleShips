@@ -449,11 +449,19 @@ public class ShipScript : MonoBehaviour {
 			HandleHit(shipSections[index+1],0,damage);
 		}
 	}
-	// TODO: Flesh out this method - does it need local?
-	public void HandleRepair(GameObject section) {
+
+	public void HandleRepair(GameObject section, int local) {
 		// Check that ship is in range of base
 		Debug.Log ("Repair handled");
+
+
 		int index = shipSections.IndexOf(section);
+
+		if (local == 1)
+		{
+			rpcScript.handleShipRepair(shipID,index);
+			return;
+		}
 		CellScript cell = cells[index];
 		if (cell.availableForRepair) {
 			health[index] += 1;

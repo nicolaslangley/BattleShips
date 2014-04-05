@@ -10,9 +10,10 @@ public class GameScript : MonoBehaviour {
 	public enum CellState {Available, Mine, Reef, Ship, Base};
 	public enum PlayAction {Move, Cannon, Torpedo, DropMine, PickupMine, Repair, None};
 
-	
+	public enum PlayerType {Player1, Player2}
 	/** Properties **/
 	public List<ShipScript> ships;
+	public List<BaseScript> bases;
 	public GridScript gridScript;
 	public ShipScript selectedShip;
 	public RPCScript rpcScript;
@@ -20,6 +21,8 @@ public class GameScript : MonoBehaviour {
 	public string myname;
 	public string opponentname;
 	public string turn;
+
+	public string playerType;
 
 	public string messages;
 
@@ -56,7 +59,8 @@ public class GameScript : MonoBehaviour {
 		string playerName = PlayerPrefs.GetString("playerName");
 		myname = playerName;
 		rpcScript.sendPlayerName(myname);
-		
+
+		setPlayerType();
 	}
 	
 	// Update is called once per frame
@@ -122,6 +126,15 @@ public class GameScript : MonoBehaviour {
 		case (GameState.Play):
 			// GUI to be displayed during playing phase
 			break;
+		}
+	}
+
+	public void setPlayerType(){
+		//set alphabetically.
+		if (string.Compare(myname,opponentname) < 0) {
+			playerType = PlayerType.Player1;
+		} else {
+			playerType = PlayerType.Player2;
 		}
 	}
 

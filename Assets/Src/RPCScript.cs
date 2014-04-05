@@ -183,6 +183,46 @@ public class RPCScript : MonoBehaviour {
 			}
 		}
 	}
+	public void handleShipRepair(string shipID, int section)
+	{
+		networkView.RPC("RPCHandleShipRepair",RPCMode.AllBuffered,shipID,section);
+	}
+
+	[RPC]
+	void RPCHandleShipRepair (string shipID, int section) 
+	{
+		foreach(ShipScript shipscript in gameScript.ships)
+		{
+			if (shipscript.shipID == shipID)
+			{
+				Debug.Log ("Found correct ship");
+				shipscript.HandleRepair(shipscript.GetSection(section),0);
+				break;
+			}
+		}
+	}
+
+
+	public void HandleBaseDamage(string player, int section, int damage)
+	{
+		networkView.RPC ("RPCHandleBaseDamage",RPCMode.AllBuffered,player,section,damage);
+	}
+
+	[RPC]
+	void RPCHandleBaseDamage(string player, int section, int damage)
+	{
+		BaseScript baseScript;
+		if (gameScript.playerType == gameScript.PlayerType.Player1) {
+			//Left base
+			baseScript = gameScript.bases[0];
+
+		} else {
+			//right base
+			baseScript = gameScript.bases[1];
+
+		}
+		baseScript.HandleHit(baseScript.GetSection(section),0,damage);
+	}
 
 	public void Explosion(int x, int y, GridScript.ExplodeType type)
 	{
@@ -194,6 +234,7 @@ public class RPCScript : MonoBehaviour {
 	{
 		gridScript.Explode(x,y,type);
 	}
+
 
 	// Update is called once per frame
 	void Update () {

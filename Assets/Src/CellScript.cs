@@ -38,7 +38,7 @@ public class CellScript : MonoBehaviour {
 	void OnGUI () {
 		if (gameScript.curGameState == GameScript.GameState.Wait) return;
 		if (selected == true) {
-			if (GUI.Button(new Rect(Screen.width - 110, 10, 100, 30), "Explode")) {
+			if (GUI.Button(new Rect(Screen.width - 110, 300, 100, 30), "Explode")) {
 				rpcScript.Explosion(gridPositionX,gridPositionY,GridScript.ExplodeType.Kamikaze);
 			}
 		}

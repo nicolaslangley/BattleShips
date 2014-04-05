@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class BaseScript : MonoBehaviour {
 
 	public string player;
+	public string playerType;
 	public GameScript gameScript;
 	public GridScript gridScript;
 	public bool selected;
@@ -65,7 +66,7 @@ public class BaseScript : MonoBehaviour {
 		if (local == 1)
 		{
 			Debug.Log("Local");
-			//TODO: rpcScript.fireCannonShip(shipID,sectionIndex, damage);
+			rpcScript.fireCannonBase(player,sectionIndex,damage);
 			return;
 		}
 		Debug.Log ("Hit handled on section: " + sectionIndex);

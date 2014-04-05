@@ -202,6 +202,7 @@ public class GridScript : MonoBehaviour {
 		GameObject player1Base = Instantiate(playerBase, new Vector3(0,0.5f,10), Quaternion.identity) as GameObject;
 		BaseScript player1BaseScript = player1Base.GetComponent<BaseScript>();
 		player1BaseScript.Init();
+		player1BaseScript.playerType = gameScript.PlayerType.Player1;
 		for (int i = 0; i < 10; i++) {
 			grid[0, 10 + i].SetBase(Color.magenta);
 			player1BaseScript.GetSection(i).renderer.material.color = Color.magenta;
@@ -212,12 +213,16 @@ public class GridScript : MonoBehaviour {
 		GameObject player2Base = Instantiate(playerBase, new Vector3(29,0.5f,10), Quaternion.identity) as GameObject;
 		BaseScript player2BaseScript = player2Base.GetComponent<BaseScript>();
 		player2BaseScript.Init();
+		player2BaseScript.playerType = gameScript.PlayerType.Player2;
+
 		for (int i = 0; i < 10; i++) {
 			grid[29, 10 + i].SetBase(Color.cyan);
 			player2BaseScript.GetSection(i).renderer.material.color = Color.cyan;
 			player2BaseScript.cells.Add(grid[29,10+i]);
 		}
 
+		gameScript.bases.Add(player1BaseScript);
+		gameScript.bases.Add(player2BaseScript);
 
 		Random.seed = reefSeed;
 		// Create reefs on grid
