@@ -61,8 +61,8 @@ public class GameScript : MonoBehaviour {
 		string playerName = PlayerPrefs.GetString("playerName");
 		myname = playerName;
 		rpcScript.sendPlayerName(myname);
-
 		setPlayerType();
+
 		player1SetupDone = false;
 		player2SetupDone = false;
 	}
@@ -77,7 +77,18 @@ public class GameScript : MonoBehaviour {
 
 		case (GameState.SetupWaiting):
 			if (player1SetupDone && player2SetupDone) {
-				curGameState = GameState.Play;
+				Debug.Log("Both true");
+
+				player1SetupDone = false;
+				player2SetupDone = false;
+				if (Network.peerType == NetworkPeerType.Server)
+				{
+					curGameState = GameState.Play;
+					turn = myname;
+				} else {
+					curGameState = GameState.Wait;
+					turn = opponentname;
+				}
 			}
 			break;
 		case (GameState.Play):
@@ -103,17 +114,19 @@ public class GameScript : MonoBehaviour {
 		case (GameState.Setup):
 			// GUI to be displayed during setup phase
 			if (GUI.Button(new Rect(10, 10, 100, 30), "Play Game")) {
+				setPlayerType();
+
 				rpcScript.SetupDone((int)myPlayerType);
 				curGameState = GameState.SetupWaiting;
 				Debug.Log ("Moving to SetupWait state");
-				if (Network.peerType == NetworkPeerType.Server)
-				{
-					curGameState = GameState.Play;
-					turn = myname;
-				} else {
-					curGameState = GameState.Wait;
-					turn = opponentname;
-				}
+//				if (Network.peerType == NetworkPeerType.Server)
+//				{
+//					curGameState = GameState.Play;
+//					turn = myname;
+//				} else {
+//					curGameState = GameState.Wait;
+//					turn = opponentname;
+//				}
 				Debug.Log ("It is now "+ turn);
 
 			}
@@ -145,6 +158,7 @@ public class GameScript : MonoBehaviour {
 	
 	public void setPlayerType(){
 		//set alphabetically.
+		Debug.Log(myname + "////"+ opponentname);
 		if (string.Compare(myname,opponentname) < 0) {
 			myPlayerType = PlayerType.Player1;
 		} else {

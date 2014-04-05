@@ -53,9 +53,12 @@ public class RPCScript : MonoBehaviour {
 	[RPC]
 	void RPCSetupDone(int playerType) {
 		if (playerType == 1) {
+			Debug.Log("Set 1 to true");
 			gameScript.player1SetupDone = true;
 		}
 		if (playerType == 2) {
+			Debug.Log("Set 2 to true");
+
 			gameScript.player2SetupDone = true;
 		}
 	}
