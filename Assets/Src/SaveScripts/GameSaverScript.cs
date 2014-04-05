@@ -55,7 +55,7 @@ public class GameSaverScript {
 			float endPosX = gameScript.gridScript.grid[endX, endY].transform.position.x;
 			float endPosZ = gameScript.gridScript.grid[endX, endY].transform.position.z;
 			int local = 1; //Not sure what to do about this...
-			ship = gameScript.gridScript.PlaceShip(startPosX, startPosZ, endPosX, endPosZ, local, shipSaver.player);
+			ship = gameScript.gridScript.PlaceShip(startPosX, startPosZ, endPosX, endPosZ, local, shipSaver.player, GameScript.ShipTypes.Mine);
 
 			shipSaver.Restore(ship, gameScript);
 		}

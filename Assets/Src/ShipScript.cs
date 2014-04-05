@@ -786,7 +786,7 @@ public class ShipScript : MonoBehaviour {
 		case GameScript.Direction.West:
 			for (int x = radarRangeStart; x < radarRangeStart + radarRangeForward; x++) {
 				for (int y = -sideDist; y <= sideDist; y++) {
-					if (startX + x < 0 || startX + x > 29 || startY + y < 0 || startY + y > 29) continue;
+					if (startX - x < 0 || startX - x > 29 || startY + y < 0 || startY + y > 29) continue;
 					CellScript curCellScript = gridScript.grid[startX - x, startY + y];
 					curCellScript.SetVisible(true);
 				}
@@ -804,7 +804,7 @@ public class ShipScript : MonoBehaviour {
 		case GameScript.Direction.South:
 			for (int x = -sideDist; x <= sideDist; x++) {
 				for (int y = radarRangeStart; y < radarRangeStart + radarRangeForward; y++) {
-					if (startX + x < 0 || startX + x > 29 || startY + y < 0 || startY + y > 29) continue;
+					if (startX + x < 0 || startX + x > 29 || startY - y < 0 || startY - y > 29) continue;
 					CellScript curCellScript = gridScript.grid[startX + x, startY - y];
 					curCellScript.SetVisible(true);
 				}

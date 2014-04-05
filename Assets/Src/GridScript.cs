@@ -12,6 +12,9 @@ public class GridScript : MonoBehaviour {
 	public GameObject gridCell;
 	public GameObject destroyer;
 	public GameObject mineLayer;
+	public GameObject radar;
+	public GameObject cruiser;
+	public GameObject torpedo;
 	public GameObject playerBase;
 	
 	public int gridSize;
@@ -79,7 +82,7 @@ public class GridScript : MonoBehaviour {
 		reefSeed = seed;
 	}
 
-	public void setShip()
+	public void setShip(GameScript.ShipTypes shipType)
 	{
 		Debug.Log ("Set Ship called");
 		if (currentSelection.Count == 1 && currentSelection.Count != 0){
@@ -96,7 +99,7 @@ public class GridScript : MonoBehaviour {
 			Debug.Log ("End Pos: " + endPos + " Start Pos: " + startPos);
 			if (startCell.availableForDock) {
 				Debug.Log ("Placing ship because cell is available for dock");
-				PlaceShip(startPos.x, startPos.z, endPos.x, endPos.z, 1, gameScript.myname);
+				PlaceShip(startPos.x, startPos.z, endPos.x, endPos.z, 1, gameScript.myname, shipType);
 				int playerNum = (int)gameScript.myPlayerType - 1;
 				BaseScript myBase = gameScript.bases[playerNum];
 				myBase.DisplayDockingRegion(false);
@@ -106,10 +109,10 @@ public class GridScript : MonoBehaviour {
 		}
 	}
 
-	public ShipScript PlaceShip (float startPosX, float startPosZ, float endPosX, float endPosZ, int local, string Player) {
+	public ShipScript PlaceShip (float startPosX, float startPosZ, float endPosX, float endPosZ, int local, string Player, GameScript.ShipTypes types) {
 		if (local == 1)
 		{
-			rpcScript.setShip(startPosX, startPosZ, endPosX, endPosZ, Player);
+			rpcScript.setShip(startPosX, startPosZ, endPosX, endPosZ, Player, types);
 		}
 		float newX = ((endPosX - startPosX)/2) + startPosX - 0.5f;
 		float newZ = ((endPosZ - startPosZ)/2) + startPosZ - 0.5f;
@@ -134,7 +137,28 @@ public class GridScript : MonoBehaviour {
 		Vector3 pos = new Vector3(newX, newY, newZ);
 		// Create ship
 		// TODO: Place new ship at correct orientation
-		GameObject newShip = Instantiate(destroyer, pos, Quaternion.identity) as GameObject;
+		GameObject newShip = null;
+
+
+		switch(types) {
+		case(GameScript.ShipTypes.Destroyer):
+			newShip = Instantiate(destroyer, pos, Quaternion.identity) as GameObject; 
+			break;
+		case(GameScript.ShipTypes.Mine):
+			newShip = Instantiate(mineLayer,pos,Quaternion.identity) as GameObject; 
+			break;
+		case(GameScript.ShipTypes.Cruiser):
+			newShip = Instantiate(cruiser,pos,Quaternion.identity) as GameObject; 
+			break;
+		case(GameScript.ShipTypes.Torpedo):
+			newShip = Instantiate(torpedo,pos,Quaternion.identity) as GameObject; 
+			break;
+		default: break;
+		}
+	
+	
+
+		//GameObject newShip = Instantiate(destroyer, pos, Quaternion.identity) as GameObject;
 		ShipScript newShipScript = newShip.GetComponent<ShipScript>();
 		// Add ship to list of ships in GameScript
 		gameScript.ships.Add(newShipScript);
