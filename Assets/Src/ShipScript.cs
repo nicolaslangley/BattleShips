@@ -451,6 +451,14 @@ public class ShipScript : MonoBehaviour {
 		}
 		Debug.Log ("Damage total is: " + damageTotal);
 		if (damageTotal == 0) {
+			gameScript.ships.Remove(this);
+			foreach (CellScript c in cells) 
+			{
+				c.available = true;
+				c.occupier = null;
+				c.isVisible = false;
+
+			}
 			Destroy(gameObject);
 			//Take care of stats, etc.
 		} else {
