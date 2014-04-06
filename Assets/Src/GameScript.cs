@@ -126,6 +126,7 @@ public class GameScript : MonoBehaviour {
 			gridScript.ResetVisibility();
 			foreach (ShipScript s in ships) {
 				s.CustomPlayUpdate();
+				s.UpdateShipVisibility();
 			}
 			break;
 		case (GameState.Wait):

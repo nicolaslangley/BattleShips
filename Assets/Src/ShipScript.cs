@@ -143,7 +143,6 @@ public class ShipScript : MonoBehaviour {
 				
 			}
 		}
-		UpdateShipVisibility();
 		SetRotation();
 	}
 
@@ -862,6 +861,7 @@ public class ShipScript : MonoBehaviour {
 		Debug.Log ("Updating ship visiblity for ship " + name);
 		for (int i = 0; i < cells.Count; i++) {
 			Debug.Log ("ship " + name + "cell " + i + " position is " + cells[i].gridPositionX + " " + cells[i].gridPositionY + " visibility is " + cells[i].isVisible);
+			bool visible = cells[i].isVisible;
 			if (!cells[i].isVisible) {
 				shipSections[i].renderer.enabled = false;
 			} else {
