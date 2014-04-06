@@ -396,14 +396,14 @@ public class ShipScript : MonoBehaviour {
 		}
 
 		foreach (CellScript oCellScript in cells) {
-			Debug.Log ("Index: " + cells.IndexOf(oCellScript) + " Position: " + oCellScript.gridPositionX + " " + oCellScript.gridPositionY);
+			//Debug.Log ("Index: " + cells.IndexOf(oCellScript) + " Position: " + oCellScript.gridPositionX + " " + oCellScript.gridPositionY);
 			oCellScript.occupier = this.gameObject;
 			oCellScript.available = false;
 			oCellScript.curCellState = GameScript.CellState.Ship;
 			oCellScript.selected = true;
 		}
 
-		Debug.Log("X: "+ destCell.gridPositionX + " Y: " + destCell.gridPositionY);
+		//Debug.Log("X: "+ destCell.gridPositionX + " Y: " + destCell.gridPositionY);
 
 
 
@@ -865,12 +865,12 @@ public class ShipScript : MonoBehaviour {
 	public void UpdateShipVisibility() {
 		Debug.Log ("Updating ship visiblity for ship " + name);
 		for (int i = 0; i < cells.Count; i++) {
-			Debug.Log ("ship " + name + "cell " + i + " position is " + cells[i].gridPositionX + " " + cells[i].gridPositionY + " visibility is " + cells[i].isVisible);
+			//Debug.Log ("ship " + name + "cell " + i + " position is " + cells[i].gridPositionX + " " + cells[i].gridPositionY + " visibility is " + cells[i].isVisible);
 			bool visible = cells[i].isVisible;
 			if (!cells[i].isVisible) {
 				shipSections[i].renderer.enabled = false;
 			} else {
-				Debug.Log ("Setting visibility for ship " + name + shipID + " to be true");
+				//Debug.Log ("Setting visibility for ship " + name + shipID + " to be true");
 				shipSections[i].renderer.enabled = true;
 			}
 		}
