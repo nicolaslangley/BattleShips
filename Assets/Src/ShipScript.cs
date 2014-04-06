@@ -787,6 +787,7 @@ public class ShipScript : MonoBehaviour {
 	public void UpdateRadarVisibility (bool status) {
 		// Get front cell of ship
 		CellScript backCellScript = cells[0];
+		backCellScript.SetVisible(true);
 		int startX = backCellScript.gridPositionX;
 		int startY = backCellScript.gridPositionY;
 		int sideDist = radarRangeSide / 2;
