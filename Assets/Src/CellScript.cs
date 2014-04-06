@@ -40,7 +40,6 @@ public class CellScript : MonoBehaviour {
 		if (selected == true) {
 			if (GUI.Button(new Rect(Screen.width - 110, 300, 100, 30), "Explode")) {
 				rpcScript.Explosion(gridPositionX,gridPositionY,GridScript.ExplodeType.Kamikaze);
-				selected = false;
 			}
 		}
 	}
@@ -79,7 +78,7 @@ public class CellScript : MonoBehaviour {
 					selected = false;
 					return;
 				}
-				selected = false;
+				//selected = false;
 			} else {
 				gridScript.RemoveFromSelection(this);
 			}
