@@ -14,7 +14,7 @@ public class ShipSectionScript : MonoBehaviour {
 		rpcScript = system.GetComponent<RPCScript>();
 		if (this.name == "Bow") gameObject.renderer.material.color = Color.black;
 		if (this.name == "Stern") gameObject.renderer.material.color = Color.white;
-	}
+		if (parent.name == parent.gameScript.myname) gameObject.renderer.enabled = false;
 
 	// Handle clicking on object
 	void OnMouseDown () {
