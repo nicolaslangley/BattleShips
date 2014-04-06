@@ -41,11 +41,15 @@ public class ShipSectionScript : MonoBehaviour {
 				parent.HandleCannon(this.gameObject,1,1);
 			}
 			gameScript.selectedShip.DisplayCannonRange(false);
+			gameScript.curPlayAction = GameScript.PlayAction.None;
+
 		} else if (parent.player != gameScript.myname) {
 			// Only allow for repair or selection if the ship is mine.
 			return;
 		} else if (gameScript.curPlayAction == GameScript.PlayAction.Repair) {
 			parent.HandleRepair(this.gameObject,1);
+			gameScript.curPlayAction = GameScript.PlayAction.None;
+
 		}  else {
 			parent.selected = !parent.selected;
 			if (parent.selected == true) {

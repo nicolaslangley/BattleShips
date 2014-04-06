@@ -64,11 +64,15 @@ public class CellScript : MonoBehaviour {
 		} else if (gameScript.curPlayAction == GameScript.PlayAction.Cannon) {
 			if (availableForShoot) {
 				gameScript.selectedShip.FireCannon(this, 1);
+				gameScript.curPlayAction = GameScript.PlayAction.None;
+
 			}
 		} 
 		else if (gameScript.curPlayAction == GameScript.PlayAction.DropMine) {
-			if (availableForShoot)
+			if (availableForShoot) {
 				gameScript.selectedShip.LayMine(this);
+				gameScript.curPlayAction = GameScript.PlayAction.None;
+			}
 		} else {
 			Debug.Log ("Selection changing");
 			selected = !selected;
