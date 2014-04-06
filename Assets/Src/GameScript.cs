@@ -256,6 +256,7 @@ public class GameScript : MonoBehaviour {
 
 	public void EndTurn()
 	{
+		ResetTotalSelection();
 		// Perform one last update to visibility before ending turn
 		gridScript.ResetVisibility();
 		foreach (ShipScript s in ships) {
@@ -301,6 +302,16 @@ public class GameScript : MonoBehaviour {
 
 
 		return GameScript.PlayerType.None;
+	}
+
+	public void ResetTotalSelection() {
+		foreach (ShipScript s in ships) {
+			s.selected = false;
+		}
+		foreach (BaseScript b in bases) {
+			b.selected = false;
+		}
+		gridScript.ResetSelection();
 	}
 
 

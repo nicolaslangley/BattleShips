@@ -551,4 +551,15 @@ public class GridScript : MonoBehaviour {
 		}
 	}
 
+	/**
+	 * Resets cell selection to be false
+	 */
+	public void ResetSelection() {
+		for (int x = 0; x < 30; x++) {
+			for (int y = 0; y < 30; y++) {
+				grid[x, y].selected = false;
+			}
+		}
+	}
+
 }
