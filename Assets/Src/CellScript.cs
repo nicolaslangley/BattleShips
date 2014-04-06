@@ -24,7 +24,7 @@ public class CellScript : MonoBehaviour {
 	public int gridPositionY;
 	[XmlAttribute("instanceID")]
 	public int instanceID;
-	public bool isVisible = true;
+	public bool isVisible = false;
 
 	private GameObject system;
 	private GridScript gridScript;
