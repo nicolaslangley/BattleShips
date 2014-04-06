@@ -637,12 +637,27 @@ public class ShipScript : MonoBehaviour {
 	/*
 	 * Fire cannon at targeted cell
 	 */
-	public void FireCannon(CellScript targetCell) {
+	public void FireCannon(CellScript targetCell, int local) {
 		// Call coroutine to display fire outcome
+		if (local == 1) {
+			rpcScript.fireCannonCell(shipID,targetCell.gridPositionX, targetCell.gridPositionY);
+			return;
+		}
 		DisplayCannonRange(false);
 		StartCoroutine(DisplayHit(targetCell.gameObject));
-		rpcScript.fireCannonCell(shipID,targetCell.gridPositionX, targetCell.gridPositionY);
-		rpcScript.EndTurn();
+
+		if (targetCell.curCellState != GameScript.CellState.Available)
+		{
+			Debug.Log ("Hit Something at " +targetCell.gridPositionX + ", " + targetCell.gridPositionY);
+			gameScript.messages = "Something hit at "+targetCell.gridPositionX+", "+targetCell.gridPositionY;
+		} else {
+			Debug.Log ("Hit Nothing");
+			gameScript.messages = "Hit Nothing";
+		}
+
+		Debug.Log("Ending turn after shootin");
+		gameScript.EndTurn();
+		//rpcScript.EndTurn();
 	}
 
 	/*

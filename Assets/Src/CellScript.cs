@@ -63,7 +63,7 @@ public class CellScript : MonoBehaviour {
 			return;
 		} else if (gameScript.curPlayAction == GameScript.PlayAction.Cannon) {
 			if (availableForShoot) {
-				gameScript.selectedShip.FireCannon(this);
+				gameScript.selectedShip.FireCannon(this, 1);
 			}
 		} 
 		else if (gameScript.curPlayAction == GameScript.PlayAction.DropMine) {
