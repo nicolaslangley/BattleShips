@@ -32,7 +32,6 @@ public class ShipSectionScript : MonoBehaviour {
 		// Handle selection if cannon ship
 		if (gameScript.curPlayAction == GameScript.PlayAction.Cannon) {
 			gameObject.renderer.material.color = Color.red;
-			parent.DisplayCannonRange(false);
 			if (gameScript.selectedShip.heavyCannon) {
 				//parent.HandleHit(this.gameObject, 1, 2);
 				parent.HandleCannon(this.gameObject,1,2);
@@ -41,6 +40,7 @@ public class ShipSectionScript : MonoBehaviour {
 				//parent.HandleHit(this.gameObject,1, 1);
 				parent.HandleCannon(this.gameObject,1,1);
 			}
+			gameScript.selectedShip.DisplayCannonRange(false);
 		} else if (parent.player != gameScript.myname) {
 			// Only allow for repair or selection if the ship is mine.
 			return;
