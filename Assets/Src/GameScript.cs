@@ -125,19 +125,17 @@ public class GameScript : MonoBehaviour {
 			// Perform update to objects based on play state
 			gridScript.ResetVisibility();
 			foreach (ShipScript s in ships) {
-				if (s.player == myname) {
-					Debug.Log ("Updating radar for " + s.name + " " + s.player);
-					s.UpdateRadarVisibility(true);
-				}
-				foreach (CellScript c in s.cells) {
-					int xPos = c.gridPositionX;
-					int yPos = c.gridPositionY;
-					bool vis = c.isVisible;
-				} 
+				s.CustomPlayUpdate();
+			}
+			foreach (ShipScript s in ships) {
 				s.UpdateShipVisibility();
 			}
 			break;
 		case (GameState.Wait):
+			gridScript.ResetVisibility();
+			foreach (ShipScript s in ships) {
+				s.CustomPlayUpdate();
+			}
 			break;
 		case (GameState.End):
 			break;
@@ -262,6 +260,8 @@ public class GameScript : MonoBehaviour {
 		gridScript.ResetVisibility();
 		foreach (ShipScript s in ships) {
 			s.CustomPlayUpdate();
+		}
+		foreach (ShipScript s in ships) {
 			s.UpdateShipVisibility();
 		}
 
