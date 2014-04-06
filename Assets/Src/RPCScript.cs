@@ -139,15 +139,15 @@ public class RPCScript : MonoBehaviour {
 		}
 	}
 
-	public void setShip(float startPosX, float startPosZ, float endPosX, float endPosZ, string playerName, GameScript.ShipTypes shiptype)
+	public void setShip(float startPosX, float startPosZ, float endPosX, float endPosZ, string playerName, GameScript.ShipTypes shiptype, GameScript.PlayerType myType)
 	{
-		networkView.RPC ("RPCSetShip",RPCMode.OthersBuffered, startPosX, startPosZ, endPosX, endPosZ, playerName, (int)shiptype);
+		networkView.RPC ("RPCSetShip",RPCMode.OthersBuffered, startPosX, startPosZ, endPosX, endPosZ, playerName, (int)shiptype, (int) myType);
 	}
 
 	[RPC]
-	void RPCSetShip(float startPosX, float startPosZ, float endPosX, float endPosZ, string playerName, int shipType)
+	void RPCSetShip(float startPosX, float startPosZ, float endPosX, float endPosZ, string playerName, int shipType, int myType)
 	{
-		gridScript.PlaceShip(startPosX,startPosZ,endPosX,endPosZ,0, playerName, (GameScript.ShipTypes) shipType);
+		gridScript.PlaceShip(startPosX,startPosZ,endPosX,endPosZ,0, playerName, (GameScript.ShipTypes) shipType, (GameScript.PlayerType) myType);
 	}
 	
 	public void fireCannonCell(string shipID, int x, int y)

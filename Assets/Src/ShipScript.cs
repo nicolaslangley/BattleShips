@@ -8,6 +8,7 @@ public class ShipScript : MonoBehaviour {
 	/** Properties **/
 	public string shipID;
 	public string player;
+	public GameScript.PlayerType myPlayerType;
 	//cells are ordered from first cell added when creating to last one
 	public List<CellScript> cells;
 	public GameScript.Direction curDir;

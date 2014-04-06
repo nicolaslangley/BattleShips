@@ -12,7 +12,7 @@ public class GameScript : MonoBehaviour {
 	public enum ShipTypes {Cruiser, Destroyer, Torpedo, Mine, Radar, Kamikaze};
 
 
-	public enum PlayerType {Player1 =1, Player2=2}
+	public enum PlayerType {None = 0, Player1 =1, Player2=2}
 	/** Properties **/
 	public List<ShipScript> ships;
 	public List<BaseScript> bases;
@@ -34,6 +34,14 @@ public class GameScript : MonoBehaviour {
 	public bool waitTurn;
 
 	private bool gridInited;
+
+	private int myCruiserCount;
+	private int myDestoryerCount;
+	private int myMineLayerCount;
+	private int myTorpedoCount;
+	private int myRadarCount;
+	private int myKamikazeCount;
+
 
 	/** Current state of game **/
 	public GameState curGameState;
@@ -69,6 +77,13 @@ public class GameScript : MonoBehaviour {
 
 		player1SetupDone = false;
 		player2SetupDone = false;
+
+		myRadarCount = 1;
+		myKamikazeCount = 1;
+		myCruiserCount = 2;
+		myDestoryerCount = 3;
+		myTorpedoCount = 2;
+		myMineLayerCount = 2;
 	}
 	
 	// Update is called once per frame
@@ -127,7 +142,7 @@ public class GameScript : MonoBehaviour {
 
 		switch(curGameState) {
 		case (GameState.Setup):
-			//Debug.Log ("Player type: " + ((int)myPlayerType-1));
+			Debug.Log ("-----------Player type: " + ((int)myPlayerType-1));
 			bases[((int)myPlayerType - 1)].DisplayDockingRegion(true);
 			// GUI to be displayed during setup phase
 			if (GUI.Button(new Rect(10, 10, 100, 30), "Play Game")) {
@@ -153,36 +168,65 @@ public class GameScript : MonoBehaviour {
 //				rpcScript.SignalPlayer();
 //			}
 
-			if (GUI.Button (new Rect(10,90,100,30), "Place Cruiser")) {
-				gridScript.setShip(ShipTypes.Cruiser);
-				rpcScript.SignalPlayer();
+			if (myCruiserCount > 0) {
+				GUI.Label (new Rect(120,90,100,30),"Remaining: " + myCruiserCount);
+				if (GUI.Button (new Rect(10,90,100,30), "Place Cruiser." )) {
+					gridScript.setShip(ShipTypes.Cruiser);
+					rpcScript.SignalPlayer();
+					myCruiserCount--;
+				}
+			}
 
+			if (myDestoryerCount > 0) {
+				GUI.Label (new Rect(120,130,100,30),"Remaining: " + myDestoryerCount);
+				if (GUI.Button (new Rect(10,130,100,30), "Place Destoryer")) {
+					gridScript.setShip(ShipTypes.Destroyer);
+					rpcScript.SignalPlayer();
+					myDestoryerCount--;
+				}
 			}
-			if (GUI.Button (new Rect(10,130,100,30), "Place Destoryer")) {
-				gridScript.setShip(ShipTypes.Destroyer);
-				rpcScript.SignalPlayer();
-				
+
+			if (myMineLayerCount > 0) {
+				GUI.Label (new Rect(120,170,100,30),"Remaining: " + myMineLayerCount);
+
+				if (GUI.Button (new Rect(10,170,100,30), "Place MineLayer")) {
+					gridScript.setShip(ShipTypes.Mine);
+					rpcScript.SignalPlayer();
+					myMineLayerCount--;
+				}
 			}
-			if (GUI.Button (new Rect(10,170,100,30), "Place MineLayer")) {
-				gridScript.setShip(ShipTypes.Mine);
-				rpcScript.SignalPlayer();
-				
+
+			if (myTorpedoCount > 0) {
+				GUI.Label (new Rect(120,210,100,30),"Remaining: " + myTorpedoCount);
+
+				if (GUI.Button (new Rect(10,210,100,30), "Place Torpedo")) {
+					gridScript.setShip(ShipTypes.Torpedo);
+					rpcScript.SignalPlayer();
+					myTorpedoCount--;
+				}
 			}
-			if (GUI.Button (new Rect(10,210,100,30), "Place Torpedo")) {
-				gridScript.setShip(ShipTypes.Torpedo);
-				rpcScript.SignalPlayer();
-				
+
+			if (myRadarCount > 0) {
+				GUI.Label (new Rect(120,250,100,30),"Remaining: " + myRadarCount);
+
+				if (GUI.Button (new Rect(10,250,100,30), "Place Radar")) {
+					gridScript.setShip(ShipTypes.Destroyer);
+					rpcScript.SignalPlayer();
+					myRadarCount--;
+				}
 			}
-			if (GUI.Button (new Rect(10,250,100,30), "Place Radar")) {
-				gridScript.setShip(ShipTypes.Destroyer);
-				rpcScript.SignalPlayer();
-				
+	
+			if (myKamikazeCount > 0) {
+				GUI.Label (new Rect(120,290,100,30),"Remaining: " + myKamikazeCount);
+
+				if (GUI.Button (new Rect(10,290,100,30), "Place Kamikaze")) {
+					gridScript.setShip(ShipTypes.Destroyer);
+					rpcScript.SignalPlayer();
+					myKamikazeCount--;
+
+				}
 			}
-			if (GUI.Button (new Rect(10,290,100,30), "Place Kamikaze")) {
-				gridScript.setShip(ShipTypes.Destroyer);
-				rpcScript.SignalPlayer();
-				
-			}
+	
 			break;
 
 		case (GameState.SetupWaiting):
@@ -228,5 +272,27 @@ public class GameScript : MonoBehaviour {
 		//Reset this gamescript from a previously saved one.
 		//Do nothing for now.
 	}
+
+	public PlayerType checkWinner(string myName, PlayerType myType) {
+		bool player1HasShips = false;
+		bool player2HasShips = false;
+
+		foreach (ShipScript s in ships) {
+			if (s.myPlayerType == GameScript.PlayerType.Player1) {
+				player1HasShips = true;
+			} else if (s.myPlayerType == GameScript.PlayerType.Player2) {
+				player2HasShips = true;
+			}
+		}
+		if (player1HasShips || player2HasShips) return GameScript.PlayerType.None;
+		if (!player2HasShips) return GameScript.PlayerType.Player1;
+		if (!player1HasShips) return GameScript.PlayerType.Player2;
+
+
+
+		return GameScript.PlayerType.None;
+	}
+
+
 
 }
