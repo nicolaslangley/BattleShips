@@ -150,7 +150,7 @@ public class GameScript : MonoBehaviour {
 		switch(curGameState) {
 		case (GameState.Setup):
 			Debug.Log ("-----------Player type: " + ((int)myPlayerType-1));
-			bases[((int)myPlayerType - 1)].DisplayDockingRegion(true);
+			if (bases.Count > 0) bases[((int)myPlayerType - 1)].DisplayDockingRegion(true);
 			// GUI to be displayed during setup phase
 			if (GUI.Button(new Rect(10, 10, 100, 30), "Play Game")) {
 				setPlayerType();

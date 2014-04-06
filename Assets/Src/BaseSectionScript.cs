@@ -27,6 +27,7 @@ public class BaseSectionScript : MonoBehaviour {
 				parent.HandleHit(this.gameObject, 1, 2);
 			else
 				parent.HandleHit(this.gameObject,1, 1);
+			gameScript.selectedShip.DisplayCannonRange(false);
 		} else {
 			Debug.Log (parent.playerType + " " + gameScript.myPlayerType);
 			if ((int)parent.playerType == (int)(gameScript.myPlayerType)) {
