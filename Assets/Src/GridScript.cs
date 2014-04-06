@@ -354,12 +354,10 @@ public class GridScript : MonoBehaviour {
 			}
 			break;
 		case GameScript.Direction.West:
-			for (int x = 1; x <= -dist; x++) {
+			for (int x = 1; x <= dist; x++) {
 				if (positionX - x < 0 || positionX - x > 29) break;
 				CellScript curCellScript = grid[positionX - x, positionY];
-				Debug.Log ("Checking: " + (positionX - x) + " " + positionY);
 				if (curCellScript.available != true) {
-					Debug.Log ("Cell unavailable");
 					obstacleEncountered = true;
 					encounteredObstacle = grid[positionX - (x-offset), positionY].GetComponent<CellScript>();
 					break;
@@ -378,7 +376,7 @@ public class GridScript : MonoBehaviour {
 			}
 			break;
 		case GameScript.Direction.South:
-			for (int y = 1; y <= -dist; y++) {
+			for (int y = 1; y <= dist; y++) {
 				if (positionY - y < 0 || positionY - y > 29) break;
 				CellScript curCellScript = grid[positionX, positionY - y];
 				if (curCellScript.available != true) {
