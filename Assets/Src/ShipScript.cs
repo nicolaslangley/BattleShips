@@ -46,6 +46,10 @@ public class ShipScript : MonoBehaviour {
 
 	// Display movement options for selected ship
 	void OnGUI () {
+		shipGUI();
+	}
+
+	protected virtual void shipGUI() {
 		if (gameScript.curGameState == GameScript.GameState.Wait) return;
 		if (gameScript.curGameState == GameScript.GameState.SetupWaiting) return;
 		if (selected == true) {
