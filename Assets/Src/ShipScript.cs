@@ -829,9 +829,9 @@ public class ShipScript : MonoBehaviour {
 	public void updateShipVisibility() {
 		for (int i = 0; i < cells.Count; i++) {
 			if (!cells[i].isVisible) {
-				shipSections[i].renderer.isVisible = false;
+				shipSections[i].renderer.enabled = false;
 			} else {
-				shipSections[i].renderer.isVisible = true;
+				shipSections[i].renderer.enabled = true;
 			}
 		}
 	}
