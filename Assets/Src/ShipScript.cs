@@ -822,6 +822,19 @@ public class ShipScript : MonoBehaviour {
 		}
 	}
 
+	/**
+	 * Function to update visibility of shipsections
+	 */
+	public void updateShipVisibility() {
+		for (int i = 0; i < cells.Count; i++) {
+			if (!cells[i].isVisible) {
+				shipSections[i].renderer.isVisible = false;
+			} else {
+				shipSections[i].renderer.isVisible = true;
+			}
+		}
+	}
+
 
 
 	/*

@@ -24,12 +24,12 @@ public class CellScript : MonoBehaviour {
 	public int gridPositionY;
 	[XmlAttribute("instanceID")]
 	public int instanceID;
+	public bool isVisible = true;
 
 	private GameObject system;
 	private GridScript gridScript;
 	private GameScript gameScript;
 	private RPCScript rpcScript;
-	private bool isVisible = true;
 
 
 

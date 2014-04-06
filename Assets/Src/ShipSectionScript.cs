@@ -34,6 +34,9 @@ public class ShipSectionScript : MonoBehaviour {
 				//parent.HandleHit(this.gameObject,1, 1);
 				parent.HandleCannon(this.gameObject,1,1);
 			}
+		} else if (parent.player != gameScript.myname) {
+			// Only allow for repair or selection if the ship is mine.
+			return;
 		} else if (gameScript.curPlayAction == GameScript.PlayAction.Repair) {
 			parent.HandleRepair(this.gameObject,1);
 		}  else {
