@@ -108,7 +108,7 @@ public class GameScript : MonoBehaviour {
 		case (GameState.SetupWaiting):
 			if (player1SetupDone && player2SetupDone) {
 				Debug.Log("Both true");
-
+				bases[((int)myPlayerType - 1)].DisplayDockingRegion(false);
 				player1SetupDone = false;
 				player2SetupDone = false;
 				if (Network.peerType == NetworkPeerType.Server)
