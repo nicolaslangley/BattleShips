@@ -163,14 +163,20 @@ public class RPCScript : MonoBehaviour {
 		CellScript hitCellScript = gridScript.GetCell(x,y);
 		Debug.Log(hitCellScript.gameObject.name);
 
-		if (hitCellScript.curCellState != GameScript.CellState.Available)
+		foreach(ShipScript shipscript in gameScript.ships)
 		{
-			Debug.Log ("Hit Something at " +x + ", " + y);
-			gameScript.messages = "Something hit at "+x+", "+y;
-		} else {
-			Debug.Log ("HIt Nothing");
-			gameScript.messages = "Hit Nothing";
+			if (shipscript.shipID == shipID)
+			{
+				Debug.Log ("Found correct ship");
+				//shipscript.HandleHit(shipscript.GetSection(section),0, damage);
+				shipscript.FireCannon(hitCellScript,0);
+				break;
+			}
 		}
+
+
+
+	
 
 //		if (hitShipScript != null)
 //		{

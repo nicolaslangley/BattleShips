@@ -12,7 +12,7 @@ public class TorpedoBoatScript : ShipScript {
 		
 		this.radarRangeForward = 6;
 		this.radarRangeSide = 3;
-		this.radarRangeStart = 3;
+		this.radarRangeStart = 1;
 		
 		this.cannonRangeForward = 5;
 		this.cannonRangeSide = 0;

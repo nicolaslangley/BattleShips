@@ -30,12 +30,22 @@ public class RadarBoatScript : ShipScript {
 		}
 	}
 
-	void OnGui() {
-		this.OnGui ();
+	protected override void shipGUI() {
+		Debug.Log("Radar gui");
+
+		this.shipGUI();
 		if (GUI.Button(new Rect(Screen.width - 170, 90, 100, 30), "Toggle Long Range")) {
 			ToggleLongRange();
 		}
 	}
+
+//	void OnGUI() {
+//		this.OnGUI ();
+//		Debug.Log("Radar gui");
+//		if (GUI.Button(new Rect(Screen.width - 170, 90, 100, 30), "Toggle Long Range")) {
+//			ToggleLongRange();
+//		}
+//	}
 	
 	// Update is called once per frame
 	void Update () {
