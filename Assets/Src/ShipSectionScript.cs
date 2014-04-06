@@ -14,7 +14,12 @@ public class ShipSectionScript : MonoBehaviour {
 		rpcScript = system.GetComponent<RPCScript>();
 		if (this.name == "Bow") gameObject.renderer.material.color = Color.black;
 		if (this.name == "Stern") gameObject.renderer.material.color = Color.white;
-		if (parent.name == parent.gameScript.myname) gameObject.renderer.enabled = false;
+		if (parent.player != parent.gameScript.myname) {
+			Debug.Log ("not my ship so disable renderer");
+			gameObject.renderer.enabled = false;
+			Debug.Log ("Disabling visibility on cell");
+			parent.GetCellForSection(this.gameObject).SetVisible(false);
+		} 
 	}
 
 	// Handle clicking on object

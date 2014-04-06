@@ -252,6 +252,11 @@ public class ShipScript : MonoBehaviour {
 		return shipSections[section];
 	}
 
+	public CellScript GetCellForSection(GameObject section) {
+		int index = shipSections.IndexOf(section);
+		return cells[index];
+	}
+
 	/*
 	 * Handles movement of ship
 	 * Moves ship to target cell

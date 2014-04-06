@@ -209,6 +209,7 @@ public class GridScript : MonoBehaviour {
 		}
 		currentSelection.Clear();
 
+
 		return newShipScript;
 
 		
