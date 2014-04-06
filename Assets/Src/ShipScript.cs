@@ -859,10 +859,13 @@ public class ShipScript : MonoBehaviour {
 	 * Function to update visibility of shipsections
 	 */
 	public void UpdateShipVisibility() {
+		Debug.Log ("Updating ship visiblity for ship " + name);
 		for (int i = 0; i < cells.Count; i++) {
+			Debug.Log ("ship " + name + "cell " + i + " position is " + cells[i].gridPositionX + " " + cells[i].gridPositionY + " visibility is " + cells[i].isVisible);
 			if (!cells[i].isVisible) {
 				shipSections[i].renderer.enabled = false;
 			} else {
+				Debug.Log ("Setting visibility for ship " + name + shipID + " to be true");
 				shipSections[i].renderer.enabled = true;
 			}
 		}

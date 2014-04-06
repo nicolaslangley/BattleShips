@@ -15,6 +15,7 @@ public class ShipSectionScript : MonoBehaviour {
 		if (this.name == "Bow") gameObject.renderer.material.color = Color.black;
 		if (this.name == "Stern") gameObject.renderer.material.color = Color.white;
 		if (parent.player != parent.gameScript.myname) {
+			Debug.Log ("parent name " + parent.player + " gamescript name " + parent.gameScript.myname);
 			Debug.Log ("not my ship so disable renderer");
 			gameObject.renderer.enabled = false;
 			Debug.Log ("Disabling visibility on cell");
