@@ -20,8 +20,8 @@ public class KamikazeBoatScript : ShipScript {
 		this.shipType = "kamikaze";
 	}
 
-	void OnGui() {
-		this.OnGui ();
+	void OnGUI() {
+		this.OnGUI ();
 		if (GUI.Button(new Rect(Screen.width - 170, 90, 100, 30), "Detonate")) {
 			int startX = this.cells[0].gridPositionX;
 			int startY = this.cells[0].gridPositionY;
