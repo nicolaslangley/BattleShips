@@ -94,18 +94,24 @@ public class ShipScript : MonoBehaviour {
 		GameObject[] tShipSection = new GameObject[shipSize];
 		//Correct Order of ship instantiation.
 		foreach (Transform child in transform) {
-			Debug.Log(child.name);
-			Debug.Log ("Size: " + shipSize + "and arrysize: " + tShipSection.Length);
+			//Debug.Log(child.name);
+			//Debug.Log ("Size: " + shipSize + "and arrysize: " + tShipSection.Length);
 			if (child.name == "Stern") tShipSection[0] = child.gameObject;
 			if (child.name == "Bow") tShipSection[shipSize-1] = child.gameObject;
 			string[] mid = child.name.Split('_');
-			if (mid[0] == "mid") {
+			if (mid[0] == "Mid") {
 				int index = int.Parse(mid[1]);
-				shipSections[index] = child.gameObject;
+				Debug.Log(child.name + " : " + index);
+				tShipSection[index] = child.gameObject;
 			}
 		}
 		shipSections = new List<GameObject>(tShipSection);
 
+		foreach (GameObject s in shipSections) {
+			Debug.Log(s.transform.name);
+		}
+
+		//Debug.Log(shipSections[0].name + " : " + shipSections[1].name);
 	}
 
 	/*
