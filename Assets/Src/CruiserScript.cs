@@ -4,7 +4,7 @@ using System.Collections;
 public class CruiserScript : ShipScript {
 
 	// Use this for initialization
-	void Awake() {
+	void Awake () {
 		this.shipSize = 5;
 		this.heavyArmor = true;
 		this.heavyCannon = true;
