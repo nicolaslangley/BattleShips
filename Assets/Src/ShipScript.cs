@@ -455,11 +455,16 @@ public class ShipScript : MonoBehaviour {
 			//Take care of stats, etc.
 		} else {
 			section.renderer.material.color = Color.red;
+			Debug.Log ("My Maxspeed: " + maxSpeed);
+			Debug.Log ("My shipsize: " + shipSize);
+
+
 			if (heavyArmor)
-				speed = maxSpeed * (damageTotal / (2 * shipSize));
+				speed = (int)((float)maxSpeed * ((float)damageTotal / (2 * (float)shipSize)));
 			else
-				speed = maxSpeed * (damageTotal / shipSize);
+				speed = (int)((float)maxSpeed * ((float)damageTotal / ((float)shipSize)));
 		}
+		Debug.Log ("My speed: " + speed);
 
 		//rpcScript.EndTurn();
 //		gameScript.EndTurn();
