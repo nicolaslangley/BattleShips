@@ -4,7 +4,7 @@ using System.Collections;
 public class TorpedoBoatScript : ShipScript {
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		this.shipSize = 3;
 		this.heavyArmor = false;
 		this.heavyCannon = false;

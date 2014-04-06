@@ -22,7 +22,7 @@ public class MineLayerScript : ShipScript {
 
 	void OnGui() {
 		this.OnGui ();
-		if (GUI.Button(new Rect(Screen.width - 110, 1700, 100, 30), "Drop Mine")) {
+		if (GUI.Button(new Rect(Screen.width - 210, 200, 100, 30), "Drop Mine")) {
 			DisplayMineRange(true);
 			gameScript.curPlayAction = GameScript.PlayAction.DropMine;
 		}

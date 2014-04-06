@@ -99,7 +99,7 @@ public class GridScript : MonoBehaviour {
 			Debug.Log ("End Pos: " + endPos + " Start Pos: " + startPos);
 			if (startCell.availableForDock) {
 				Debug.Log ("Placing ship because cell is available for dock");
-				PlaceShip(startPos.x, startPos.z, endPos.x, endPos.z, 1, gameScript.myname, shipType);
+				PlaceShip(startPos.x, startPos.z, endPos.x, endPos.z, 1, gameScript.myname, shipType, gameScript.myPlayerType);
 				int playerNum = (int)gameScript.myPlayerType - 1;
 				BaseScript myBase = gameScript.bases[playerNum];
 				myBase.DisplayDockingRegion(false);
@@ -109,10 +109,10 @@ public class GridScript : MonoBehaviour {
 		}
 	}
 
-	public ShipScript PlaceShip (float startPosX, float startPosZ, float endPosX, float endPosZ, int local, string Player, GameScript.ShipTypes types) {
+	public ShipScript PlaceShip (float startPosX, float startPosZ, float endPosX, float endPosZ, int local, string Player, GameScript.ShipTypes types, GameScript.PlayerType playerType) {
 		if (local == 1)
 		{
-			rpcScript.setShip(startPosX, startPosZ, endPosX, endPosZ, Player, types);
+			rpcScript.setShip(startPosX, startPosZ, endPosX, endPosZ, Player, types, playerType);
 		}
 		float newX = ((endPosX - startPosX)/2) + startPosX - 0.5f;
 		float newZ = ((endPosZ - startPosZ)/2) + startPosZ - 0.5f;
@@ -148,6 +148,7 @@ public class GridScript : MonoBehaviour {
 			newShip = Instantiate(mineLayer,pos,Quaternion.identity) as GameObject; 
 			break;
 		case(GameScript.ShipTypes.Cruiser):
+			Debug.Log("Making new cruiser");
 			newShip = Instantiate(cruiser,pos,Quaternion.identity) as GameObject; 
 			break;
 		case(GameScript.ShipTypes.Torpedo):
@@ -166,6 +167,7 @@ public class GridScript : MonoBehaviour {
 		newShipScript.curDir = shipDir;
 		newShipScript.SetRotation();
 		newShipScript.player = Player;
+		newShipScript.myPlayerType = playerType;
 		Debug.Log("Player: "+Player);
 		newShipScript.shipID = Player + idSeedStack.Pop().ToString();
 		Debug.Log("New Ship ID: "+ newShipScript.shipID);
@@ -547,4 +549,5 @@ public class GridScript : MonoBehaviour {
 			}
 		}
 	}
+
 }

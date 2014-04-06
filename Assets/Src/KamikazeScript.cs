@@ -4,7 +4,7 @@ using System.Collections;
 public class KamikazeBoatScript : ShipScript {
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		this.shipSize = 1;
 		this.heavyArmor = true;
 		this.heavyCannon = false;
