@@ -39,6 +39,10 @@ public class BaseScript : MonoBehaviour {
 		gridScript = system.GetComponent<GridScript>();
 		rpcScript = system.GetComponent<RPCScript>();
 		baseSections = new List<GameObject>();
+		health = new int[10];
+		for (int i = 0; i < 10; i++) {
+			health [i] = 1;
+		}
 		foreach (Transform child in transform) {
 			baseSections.Add(child.gameObject);
 		}
