@@ -17,6 +17,7 @@ public class GridScript : MonoBehaviour {
 	public GameObject radar;
 	public GameObject cruiser;
 	public GameObject torpedo;
+	public GameObject kamikaze;
 	public GameObject playerBase;
 	#endregion
 
@@ -186,6 +187,12 @@ public class GridScript : MonoBehaviour {
 			break;
 		case(GameScript.ShipTypes.Torpedo):
 			newShip = Instantiate(torpedo,pos,Quaternion.identity) as GameObject; 
+			break;
+		case(GameScript.ShipTypes.Radar):
+			newShip = Instantiate(radar,pos,Quaternion.identity) as GameObject;
+			break;
+		case(GameScript.ShipTypes.Kamikaze):
+			newShip = Instantiate(kamikaze,pos,Quaternion.identity) as GameObject;
 			break;
 		default: break;
 		}

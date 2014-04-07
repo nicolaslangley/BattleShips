@@ -274,7 +274,7 @@ public class GameScript : MonoBehaviour {
 
 				if (GUI.Button (new Rect(10,250,100,30), "Place Radar")) {
 					if (gridScript.currentSelection.Count == 1) {
-						gridScript.setShip(ShipTypes.Destroyer);
+						gridScript.setShip(ShipTypes.Radar);
 						rpcScript.SignalPlayer();
 						myRadarCount--;
 					}
@@ -287,7 +287,7 @@ public class GameScript : MonoBehaviour {
 
 				if (GUI.Button (new Rect(10,290,100,30), "Place Kamikaze")) {
 					if (gridScript.currentSelection.Count == 1) {
-						gridScript.setShip(ShipTypes.Destroyer);
+						gridScript.setShip(ShipTypes.Kamikaze);
 						rpcScript.SignalPlayer();
 						myKamikazeCount--;
 					}

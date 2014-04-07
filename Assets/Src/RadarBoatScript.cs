@@ -35,10 +35,9 @@ public class RadarBoatScript : ShipScript {
 	}
 
 	void OnGUI () {
-		if (selected) {
-			shipGUI();
-			RadarGUI();
-		}
+		shipGUI();
+		RadarGUI();
+
 	}
 
 	void RadarGUI() {
