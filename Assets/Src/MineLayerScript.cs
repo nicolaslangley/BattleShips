@@ -17,6 +17,11 @@ public class MineLayerScript : ShipScript {
 		this.cannonRangeForward = 4;
 		this.cannonRangeSide = 5;
 		this.cannonRangeStart = -1;
+
+		this.hasCannon = true;
+		this.hasMine = true;
+		this.canRotate = true;
+
 		this.shipType = "minelayer";
 	}
 
@@ -28,23 +33,11 @@ public class MineLayerScript : ShipScript {
 
 	void MineLayerGUI() {
 		if (selected) {
-			if (GUI.Button(new Rect(Screen.width - 110, 210, 100, 30), "Drop Mine")) {
+			if (GUI.Button(new Rect(Screen.width - 150, 210, 100, 30), "Drop Mine")) {
 				DisplayMineRange(true);
 				gameScript.curPlayAction = GameScript.PlayAction.DropMine;
 			}
 		}
 	}
-	public override void LayMine(CellScript cell) {
-		cell.curCellState = GameScript.CellState.Mine;
-		DisplayMineRange (false);
-	}
 
-	void DisplayMineRange(bool display) {
-		foreach (CellScript cell in this.cells) {
-			foreach (CellScript neighbour in gridScript.GetCellNeighbours(cell)) {
-				if (neighbour.curCellState == GameScript.CellState.Available) 
-					gridScript.DisplayCellForShoot(display, neighbour);
-			}
-		}
-	}
 }

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class BaseScript : MonoBehaviour {
 
 	public string player;
-	public int playerType;
+	public GameScript.PlayerType myPlayerType;
 	public GameScript gameScript;
 	public GridScript gridScript;
 	public bool selected;
@@ -40,12 +40,22 @@ public class BaseScript : MonoBehaviour {
 		rpcScript = system.GetComponent<RPCScript>();
 		baseSections = new List<GameObject>();
 		health = new int[10];
+
+		GameObject[] tBaseSection = new GameObject[10];
 		for (int i = 0; i < 10; i++) {
 			health [i] = 1;
 		}
 		foreach (Transform child in transform) {
-			baseSections.Add(child.gameObject);
+			string[] section = child.name.Split('_');
+			if (section[0] == "BaseSection") {
+				int index = int.Parse(section[1]);
+				Debug.Log(child.name + " : " + index);
+				tBaseSection[index] = child.gameObject;
+			}
 		}
+
+		baseSections = new List<GameObject>(tBaseSection);
+
 	}
 
 	public void CustomPlayUpdate () {
@@ -75,7 +85,7 @@ public class BaseScript : MonoBehaviour {
 		if (local == 1)
 		{
 			Debug.Log("Local");
-			rpcScript.HandleBaseDamage(player,sectionIndex,damage);
+			rpcScript.HandleBaseDamage(myPlayerType,sectionIndex,damage);
 			return;
 		}
 		Debug.Log ("Hit handled on section: " + sectionIndex);
@@ -106,16 +116,31 @@ public class BaseScript : MonoBehaviour {
 		if (cells[0].gridPositionX == 0) {
 			//Debug.Log ("Displaying docking region for base1");
 			for (int i = 0; i < 10; i++) {
-				if (health[i] > 0) { 
+				if (health[i] > 0 || !status) { 
 					gridScript.DisplayCellForDock(status, 1, 10+i);
 				}
+			}
+
+			if (health[0] > 0 || !status) {
+				gridScript.DisplayCellForDock(status,0,9);
+
+			}
+			if (health[9] > 0 || !status) {
+				gridScript.DisplayCellForDock(status,0,20);
 			}
 		} else if (cells[0].gridPositionX == 29) {
 			//Debug.Log ("Displaying docking region for base2");
 			for (int i = 0; i < 10; i++) {
-				if (health[i] > 0) {
+				if (health[i] > 0 || !status) {
 					gridScript.DisplayCellForDock(status, 28, 10+i);
 				}
+			}
+			if (health[0] > 0 || !status) {
+				gridScript.DisplayCellForDock(status,29,9);
+
+			}
+			if (health[9] > 0 || !status) {
+				gridScript.DisplayCellForDock(status,29,20);
 			}
 		} 
 

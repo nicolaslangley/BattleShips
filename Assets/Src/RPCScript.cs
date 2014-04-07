@@ -65,7 +65,7 @@ public class RPCScript : MonoBehaviour {
 
 	public void EndTurn()
 	{
-		networkView.RPC ("RPCEndTurn",RPCMode.All);
+		networkView.RPC ("RPCEndTurn",RPCMode.AllBuffered);
 	}
 
 	[RPC]
@@ -94,7 +94,7 @@ public class RPCScript : MonoBehaviour {
 	public void NetworkMoveShip(string shipdID, int x, int y)
 	{
 
-		networkView.RPC ("RPCMoveShip", RPCMode.All,shipdID, x, y);
+		networkView.RPC ("RPCMoveShip", RPCMode.AllBuffered,shipdID, x, y);
 		Debug.Log ("Sent move");
 	}
 
@@ -174,18 +174,6 @@ public class RPCScript : MonoBehaviour {
 			}
 		}
 
-
-
-	
-
-//		if (hitShipScript != null)
-//		{
-//			ShipScript hitShipScript = hitCellScript.occupier.GetComponent<ShipScript>();
-//			//int index = hitShipScript.cells.IndexOf(hitCell);
-//			//Debug.Log("Index of hit ship: "+ index);
-//		} else {
-//			Debug.Log("HIt nothin");
-//		}
 	}
 
 	public void fireCannonShip(string shipID, int section, int damage)
@@ -209,44 +197,54 @@ public class RPCScript : MonoBehaviour {
 			}
 		}
 	}
-	public void handleShipRepair(string shipID, int section)
+
+	public void fireTorpedo(string shipID) 
 	{
-		networkView.RPC("RPCHandleShipRepair",RPCMode.AllBuffered,shipID,section);
+		networkView.RPC ("RPCFireTorpedo",RPCMode.AllBuffered,shipID);
 	}
 
 	[RPC]
-	void RPCHandleShipRepair (string shipID, int section) 
+	void RPCFireTorpedo(string shipID)
 	{
 		foreach(ShipScript shipscript in gameScript.ships)
 		{
 			if (shipscript.shipID == shipID)
 			{
-				Debug.Log ("Found correct ship");
-				shipscript.HandleRepair(shipscript.GetSection(section),0);
+				shipscript.FireTorpedo(0);
+				break;
+			}
+		}
+	}
+	
+	public void repairShipWithIndex(string shipid, int index) 
+	{
+		networkView.RPC ("RPCRepairShipWithIndex",RPCMode.AllBuffered,shipid,index);
+	}
+
+	[RPC]
+	void RPCRepairShipWithIndex (string shipid, int index) 
+	{
+		foreach (ShipScript shipscript in gameScript.ships)
+		{
+			if (shipscript.shipID == shipid)
+			{
+				shipscript.repairSection(index,0);
 				break;
 			}
 		}
 	}
 
 
-	public void HandleBaseDamage(string player, int section, int damage)
+	public void HandleBaseDamage(GameScript.PlayerType player, int section, int damage)
 	{
-		networkView.RPC ("RPCHandleBaseDamage",RPCMode.AllBuffered,player,section,damage);
+		networkView.RPC ("RPCHandleBaseDamage",RPCMode.AllBuffered,(int)player,section,damage);
 	}
 
 	[RPC]
-	void RPCHandleBaseDamage(string player, int section, int damage)
+	void RPCHandleBaseDamage(int player, int section, int damage)
 	{
 		BaseScript baseScript;
-		if (gameScript.myPlayerType == GameScript.PlayerType.Player1) {
-			//Left base
-			baseScript = gameScript.bases[0];
-
-		} else {
-			//right base
-			baseScript = gameScript.bases[1];
-
-		}
+		baseScript = gameScript.bases[player-1];
 		baseScript.HandleHit(baseScript.GetSection(section),0,damage);
 	}
 
@@ -258,7 +256,18 @@ public class RPCScript : MonoBehaviour {
 	[RPC]
 	void RPCExplosion(int x, int y, int type)
 	{
-		gridScript.Explode(x,y,type);
+
+		gridScript.Explode(x,y,(GridScript.ExplodeType)type);
+	}
+
+	public void PlaceMine(int x, int y)
+	{
+		networkView.RPC ("RPCPlaceMine",RPCMode.AllBuffered,x,y);
+	}
+
+	[RPC]
+	void RPCPlaceMine(int x, int y) {
+		gridScript.PlaceMine(x, y);
 	}
 
 

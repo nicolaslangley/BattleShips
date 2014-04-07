@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
@@ -70,7 +70,7 @@ public class CellScript : MonoBehaviour {
 		} 
 		else if (gameScript.curPlayAction == GameScript.PlayAction.DropMine) {
 			if (availableForShoot) {
-				gameScript.selectedShip.LayMine(this);
+				gameScript.selectedShip.LayMine(this, 1);
 				gameScript.curPlayAction = GameScript.PlayAction.None;
 			}
 		} else {
@@ -167,7 +167,7 @@ public class CellScript : MonoBehaviour {
 			if (ship != null )
 			{
 				if (type == GridScript.ExplodeType.Mine) {
-					ship.HandleMine(this,damage, origin);
+					ship.HandleDoubleHit(this,damage, origin);
 				} else {
 					ship.HandleHit(this,damage);
 				}

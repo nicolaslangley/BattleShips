@@ -38,7 +38,7 @@ public class GameScript : MonoBehaviour {
 	private bool gridInited;
 
 	private int myCruiserCount;
-	private int myDestoryerCount;
+	private int myDestroyerCount;
 	private int myMineLayerCount;
 	private int myTorpedoCount;
 	private int myRadarCount;
@@ -84,7 +84,7 @@ public class GameScript : MonoBehaviour {
 		myRadarCount = 1;
 		myKamikazeCount = 1;
 		myCruiserCount = 2;
-		myDestoryerCount = 3;
+		myDestroyerCount = 3;
 		myTorpedoCount = 2;
 		myMineLayerCount = 2;
 	}
@@ -107,7 +107,7 @@ public class GameScript : MonoBehaviour {
 			}
 
 			if (myCruiserCount == 0 
-			    && myDestoryerCount == 0
+			    && myDestroyerCount == 0
 			    && myMineLayerCount == 0
 			    && myKamikazeCount == 0
 			    && myRadarCount == 0
@@ -120,8 +120,6 @@ public class GameScript : MonoBehaviour {
 				Debug.Log ("Moving to SetupWait state");
 
 			}
-
-			gridScript.CustomSetupUpdate();
 			break;
 
 		case (GameState.SetupWaiting):
@@ -207,13 +205,13 @@ public class GameScript : MonoBehaviour {
 				}
 			}
 
-			if (myDestoryerCount > 0) {
-				GUI.Label (new Rect(120,130,100,30),"Remaining: " + myDestoryerCount);
-				if (GUI.Button (new Rect(10,130,100,30), "Place Destoryer")) {
+			if (myDestroyerCount > 0) {
+				GUI.Label (new Rect(120,130,100,30),"Remaining: " + myDestroyerCount);
+				if (GUI.Button (new Rect(10,130,100,30), "Place Destroyer")) {
 					if (gridScript.currentSelection.Count == 1) {
 						gridScript.setShip(ShipTypes.Destroyer);
 						rpcScript.SignalPlayer();
-						myDestoryerCount--;
+						myDestroyerCount--;
 					}
 
 				}
@@ -335,9 +333,6 @@ public class GameScript : MonoBehaviour {
 		if (player1HasShips || player2HasShips) return GameScript.PlayerType.None;
 		if (!player2HasShips) return GameScript.PlayerType.Player1;
 		if (!player1HasShips) return GameScript.PlayerType.Player2;
-
-
-
 		return GameScript.PlayerType.None;
 	}
 
