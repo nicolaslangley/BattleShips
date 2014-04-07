@@ -71,6 +71,7 @@ public class BaseScript : MonoBehaviour {
 		}
 		Debug.Log ("Hit handled on section: " + sectionIndex);
 		health [sectionIndex] -= damage;
+		if (health [sectionIndex] < 0) { health[sectionIndex]=0;}
 		int damageTotal = 0;
 		for (int i = 0; i < 10; i++) {
 			Debug.Log ("health" + health[i]);
@@ -87,7 +88,7 @@ public class BaseScript : MonoBehaviour {
 		//rpcScript.EndTurn();
 		gameScript.EndTurn();
 	}
-
+		
 	/*
 	 * TODO: handle display for when part of base has been destroyed
 	 */
@@ -96,12 +97,16 @@ public class BaseScript : MonoBehaviour {
 		if (cells[0].gridPositionX == 0) {
 			//Debug.Log ("Displaying docking region for base1");
 			for (int i = 0; i < 10; i++) {
-				gridScript.DisplayCellForDock(status, 1, 10+i);
+				if (health[i] > 0) { 
+					gridScript.DisplayCellForDock(status, 1, 10+i);
+				}
 			}
 		} else if (cells[0].gridPositionX == 29) {
 			//Debug.Log ("Displaying docking region for base2");
 			for (int i = 0; i < 10; i++) {
-				gridScript.DisplayCellForDock(status, 28, 10+i);
+				if (health[i] > 0) {
+					gridScript.DisplayCellForDock(status, 28, 10+i);
+				}
 			}
 		} 
 
