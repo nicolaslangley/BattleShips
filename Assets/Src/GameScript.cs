@@ -18,8 +18,10 @@ public class GameScript : MonoBehaviour {
 	public List<BaseScript> bases;
 	public GridScript gridScript;
 	public ShipScript selectedShip;
+	public BaseScript selectedBase;
 	public RPCScript rpcScript;
-	
+	public bool existSelection;
+
 	public string myname;
 	public string opponentname;
 	public string turn;
@@ -69,6 +71,7 @@ public class GameScript : MonoBehaviour {
 		curGameState = GameState.Connecting;
 		// Run game initialization
 		gridInited = false;
+		existSelection = false;
 
 		string playerName = PlayerPrefs.GetString("playerName");
 		myname = playerName;

@@ -52,15 +52,18 @@ public class ShipSectionScript : MonoBehaviour {
 			parent.HandleRepair(this.gameObject,1);
 			gameScript.curPlayAction = GameScript.PlayAction.None;
 
-		}  else {
-			parent.selected = !parent.selected;
+		} else {
 			if (parent.selected == true) {
-				//gameObject.renderer.material.color = Color.cyan;
+				parent.selected = false;
+				parent.gameScript.existSelection = false;
+			} else if (parent.gameScript.existSelection == false) {
+				parent.selected = true;
 				foreach (CellScript oCellScript in parent.cells) {
 					oCellScript.selected = true;
 					//cs.DisplaySelection();
 				}
 				parent.gameScript.selectedShip = parent;
+				parent.gameScript.existSelection = true;
 			}
 		}
 	}
