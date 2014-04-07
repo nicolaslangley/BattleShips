@@ -21,7 +21,8 @@ public class BaseSectionScript : MonoBehaviour {
 
 		// Don't act on mouse click if in wait state
 		if (gameScript.curGameState == GameScript.GameState.Wait) return;
-		
+		if (gameScript.curGameState == GameScript.GameState.End) return;
+
 		// Handle selection if in cannon state
 		if (gameScript.curPlayAction == GameScript.PlayAction.Cannon) {
 			Debug.Log("Shot by cannon");

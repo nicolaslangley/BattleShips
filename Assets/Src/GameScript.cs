@@ -27,6 +27,7 @@ public class GameScript : MonoBehaviour {
 	public string turn;
 
 	public PlayerType myPlayerType;
+	public PlayerType winner;
 
 	public string messages;
 
@@ -157,6 +158,7 @@ public class GameScript : MonoBehaviour {
 			}
 			break;
 		case (GameState.End):
+			Debug.Log("In end state");
 			break;
 		}
 	}
@@ -276,6 +278,19 @@ public class GameScript : MonoBehaviour {
 		case (GameState.Play):
 			// GUI to be displayed during playing phase
 			break;
+
+		case (GameState.End):
+			if (myPlayerType == winner) {
+				GUI.Label(new Rect(200, 20, 100, 100), "WINNER IS: "+myname);
+			} else {
+				GUI.Label(new Rect(200, 20, 100, 100), "WINNER IS: "+opponentname);
+			}
+
+			if (GUI.Button(new Rect(Screen.width - 110, 300, 100, 30), "Leave")) {
+
+			}
+
+			break;
 		}
 	}
 	
@@ -301,6 +316,16 @@ public class GameScript : MonoBehaviour {
 			s.UpdateShipVisibility();
 		}
 
+
+		winner = checkWinner();
+		if (winner != PlayerType.None) {
+			//Debug.Log("winner is +" winner);
+			Debug.Log("Winner decided");
+			
+			curGameState = GameState.End;
+		}
+
+
 		if (curGameState == GameState.Wait)
 		{
 			curGameState = GameState.Play;
@@ -311,6 +336,7 @@ public class GameScript : MonoBehaviour {
 			turn = opponentname;
 		}
 
+
 		Debug.Log ("It is now "+ turn);
 	}
 
@@ -319,9 +345,10 @@ public class GameScript : MonoBehaviour {
 		//Do nothing for now.
 	}
 
-	public PlayerType checkWinner(string myName, PlayerType myType) {
+	public PlayerType checkWinner() {
 		bool player1HasShips = false;
 		bool player2HasShips = false;
+		Debug.Log("Checking win conditions");
 
 		foreach (ShipScript s in ships) {
 			if (s.myPlayerType == GameScript.PlayerType.Player1) {
@@ -330,7 +357,7 @@ public class GameScript : MonoBehaviour {
 				player2HasShips = true;
 			}
 		}
-		if (player1HasShips || player2HasShips) return GameScript.PlayerType.None;
+		if (player1HasShips && player2HasShips) return GameScript.PlayerType.None;
 		if (!player2HasShips) return GameScript.PlayerType.Player1;
 		if (!player1HasShips) return GameScript.PlayerType.Player2;
 		return GameScript.PlayerType.None;
