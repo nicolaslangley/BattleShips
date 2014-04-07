@@ -179,10 +179,15 @@ public class GameLobbyScript : MonoBehaviour
 
         if (Network.isServer)
         {
-            if (GUI.Button(new Rect(25, 140, 150, 20), "Start the game"))
-            {
-                HostLaunchGame();
-            }
+			if (currentPlayerCount == 2) {
+				if (GUI.Button(new Rect(25, 140, 150, 20), "Start the game"))
+				{
+					HostLaunchGame();
+				}
+			} else {
+				GUI.Label(new Rect(25, 140, 200, 40), "Waiting for 2 Players");
+
+			}
         }
         else
         {
