@@ -901,7 +901,7 @@ public class ShipScript : MonoBehaviour {
 		}
 	}
 	
-	void DisplayMineRange(bool display) {
+	public void DisplayMineRange(bool display) {
 		foreach (CellScript cell in this.cells) {
 			foreach (CellScript neighbour in gridScript.GetCellNeighbours(cell)) {
 				if (neighbour.curCellState == GameScript.CellState.Available) 

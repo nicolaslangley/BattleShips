@@ -250,7 +250,8 @@ public class RPCScript : MonoBehaviour {
 	[RPC]
 	void RPCExplosion(int x, int y, int type)
 	{
-		gridScript.Explode(x,y,type);
+
+		gridScript.Explode(x,y,(GridScript.ExplodeType)type);
 	}
 
 	public void PlaceMine(int x, int y)
