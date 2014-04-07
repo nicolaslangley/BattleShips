@@ -667,7 +667,7 @@ public class ShipScript : MonoBehaviour {
 		HandleHit(shipSections[index],0,damage);
 	}
 
-	public void HandleMine(CellScript cell, int damage, CellScript origin) {
+	public void HandleDoubleHit(CellScript cell, int damage, CellScript origin) {
 		int index = cells.IndexOf(origin);
 		int originIndex = cells.IndexOf(origin);
 		Debug.Log ("Handling mine for index: "+ index);
@@ -781,7 +781,21 @@ public class ShipScript : MonoBehaviour {
 			if (hitCell.curCellState == GameScript.CellState.Ship) {
 				Debug.Log("Hit a ship");
 				ShipScript hitShip = hitCell.occupier.GetComponent<ShipScript>();
-				hitShip.HandleHit(hitCell, 0);
+				if (curDir == GameScript.Direction.East || curDir == GameScript.Direction.West) {
+					if (hitShip.curDir == GameScript.Direction.North || hitShip.curDir == GameScript.Direction.South) {
+						hitShip.HandleDoubleHit(hitCell, 1, hitCell);
+					} else {
+						// Regular hit occured
+						hitShip.HandleHit(hitCell, 1);
+					}
+				} else {
+					if (curDir == GameScript.Direction.East || curDir == GameScript.Direction.West) {
+						hitShip.HandleDoubleHit(hitCell, 1, hitCell);
+					} else {
+						// Regular hit occured
+						hitShip.HandleHit(hitCell, 0);
+					}
+				}
 			} else if (hitCell.curCellState == GameScript.CellState.Base) {
 				Debug.Log("Hit a base");
 				BaseScript hitBase = hitCell.occupier.GetComponent<BaseScript>();
