@@ -18,6 +18,9 @@ public class CruiserScript : ShipScript {
 		this.cannonRangeSide = 11;
 		this.cannonRangeStart = -5;
 
+		this.hasCannon = true;
+		this.canRotate = true;
+
 		this.shipType = "cruiser";
 	}
 

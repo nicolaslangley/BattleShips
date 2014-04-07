@@ -17,6 +17,7 @@ public class KamikazeBoatScript : ShipScript {
 		this.cannonRangeForward = 3;
 		this.cannonRangeSide = 3;
 		this.cannonRangeStart = -1;
+
 		this.shipType = "kamikaze";
 	}
 
@@ -28,7 +29,7 @@ public class KamikazeBoatScript : ShipScript {
 	}
 
 	void KamikazeGUI() {
-		if (GUI.Button(new Rect(Screen.width - 170, 90, 100, 30), "Detonate")) {
+		if (GUI.Button(new Rect(Screen.width - 170, 90, 120, 30), "Detonate")) {
 			int startX = this.cells[0].gridPositionX;
 			int startY = this.cells[0].gridPositionY;
 

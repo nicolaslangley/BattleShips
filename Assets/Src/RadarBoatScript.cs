@@ -17,6 +17,10 @@ public class RadarBoatScript : ShipScript {
 		this.cannonRangeForward = 5;
 		this.cannonRangeSide = 3;
 		this.cannonRangeStart = -1;
+
+		this.hasCannon = true;
+		this.canRotate = true;
+
 		this.shipType = "radarboat";
 	}
 
@@ -39,7 +43,7 @@ public class RadarBoatScript : ShipScript {
 
 	void RadarGUI() {
 		Debug.Log("Radar gui");
-		if (GUI.Button(new Rect(Screen.width - 170, 90, 100, 30), "Toggle Long Range")) {
+		if (GUI.Button(new Rect(Screen.width - 170, 90, 120, 30), "Toggle Long Range")) {
 			ToggleLongRange();
 		}
 	}
