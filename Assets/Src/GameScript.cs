@@ -280,16 +280,35 @@ public class GameScript : MonoBehaviour {
 			break;
 
 		case (GameState.End):
+			int didwin = 0;
 			if (myPlayerType == winner) {
 				GUI.Label(new Rect(200, 20, 100, 100), "WINNER IS: "+myname);
+
+				didwin = 1;
 			} else {
 				GUI.Label(new Rect(200, 20, 100, 100), "WINNER IS: "+opponentname);
+				didwin = 0;
 			}
+
 
 			if (GUI.Button(new Rect(Screen.width - 110, 300, 100, 30), "Leave")) {
+				int uid = PlayerPrefs.GetInt("UID");
+
+				int played = PlayerPrefs.GetInt("Played");
+				int won = PlayerPrefs.GetInt("Won");
+
+				PlayerPrefs.SetInt("Played",played+1);
+				PlayerPrefs.SetInt("Won",won+didwin);
+
+				WWWForm form = new WWWForm();
+				form.AddField("UID", uid);
+				form.AddField("didWin", didwin);
+				WWW w = new WWW("http://battlefield361.dx.am/updateStat.php", form);
+				StartCoroutine(updateStat(w));
+
 
 			}
-
+			
 			break;
 		}
 	}
@@ -374,6 +393,33 @@ public class GameScript : MonoBehaviour {
 		existSelection = false;
 	}
 
+	IEnumerator updateStat(WWW w)
+	{
+		yield return w;
+		if (w.error == null)
+		{
+			if (w.text == "SuccUpdate") {
+				Debug.Log("Success update");
+				if (Application.CanStreamedLevelBeLoaded("lobby"))
+				{
+					GUI.Label(new Rect(Screen.width / 4 + 200, Screen.height / 2 - 25, 285, 150), "Going back to Main Menu.");
+					Application.LoadLevel("lobby");
+					Destroy(GameObject.Find("Persistent"));
+					Destroy(gameObject);
 
+				}
+			} else {
+				Debug.Log("Fail update");
 
+			}
+
+		}
+		else
+		{
+			Debug.Log (w.error);
+		}
+	}
+	
+	
+	
 }
