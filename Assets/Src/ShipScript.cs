@@ -74,7 +74,7 @@ public class ShipScript : MonoBehaviour {
 			if (GUI.Button(new Rect(Screen.width - 110, 170, 100, 30), "Rotate Counterclockwise")) {
 				RotateShip(false,1);
 			}
-			if (GUI.Button(new Rect(Screen.width - 110, 230, 100, 30), "Cancel Action")) {
+			if (GUI.Button(new Rect(Screen.width - 110, 270, 100, 30), "Cancel Action")) {
 				gameScript.curPlayAction = GameScript.PlayAction.None;
 				DisplayMoveRange(false);
 				DisplayCannonRange(false);
@@ -702,7 +702,7 @@ public class ShipScript : MonoBehaviour {
 		CellScript frontCellScript = cells[cells.Count - 1];
 		int startX = frontCellScript.gridPositionX;
 		int startY = frontCellScript.gridPositionY;
-		CellScript hitCell = gridScript.VerifyCellPath(startX, startY, 30, curDir, null, "Torpedo");
+		CellScript hitCell = gridScript.VerifyCellPath(startX, startY, 10, curDir, null, "Torpedo");
 		if (hitCell == null) {
 			// Nothing was hit by the torpedo
 			Debug.Log ("Nothing was hit by the torpedo");
