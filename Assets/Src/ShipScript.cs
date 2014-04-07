@@ -793,6 +793,7 @@ public class ShipScript : MonoBehaviour {
 			}
 			StartCoroutine(DisplayHit(hitCell.gameObject));
 		}
+		gameScript.EndTurn();
 	}
 	
 	/*
