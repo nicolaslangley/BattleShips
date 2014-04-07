@@ -60,6 +60,11 @@ public class BaseScript : MonoBehaviour {
 		return baseSections[section];
 	}
 
+	public CellScript GetCellForSection(GameObject section) {
+		int index = baseSections.IndexOf(section);
+		return cells[index];
+	}
+
 	public void HandleHit(GameObject section, int local, int damage) 
 	{
 		int sectionIndex = baseSections.IndexOf(section);
