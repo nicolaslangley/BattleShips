@@ -86,26 +86,29 @@ public class TorpedoBoatScript : ShipScript {
 				oCellScript.curCellState = GameScript.CellState.Available;
 			}
 			cells.Clear();
-			cells.Add(baseCellScript);
 
 
 			// Based on direction of ship set currently occupied cells
 			switch(curDir) {
 			case GameScript.Direction.East:
-				cells.Add(grid[x+1, y]);
 				cells.Add(grid[x-1, y]);
+				cells.Add(grid[x,y]);
+				cells.Add(grid[x+1, y]);
 				break;
 			case GameScript.Direction.North:
-				cells.Add(grid[x, y+1]);
 				cells.Add(grid[x, y-1]);
+				cells.Add(grid[x,y]);
+				cells.Add(grid[x, y+1]);
 				break;
 			case GameScript.Direction.South:
-				cells.Add(grid[x, y-1]);
 				cells.Add(grid[x, y+1]);
+				cells.Add(grid[x,y]);
+				cells.Add(grid[x, y-1]);
 				break;
 			case GameScript.Direction.West:
-				cells.Add(grid[x-1, y]);
-				cells.Add(grid[x+1,y]);
+				cells.Add(grid[x+1, y]);
+				cells.Add(grid[x,y]);
+				cells.Add(grid[x-1,y]);
 				break;
 			}
 			//TODO: 180
@@ -119,9 +122,10 @@ public class TorpedoBoatScript : ShipScript {
 			Debug.Log ("Obstacle in rotation path");
 			//display an error message
 		}
-		
+
 		//rpcScript.EndTurn();
 		SetRotation();
+		transform.position = cells [0].transform.position + new Vector3(0,cells[0].renderer.bounds.size.y, 0);
 		gameScript.EndTurn();
 	}
 }
