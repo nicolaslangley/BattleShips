@@ -23,7 +23,7 @@ public class ShipScript : MonoBehaviour {
 	public CellScript baseCell;
 	public string shipType;
 	public List<CellScript> cells;
-	private List<GameObject> shipSections;
+	public List<GameObject> shipSections;
 	public int speed; 
 	protected bool immobile = false;
 	protected int maxSpeed; //Speed at full health
@@ -447,7 +447,7 @@ public class ShipScript : MonoBehaviour {
 	/*
 	 * Rotates the ship
 	 */
-	public void RotateShip(bool clockwise, int local) {
+	public virtual void RotateShip(bool clockwise, int local) {
 		
 		if (local == 1){
 			rpcScript.NetworkRotateShip(shipID,clockwise);
@@ -570,7 +570,7 @@ public class ShipScript : MonoBehaviour {
 	/*
 	 * Set rotation of ship based on direction
 	 */
-	public void SetRotation () {
+	public virtual void SetRotation () {
 		Quaternion tempRot = Quaternion.identity;
 		switch(curDir) {
 		case GameScript.Direction.East:
