@@ -40,6 +40,12 @@ public class ShipScript : MonoBehaviour {
 	public bool heavyCannon;
 	protected bool heavyArmor;
 
+	// Boolean values for GUI display
+	public bool hasCannon = false;
+	public bool hasMine = false;
+	public bool hasTorpedo = false;
+	public bool canRotate = false;
+
 	public string shipType;
 
 	/** UNITY METHODS **/
@@ -54,27 +60,36 @@ public class ShipScript : MonoBehaviour {
 		if (gameScript.curGameState == GameScript.GameState.SetupWaiting) return;
 		if (selected == true) {
 			if (!immobile) {
-				if (GUI.Button(new Rect(Screen.width - 110, 10, 100, 30), "Move")) {
+				if (GUI.Button(new Rect(Screen.width - 150, 10, 120, 30), "Move")) {
 					gameScript.curPlayAction = GameScript.PlayAction.Move;
 					// Display movement range in cells
 					DisplayMoveRange(true);
 				}
 			}
-			if (GUI.Button(new Rect(Screen.width - 110, 50, 100, 30), "Fire Cannon")) {
-				gameScript.curPlayAction = GameScript.PlayAction.Cannon;
-				// Display cannon range in cells
-				DisplayCannonRange(true);
+			if (hasCannon) {
+				string cannonMessage;
+				if (heavyCannon) cannonMessage = "Fire Heavy Cannon";
+				else cannonMessage = "Fire Cannon";
+				if (GUI.Button(new Rect(Screen.width - 150, 50, 120, 30), cannonMessage)) {
+					gameScript.curPlayAction = GameScript.PlayAction.Cannon;
+					// Display cannon range in cells
+					DisplayCannonRange(true);
+				}
 			}
-			if (GUI.Button(new Rect(Screen.width - 110, 90, 100, 30), "Fire Torpedo")) {
-				FireTorpedo();
+			if (hasTorpedo) {
+				if (GUI.Button(new Rect(Screen.width - 150, 90, 120, 30), "Fire Torpedo")) {
+					FireTorpedo();
+				}
 			}
-			if (GUI.Button(new Rect(Screen.width - 110, 130, 100, 30), "Rotate Clockwise")) {
-				RotateShip(true,1);
+			if (canRotate) {
+				if (GUI.Button(new Rect(Screen.width - 150, 130, 120, 30), "Rotate Clockwise")) {
+					RotateShip(true,1);
+				}
+				if (GUI.Button(new Rect(Screen.width - 150, 170, 120, 30), "Rotate Counterclockwise")) {
+					RotateShip(false,1);
+				}
 			}
-			if (GUI.Button(new Rect(Screen.width - 110, 170, 100, 30), "Rotate Counterclockwise")) {
-				RotateShip(false,1);
-			}
-			if (GUI.Button(new Rect(Screen.width - 110, 270, 100, 30), "Cancel Action")) {
+			if (GUI.Button(new Rect(Screen.width - 150, 270, 100, 30), "Cancel Action")) {
 				gameScript.curPlayAction = GameScript.PlayAction.None;
 				DisplayMoveRange(false);
 				DisplayCannonRange(false);
@@ -715,6 +730,11 @@ public class ShipScript : MonoBehaviour {
 			} else if (hitCell.curCellState == GameScript.CellState.Base) {
 				Debug.Log("Hit a base");
 				BaseScript hitBase = hitCell.occupier.GetComponent<BaseScript>();
+			} else if (hitCell.curCellState == GameScript.CellState.Mine) {
+				Debug.Log("Hit a mine");
+				// TODO: cause mine to explode
+			} else if (hitCell.curCellState == GameScript.CellState.Reef) {
+				Debug.Log("Hit a reef");
 			}
 			StartCoroutine(DisplayHit(hitCell.gameObject));
 		}

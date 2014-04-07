@@ -18,6 +18,10 @@ public class DestroyerScript : ShipScript {
 		this.cannonRangeSide = 9;
 		this.cannonRangeStart = -4;
 
+		this.hasCannon = true;
+		this.hasTorpedo = true;
+		this.canRotate = true;
+
 		this.shipType = "destroyer";
 	}
 	

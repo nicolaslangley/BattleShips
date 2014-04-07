@@ -18,6 +18,10 @@ public class TorpedoBoatScript : ShipScript {
 		this.cannonRangeSide = 0;
 		this.cannonRangeStart = 5;
 
+		this.hasCannon = true;
+		this.hasTorpedo = true;
+		this.canRotate = true;
+
 		this.rotSteps = 2;
 
 		this.shipType = "torpedoboat";
