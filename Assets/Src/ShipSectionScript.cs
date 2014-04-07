@@ -31,7 +31,7 @@ public class ShipSectionScript : MonoBehaviour {
 
 		// Handle selection if cannon ship
 		if (gameScript.curPlayAction == GameScript.PlayAction.Cannon) {
-			CellScript curCell = parent.GetCellForSection(this);
+			CellScript curCell = parent.GetCellForSection(this.gameObject);
 			if (curCell.availableForShoot) {
 				gameObject.renderer.material.color = Color.red;
 				if (gameScript.selectedShip.heavyCannon) {
