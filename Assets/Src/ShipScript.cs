@@ -515,8 +515,13 @@ public class ShipScript : MonoBehaviour {
 		}
 		CellScript cell = cells[index];
 		if (cell.availableForDock) {
-			health[index] += 1;
-			section.renderer.material.color = Color.yellow;
+			for (int i = 0; i< shipSize; i++) {
+				if (health[i] == 0) {
+					health[i] = 1;
+					section.renderer.material.color = Color.yellow;
+					break;
+				}
+			}
             // TODO: return cell to original color value
 		} else {
 			Debug.Log ("This square is not available for repair");
