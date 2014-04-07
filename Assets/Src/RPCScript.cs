@@ -63,6 +63,30 @@ public class RPCScript : MonoBehaviour {
 		}
 	}
 
+	public void setupAcceptance(bool accepted, GameScript.PlayerType playerType)
+	{
+		networkView.RPC ("RPCSetupAcceptance",RPCMode.AllBuffered,accepted,(int)playerType);
+
+	}
+
+	[RPC]
+	void RPCSetupAcceptance(bool accepted, int playerType)
+	{
+		if (accepted)
+		{
+			if (playerType == 1) {
+				gameScript.player1SetupAcceptance = true;
+			} else if (playerType == 2) {
+				gameScript.player2SetupAcceptance = true;
+			}
+		} else {
+			gameScript.player1SetupAcceptance = false;
+			gameScript.player2SetupAcceptance = false;
+			// redo reefs.
+			gridScript.refreshReef();
+		}
+	}
+
 	public void EndTurn()
 	{
 		networkView.RPC ("RPCEndTurn",RPCMode.AllBuffered);

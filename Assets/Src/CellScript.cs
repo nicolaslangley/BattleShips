@@ -161,6 +161,12 @@ public class CellScript : MonoBehaviour {
 		gameObject.renderer.material.color = Color.black;
 	}
 
+	public void SetAvailable() {
+		curCellState = GameScript.CellState.Available;
+		available = true;
+		gameObject.renderer.material.color = Color.blue;
+	}
+
 	public void handleCellDamage(int damage, GridScript.ExplodeType type, CellScript origin) {
 		if (occupier != null) {
 			ShipScript ship = occupier.GetComponent<ShipScript>();

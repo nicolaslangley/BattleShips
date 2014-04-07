@@ -34,6 +34,13 @@ public class GameScript : MonoBehaviour {
 	public bool player1SetupDone;
 	public bool player2SetupDone;
 
+	public bool player1SetupAcceptance;
+	public bool player2SetupAcceptance;
+
+	private bool setupAccepted;
+
+	
+
 	public bool waitTurn;
 
 	private bool gridInited;
@@ -81,6 +88,10 @@ public class GameScript : MonoBehaviour {
 
 		player1SetupDone = false;
 		player2SetupDone = false;
+		player1SetupAcceptance = false;
+		player2SetupAcceptance = false;
+
+		setupAccepted = false;
 
 		myRadarCount = 1;
 		myKamikazeCount = 1;
@@ -105,6 +116,11 @@ public class GameScript : MonoBehaviour {
 			if (!gridInited) {
 				gridInited = true;
 				gridScript.Init();
+			}
+
+			if (player1SetupAcceptance && player2SetupAcceptance)
+			{
+				setupAccepted = true;
 			}
 
 			if (myCruiserCount == 0 
@@ -196,7 +212,16 @@ public class GameScript : MonoBehaviour {
 //				rpcScript.SignalPlayer();
 //			}
 
-			if (myCruiserCount > 0) {
+			if (!player1SetupAcceptance || !player2SetupAcceptance) {
+				if (GUI.Button (new Rect(10,90,100,30), "Accept Setup." )) {
+					rpcScript.setupAcceptance(true,myPlayerType);
+				}
+				if (GUI.Button (new Rect(10,130,100,30), "Reject Setup")) {
+					rpcScript.setupAcceptance(false,myPlayerType);
+				}
+			}
+					
+			if (myCruiserCount > 0 && setupAccepted) {
 				GUI.Label (new Rect(120,90,100,30),"Remaining: " + myCruiserCount);
 				if (GUI.Button (new Rect(10,90,100,30), "Place Cruiser." )) {
 					if (gridScript.currentSelection.Count == 1) {
@@ -207,7 +232,7 @@ public class GameScript : MonoBehaviour {
 				}
 			}
 
-			if (myDestroyerCount > 0) {
+			if (myDestroyerCount > 0 && setupAccepted) {
 				GUI.Label (new Rect(120,130,100,30),"Remaining: " + myDestroyerCount);
 				if (GUI.Button (new Rect(10,130,100,30), "Place Destroyer")) {
 					if (gridScript.currentSelection.Count == 1) {
@@ -219,7 +244,7 @@ public class GameScript : MonoBehaviour {
 				}
 			}
 
-			if (myMineLayerCount > 0) {
+			if (myMineLayerCount > 0 && setupAccepted) {
 				GUI.Label (new Rect(120,170,100,30),"Remaining: " + myMineLayerCount);
 
 				if (GUI.Button (new Rect(10,170,100,30), "Place MineLayer")) {
@@ -231,7 +256,7 @@ public class GameScript : MonoBehaviour {
 				}
 			}
 
-			if (myTorpedoCount > 0) {
+			if (myTorpedoCount > 0 && setupAccepted) {
 				GUI.Label (new Rect(120,210,100,30),"Remaining: " + myTorpedoCount);
 
 				if (GUI.Button (new Rect(10,210,100,30), "Place Torpedo")) {
@@ -244,7 +269,7 @@ public class GameScript : MonoBehaviour {
 				}
 			}
 
-			if (myRadarCount > 0) {
+			if (myRadarCount > 0 && setupAccepted) {
 				GUI.Label (new Rect(120,250,100,30),"Remaining: " + myRadarCount);
 
 				if (GUI.Button (new Rect(10,250,100,30), "Place Radar")) {
@@ -257,7 +282,7 @@ public class GameScript : MonoBehaviour {
 				}
 			}
 	
-			if (myKamikazeCount > 0) {
+			if (myKamikazeCount > 0 && setupAccepted) {
 				GUI.Label (new Rect(120,290,100,30),"Remaining: " + myKamikazeCount);
 
 				if (GUI.Button (new Rect(10,290,100,30), "Place Kamikaze")) {
