@@ -174,18 +174,6 @@ public class RPCScript : MonoBehaviour {
 			}
 		}
 
-
-
-	
-
-//		if (hitShipScript != null)
-//		{
-//			ShipScript hitShipScript = hitCellScript.occupier.GetComponent<ShipScript>();
-//			//int index = hitShipScript.cells.IndexOf(hitCell);
-//			//Debug.Log("Index of hit ship: "+ index);
-//		} else {
-//			Debug.Log("HIt nothin");
-//		}
 	}
 
 	public void fireCannonShip(string shipID, int section, int damage)
@@ -205,6 +193,24 @@ public class RPCScript : MonoBehaviour {
 				shipscript.HandleCannon(shipscript.GetSection(section),0,damage);
 				gameScript.messages = "Hit ship with ID: " + shipID;
 
+				break;
+			}
+		}
+	}
+
+	public void fireTorpedo(string shipID) 
+	{
+		networkView.RPC ("RPCFireTorpedo",RPCMode.AllBuffered,shipID);
+	}
+
+	[RPC]
+	void RPCFireTorpedo(string shipID)
+	{
+		foreach(ShipScript shipscript in gameScript.ships)
+		{
+			if (shipscript.shipID == shipID)
+			{
+				shipscript.FireTorpedo(0);
 				break;
 			}
 		}

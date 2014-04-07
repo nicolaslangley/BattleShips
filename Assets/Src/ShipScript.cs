@@ -78,7 +78,7 @@ public class ShipScript : MonoBehaviour {
 			}
 			if (hasTorpedo) {
 				if (GUI.Button(new Rect(Screen.width - 150, 90, 120, 30), "Fire Torpedo")) {
-					FireTorpedo();
+					FireTorpedo(1);
 				}
 			}
 			if (canRotate) {
@@ -761,8 +761,14 @@ public class ShipScript : MonoBehaviour {
 	/*
 	 * Fire a torpedo in the current direction that the ship is facing
 	 */
-	public void FireTorpedo() {
+	public void FireTorpedo(int local) {
 		// Compute distance of torpedo
+
+		if (local == 1) {
+			rpcScript.fireTorpedo(shipID);
+			return;
+		}
+
 		CellScript frontCellScript = cells[cells.Count - 1];
 		int startX = frontCellScript.gridPositionX;
 		int startY = frontCellScript.gridPositionY;
@@ -775,7 +781,7 @@ public class ShipScript : MonoBehaviour {
 			if (hitCell.curCellState == GameScript.CellState.Ship) {
 				Debug.Log("Hit a ship");
 				ShipScript hitShip = hitCell.occupier.GetComponent<ShipScript>();
-				hitShip.HandleHit(hitCell, 1);
+				hitShip.HandleHit(hitCell, 0);
 			} else if (hitCell.curCellState == GameScript.CellState.Base) {
 				Debug.Log("Hit a base");
 				BaseScript hitBase = hitCell.occupier.GetComponent<BaseScript>();
@@ -788,7 +794,7 @@ public class ShipScript : MonoBehaviour {
 			StartCoroutine(DisplayHit(hitCell.gameObject));
 		}
 	}
-
+	
 	/*
 	 * To make mine laying fit into the overall structure of Cellscript calling back to ShipScript,
 	 * we need to have this method in every ShipScript. 
