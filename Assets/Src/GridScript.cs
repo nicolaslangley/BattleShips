@@ -5,10 +5,12 @@ using System.Collections.Generic;
 
 
 public class GridScript : MonoBehaviour {
+	
+	#region enum
+	public enum ExplodeType {Mine = 0, Kamikaze = 1};
+	#endregion
 
-	/** PROPERTIES **/
-
-	//Prefabs
+	#region prefabs
 	public GameObject gridCell;
 	public GameObject destroyer;
 	public GameObject mineLayer;
@@ -16,7 +18,9 @@ public class GridScript : MonoBehaviour {
 	public GameObject cruiser;
 	public GameObject torpedo;
 	public GameObject playerBase;
-	
+	#endregion
+
+	#region properties
 	public int gridSize;
 	public Vector2 cellSize;
 	public CellScript[,] grid;
@@ -29,11 +33,12 @@ public class GridScript : MonoBehaviour {
 
 	private int reefSeed;
 	private Stack idSeedStack;
+	#endregion
 
-	public enum ExplodeType {Mine = 0, Kamikaze = 1};
 
 
-	/** GAMELOOP METHODS **/
+
+	#region initialization functions
 
 	// Use this for initialization
 	public void Init () {
@@ -224,10 +229,6 @@ public class GridScript : MonoBehaviour {
 //		}
 	}
 
-	public void CustomSetupUpdate () {
-		// Handle update function for grid during update phase
-
-	}
 
 	/** HELPER METHODS **/
 
@@ -303,35 +304,11 @@ public class GridScript : MonoBehaviour {
 
 	}
 
-	// Returns the neighbours of the given cell in the grid
-	public List<CellScript> GetCellNeighbours (CellScript cell) {
-		List<CellScript> neighbours = new List<CellScript>();
-		for (int i = 0; i < grid.GetLength(0); i++) {
-			for (int j = 0; j < grid.GetLength(1); j++) {
-				if (grid[i,j] == cell) {
-					if (i-1 >= 0) neighbours.Add(grid[i-1, j]);
-					if (j-1 >= 0) neighbours.Add(grid[i, j-1]);
-					if (i < grid.GetLength(0)) neighbours.Add(grid[i+1, j]);
-					if (j < grid.GetLength(1)) neighbours.Add(grid[i, j+1]);
-				}
-			}
-		}
-		return neighbours;
-	}
+	#endregion
 
-	/*
-	 * Returns the cells in a given rectangle on the grid, for the purposes of moving,
-	 * torpedo intersecting, and radar searching. 
-	 */
-	public CellScript[,] GetCellsInRange (int positionX, int positionY, int dx, int dy) {
-		CellScript[,] cells = new CellScript[dx, dy];
-		for (int x = 0; x < dx; x++) {
-			for (int y = 0; y < dy; y++) {
-				cells[x, y] = grid[positionX+x, positionY+y];
-			}
-		}
-		return cells;
-	}
+
+
+	#region cell verification functions
 
 	/*
 	 * Returns the valid destination cell within the given path
@@ -447,30 +424,46 @@ public class GridScript : MonoBehaviour {
 		return curCellScript.availableForDock;
 	}
 
-	// Adds given cell to current selection - returns FALSE if not a valid selection
-	public bool AddToSelection (CellScript cell) {
-		bool valid = false;
-		if (currentSelection.Count > 0) {
-			List<CellScript> neighbours = GetCellNeighbours(cell);
-			foreach (CellScript oCellScript in currentSelection) {
-				if (neighbours.Contains(oCellScript)) {
-					valid = true;
-				}
-			}
-		} else {
-			valid = true;
-		}
-		if (valid == true) {
-			currentSelection.Add(cell);
-			return true;
-		} else {
-			return false;
-		}
-	}
+	#endregion
+
+	#region cell retrieval methods
 
 	public CellScript GetCell(int x, int y) {
 		return grid [x, y];
 	}
+
+	// Returns the neighbours of the given cell in the grid
+	public List<CellScript> GetCellNeighbours (CellScript cell) {
+		List<CellScript> neighbours = new List<CellScript>();
+		for (int i = 0; i < grid.GetLength(0); i++) {
+			for (int j = 0; j < grid.GetLength(1); j++) {
+				if (grid[i,j] == cell) {
+					if (i-1 >= 0) neighbours.Add(grid[i-1, j]);
+					if (j-1 >= 0) neighbours.Add(grid[i, j-1]);
+					if (i < grid.GetLength(0)) neighbours.Add(grid[i+1, j]);
+					if (j < grid.GetLength(1)) neighbours.Add(grid[i, j+1]);
+				}
+			}
+		}
+		return neighbours;
+	}
+	
+	/*
+	 * Returns the cells in a given rectangle on the grid, for the purposes of moving,
+	 * torpedo intersecting, and radar searching. 
+	 */
+	public CellScript[,] GetCellsInRange (int positionX, int positionY, int dx, int dy) {
+		CellScript[,] cells = new CellScript[dx, dy];
+		for (int x = 0; x < dx; x++) {
+			for (int y = 0; y < dy; y++) {
+				cells[x, y] = grid[positionX+x, positionY+y];
+			}
+		}
+		return cells;
+	}
+	#endregion
+
+	#region display cells for action
 	
 	// Display cell as being available for movement based on status 
 	public void DisplayCellForMove(bool status, int x, int y) {
@@ -522,6 +515,10 @@ public class GridScript : MonoBehaviour {
 		if (!cellScript.selected)cellScript.renderer.material.color = setColor;
 	}
 
+	#endregion
+
+	#region explosion and mine functions
+
 	public void Explode(int centerX, int centerY, ExplodeType type) {
 		Debug.Log("explode with " + centerX);
 		//Tell cells around it that it was hit by explosion
@@ -539,11 +536,39 @@ public class GridScript : MonoBehaviour {
 		cell.available = false;
 		gameScript.EndTurn();
 	}
-	
+
+	#endregion
+
+	#region selection functions
+	// Adds given cell to current selection - returns FALSE if not a valid selection
+	public bool AddToSelection (CellScript cell) {
+		bool valid = false;
+		if (currentSelection.Count > 0) {
+			List<CellScript> neighbours = GetCellNeighbours(cell);
+			foreach (CellScript oCellScript in currentSelection) {
+				if (neighbours.Contains(oCellScript)) {
+					valid = true;
+				}
+			}
+		} else {
+			valid = true;
+		}
+		if (valid == true) {
+			currentSelection.Add(cell);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	// Removes given cell from current selection - if cell is not in selection, does nothing
 	public void RemoveFromSelection (CellScript cell) {
 		if (currentSelection.Contains(cell)) currentSelection.Remove(cell);
 	}
+
+	#endregion
+
+	#region reset functions
 
 	// Reset the visibility of all cells to be false
 	public void ResetVisibility() {
@@ -564,5 +589,7 @@ public class GridScript : MonoBehaviour {
 			}
 		}
 	}
+
+	#endregion
 
 }
