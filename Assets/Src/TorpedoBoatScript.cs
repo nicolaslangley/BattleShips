@@ -18,7 +18,7 @@ public class TorpedoBoatScript : ShipScript {
 		this.cannonRangeSide = 0;
 		this.cannonRangeStart = 5;
 
-		this.rotSteps = 1;
+		this.rotSteps = 2;
 		this.hasCannon = true;
 		this.hasTorpedo = true;
 		this.canRotate = true;
@@ -29,10 +29,10 @@ public class TorpedoBoatScript : ShipScript {
 	/*
 	 * Rotates the ship
 	 */
-	public override void RotateShip(bool clockwise, int local) {
+	public override void RotateShip(bool clockwise, int local, int steps) {
 
 		if (local == 1){
-			rpcScript.NetworkRotateShip(shipID,clockwise);
+			rpcScript.NetworkRotateShip(shipID,clockwise, steps);
 			return;
 		}
 		
@@ -41,10 +41,10 @@ public class TorpedoBoatScript : ShipScript {
 		int curRot = (int)curDir;
 		int newRot;
 		if (!clockwise) {
-			newRot =(curRot - rotSteps);
+			newRot =(curRot - steps);
 			if (newRot == -1) newRot = 3;
 		} else {
-			newRot = ((curRot + rotSteps) % 4);
+			newRot = ((curRot + steps) % 4);
 		}
 		
 		//Check for obstacles
@@ -61,6 +61,7 @@ public class TorpedoBoatScript : ShipScript {
 		int backY = back.gridPositionY;
 		CellScript[,] grid = gridScript.grid;
 		int sign = (clockwise ? 1 : -1);
+
 		// Perform check based on the orientation of the ship
 		if (curDir == GameScript.Direction.North || curDir == GameScript.Direction.South) {
 			obstacle = obstacle || grid[frontX+sign, frontY].curCellState != GameScript.CellState.Available
@@ -86,8 +87,6 @@ public class TorpedoBoatScript : ShipScript {
 				oCellScript.curCellState = GameScript.CellState.Available;
 			}
 			cells.Clear();
-
-
 			// Based on direction of ship set currently occupied cells
 			switch(curDir) {
 			case GameScript.Direction.East:
@@ -111,7 +110,6 @@ public class TorpedoBoatScript : ShipScript {
 				cells.Add(grid[x-1,y]);
 				break;
 			}
-			//TODO: 180
 			foreach (CellScript oCellScript in cells) {
 				oCellScript.occupier = this.gameObject;
 				oCellScript.available = false;
