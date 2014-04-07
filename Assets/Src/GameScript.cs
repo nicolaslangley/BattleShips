@@ -120,8 +120,6 @@ public class GameScript : MonoBehaviour {
 				Debug.Log ("Moving to SetupWait state");
 
 			}
-
-			gridScript.CustomSetupUpdate();
 			break;
 
 		case (GameState.SetupWaiting):
