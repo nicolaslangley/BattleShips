@@ -20,11 +20,18 @@ public class MineLayerScript : ShipScript {
 		this.shipType = "minelayer";
 	}
 
-	void OnGui() {
-		this.OnGui ();
-		if (GUI.Button(new Rect(Screen.width - 210, 200, 100, 30), "Drop Mine")) {
-			DisplayMineRange(true);
-			gameScript.curPlayAction = GameScript.PlayAction.DropMine;
+	void OnGUI () {
+		Debug.Log ("Mine Layer GUI called");
+		shipGUI();
+		MineLayerGUI();
+	}
+
+	void MineLayerGUI() {
+		if (selected) {
+			if (GUI.Button(new Rect(Screen.width - 110, 210, 100, 30), "Drop Mine")) {
+				DisplayMineRange(true);
+				gameScript.curPlayAction = GameScript.PlayAction.DropMine;
+			}
 		}
 	}
 	public override void LayMine(CellScript cell) {
