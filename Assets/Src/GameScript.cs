@@ -349,6 +349,7 @@ public class GameScript : MonoBehaviour {
 			b.selected = false;
 		}
 		gridScript.ResetSelection();
+		existSelection = false;
 	}
 
 
