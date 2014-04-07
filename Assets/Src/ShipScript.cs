@@ -351,11 +351,11 @@ public class ShipScript : MonoBehaviour {
 		switch(curDir) {
 		case GameScript.Direction.East:
 			if (forward) shipX -= shipSize-1;
-			Debug.Log ("Ship Vals: " + shipX + " " + shipY);
+			//Debug.Log ("Ship Vals: " + shipX + " " + shipY);
 			for (int i = 0; i < shipSize; i++) {
-				Debug.Log ("i: " + i);
+				//Debug.Log ("i: " + i);
 				CellScript newCellScript = gridScript.grid[shipX + i, shipY];
-				Debug.Log ("Cell: " + newCellScript.gridPositionX + " " + newCellScript.gridPositionY);
+				//Debug.Log ("Cell: " + newCellScript.gridPositionX + " " + newCellScript.gridPositionY);
 				newCellScript.occupier = this.gameObject;
 				cells.Add(newCellScript);
 			}
@@ -876,7 +876,7 @@ public class ShipScript : MonoBehaviour {
 	 * Function to update visibility of shipsections
 	 */
 	public void UpdateShipVisibility() {
-		Debug.Log ("Updating ship visiblity for ship " + name);
+		//Debug.Log ("Updating ship visiblity for ship " + name);
 		for (int i = 0; i < cells.Count; i++) {
 			//Debug.Log ("ship " + name + "cell " + i + " position is " + cells[i].gridPositionX + " " + cells[i].gridPositionY + " visibility is " + cells[i].isVisible);
 			bool visible = cells[i].isVisible;
