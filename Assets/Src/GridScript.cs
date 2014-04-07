@@ -262,8 +262,8 @@ public class GridScript : MonoBehaviour {
 		BaseScript player1BaseScript = player1Base.GetComponent<BaseScript>();
 		gameScript.bases.Add(player1BaseScript);
 		player1BaseScript.Init();
-		player1BaseScript.playerType = (int) GameScript.PlayerType.Player1;
-		Debug.Log("Player1 Playertype: " + player1BaseScript.playerType);
+		player1BaseScript.myPlayerType = GameScript.PlayerType.Player1;
+		Debug.Log("Player1 Playertype: " + player1BaseScript.myPlayerType);
 
 		for (int i = 0; i < 10; i++) {
 			grid[0, 10 + i].SetBase(Color.magenta);
@@ -276,8 +276,8 @@ public class GridScript : MonoBehaviour {
 		BaseScript player2BaseScript = player2Base.GetComponent<BaseScript>();
 		gameScript.bases.Add(player2BaseScript);
 		player2BaseScript.Init();
-		player2BaseScript.playerType = (int)GameScript.PlayerType.Player2;
-		Debug.Log("Player2 Playertype: " + player2BaseScript.playerType);
+		player2BaseScript.myPlayerType = GameScript.PlayerType.Player2;
+		Debug.Log("Player2 Playertype: " + player2BaseScript.myPlayerType);
 
 		for (int i = 0; i < 10; i++) {
 			grid[29, 10 + i].SetBase(Color.cyan);

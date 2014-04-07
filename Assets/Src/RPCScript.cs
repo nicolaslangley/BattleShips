@@ -94,7 +94,7 @@ public class RPCScript : MonoBehaviour {
 	public void NetworkMoveShip(string shipdID, int x, int y)
 	{
 
-		networkView.RPC ("RPCMoveShip", RPCMode.All,shipdID, x, y);
+		networkView.RPC ("RPCMoveShip", RPCMode.AllBuffered,shipdID, x, y);
 		Debug.Log ("Sent move");
 	}
 
@@ -229,24 +229,16 @@ public class RPCScript : MonoBehaviour {
 	}
 
 
-	public void HandleBaseDamage(string player, int section, int damage)
+	public void HandleBaseDamage(GameScript.PlayerType player, int section, int damage)
 	{
-		networkView.RPC ("RPCHandleBaseDamage",RPCMode.AllBuffered,player,section,damage);
+		networkView.RPC ("RPCHandleBaseDamage",RPCMode.AllBuffered,(int)player,section,damage);
 	}
 
 	[RPC]
-	void RPCHandleBaseDamage(string player, int section, int damage)
+	void RPCHandleBaseDamage(int player, int section, int damage)
 	{
 		BaseScript baseScript;
-		if (gameScript.myPlayerType == GameScript.PlayerType.Player1) {
-			//Left base
-			baseScript = gameScript.bases[0];
-
-		} else {
-			//right base
-			baseScript = gameScript.bases[1];
-
-		}
+		baseScript = gameScript.bases[player-1];
 		baseScript.HandleHit(baseScript.GetSection(section),0,damage);
 	}
 

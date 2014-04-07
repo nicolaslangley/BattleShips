@@ -17,11 +17,14 @@ public class BaseSectionScript : MonoBehaviour {
 	void OnMouseDown () {
 		Debug.Log ("Click on base section");
 		GameScript gameScript = parent.gameScript;
+		Debug.Log("Base shot down.");
+
 		// Don't act on mouse click if in wait state
 		if (gameScript.curGameState == GameScript.GameState.Wait) return;
 		
 		// Handle selection if in cannon state
 		if (gameScript.curPlayAction == GameScript.PlayAction.Cannon) {
+			Debug.Log("Shot by cannon");
 			CellScript curCell = parent.GetCellForSection(this.gameObject);
 			if (curCell.availableForShoot) {
 				gameObject.renderer.material.color = Color.red;
@@ -32,7 +35,7 @@ public class BaseSectionScript : MonoBehaviour {
 				gameScript.selectedShip.DisplayCannonRange(false);
 				gameScript.curPlayAction = GameScript.PlayAction.None;
 			}
-		} else if ((int)parent.playerType != (int)(gameScript.myPlayerType)) {
+		} else if ((int)parent.myPlayerType != (int)(gameScript.myPlayerType)) {
 			// Only allow for repair or selection if the base is mine.
 			return; 
 		} else {
