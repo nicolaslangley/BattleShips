@@ -105,15 +105,19 @@ public class ShipScript : MonoBehaviour {
 			string[] mid = child.name.Split('_');
 			if (mid[0] == "Mid") {
 				int index = int.Parse(mid[1]);
-				Debug.Log(child.name + " : " + index);
+				//Debug.Log(child.name + " : " + index);
 				tShipSection[index] = child.gameObject;
 			}
 		}
 		shipSections = new List<GameObject>(tShipSection);
 
-		foreach (GameObject s in shipSections) {
-			Debug.Log(s.transform.name);
+		for (int i = 0; i < shipSize; i++) {
+			Debug.Log(shipSections[i].transform.name + " for index: " + i);
 		}
+
+//		foreach (GameObject s in shipSections) {
+//			Debug.Log(s.transform.name);
+//		}
 
 		//Debug.Log(shipSections[0].name + " : " + shipSections[1].name);
 	}
@@ -515,13 +519,26 @@ public class ShipScript : MonoBehaviour {
 		}
 		CellScript cell = cells[index];
 		if (cell.availableForDock) {
-			for (int i = 0; i< shipSize; i++) {
-				if (health[i] == 0) {
-					health[i] = 1;
-					section.renderer.material.color = Color.yellow;
+			for (int i = 0; i < shipSize; i++) {
+				Debug.Log("At section " + i);
+
+				if (health[i] <= 0) {
+					Debug.Log("Repairing section " + i);
+					int armor = 1;
+					if (heavyArmor) {
+						armor = 2;
+					}
+					health[i] = armor;
+					shipSections[i].renderer.material.color = Color.yellow;
+					//section.renderer.material.color = Color.yellow;
 					break;
 				}
 			}
+			for (int i = 0; i < shipSize; i++) {
+				Debug.Log ("health of: " +i+ " is " + health[i]);
+
+			}
+
             // TODO: return cell to original color value
 		} else {
 			Debug.Log ("This square is not available for repair");
