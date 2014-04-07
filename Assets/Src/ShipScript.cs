@@ -548,7 +548,7 @@ public class ShipScript : MonoBehaviour {
 	/*
 	 * Rotates the ship
 	 */
-	public void RotateShip(bool clockwise, int local) {
+	public virtual void RotateShip(bool clockwise, int local) {
 
 		if (local == 1){
 			rpcScript.NetworkRotateShip(shipID,clockwise);
@@ -721,7 +721,7 @@ public class ShipScript : MonoBehaviour {
 	}
 
 	// Set rotation of ship based on direction
-	public void SetRotation () {
+	public override void SetRotation () {
 		Quaternion tempRot = Quaternion.identity;
 		switch(curDir) {
 		case GameScript.Direction.East:
