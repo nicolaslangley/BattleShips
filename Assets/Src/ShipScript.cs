@@ -554,6 +554,8 @@ public class ShipScript : MonoBehaviour {
 
 			}
 
+			gameScript.EndTurn();
+
             // TODO: return cell to original color value
 		} else {
 			Debug.Log ("This square is not available for repair");
