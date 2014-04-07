@@ -70,7 +70,7 @@ public class CellScript : MonoBehaviour {
 		} 
 		else if (gameScript.curPlayAction == GameScript.PlayAction.DropMine) {
 			if (availableForShoot) {
-				gameScript.selectedShip.LayMine(this);
+				gameScript.selectedShip.LayMine(this, 1);
 				gameScript.curPlayAction = GameScript.PlayAction.None;
 			}
 		} else {

@@ -522,17 +522,22 @@ public class GridScript : MonoBehaviour {
 		if (!cellScript.selected)cellScript.renderer.material.color = setColor;
 	}
 
-	public void Explode(int centerX, int centerY, int t) {
+	public void Explode(int centerX, int centerY, ExplodeType type) {
 		Debug.Log("explode with " + centerX);
-		ExplodeType type = (ExplodeType) t;
 		//Tell cells around it that it was hit by explosion
-
 
 		for (int x = (centerX > 0 ? centerX-1 : centerX); x <= centerX+1 && x < this.grid.GetLength(0); x++) {
 			for (int y = (centerY > 0 ? centerY-1 : centerY); y <= centerY+1 && y < this.grid.GetLength(1); y++) {
 				GetCell(x,y).handleCellDamage(2,type,GetCell(centerX,centerY));
 			}
 		}
+	}
+
+	public void PlaceMine(int x, int y) {
+		CellScript cell = grid[x, y];
+		cell.curCellState = GameScript.CellState.Mine;
+		cell.available = false;
+		gameScript.EndTurn();
 	}
 	
 	// Removes given cell from current selection - if cell is not in selection, does nothing

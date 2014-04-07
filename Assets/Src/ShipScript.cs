@@ -5,26 +5,25 @@ using System.Collections.Generic;
 
 public class ShipScript : MonoBehaviour {
 
-	/** Properties **/
+	#region script references
+	private GameObject system;
+	public GameScript gameScript;
+	public GridScript gridScript;
+	protected RPCScript rpcScript;
+	#endregion
+
+	#region properties
 	public string shipID;
 	public string player;
 	public GameScript.PlayerType myPlayerType;
-	//cells are ordered from first cell added when creating to last one
-	public List<CellScript> cells;
 	public GameScript.Direction curDir;
 	public int shipSize;
-	public GameScript gameScript;
-	public GridScript gridScript;
 	public bool selected = false;
-	
-	private List<GameObject> shipSections;
-	
-	private GameObject system;
-
-	protected RPCScript rpcScript;
 	public int[] health;
 	public CellScript baseCell;
-	
+	public string shipType;
+	public List<CellScript> cells;
+	private List<GameObject> shipSections;
 	public int speed; 
 	protected bool immobile = false;
 	protected int maxSpeed; //Speed at full health
@@ -36,24 +35,25 @@ public class ShipScript : MonoBehaviour {
 	protected int radarRangeForward = 6;
 	protected int radarRangeSide = 5;
 	protected int radarRangeStart = -2;
-
 	public bool heavyCannon;
 	protected bool heavyArmor;
+	#endregion
 
+	#region GUI display booleans
 	// Boolean values for GUI display
 	public bool hasCannon = false;
 	public bool hasMine = false;
 	public bool hasTorpedo = false;
 	public bool canRotate = false;
-
-	public string shipType;
-
-	/** UNITY METHODS **/
+	#endregion
+	
+	#region GUI methods
 
 	// Display movement options for selected ship
 	void OnGUI () {
 		shipGUI();
 	}
+
 
 	protected virtual void shipGUI() {
 		if (gameScript.curGameState == GameScript.GameState.Wait) return;
@@ -97,7 +97,9 @@ public class ShipScript : MonoBehaviour {
 		}
 	}
 
-	/** GAMELOOP METHODS **/
+	#endregion
+
+	#region gameloop methods
 
 	// Use this for initialization
 	public void Init () {
@@ -165,7 +167,9 @@ public class ShipScript : MonoBehaviour {
 		SetRotation();
 	}
 
-	/** COROUTINES **/
+	#endregion
+	
+	#region coroutines
 
 	// Coroutine for forward movement
 	IEnumerator MoveShipForward (Vector3 destPos) {
@@ -267,17 +271,23 @@ public class ShipScript : MonoBehaviour {
 		else targetCellScript.renderer.material.color = Color.blue;
 	}
 
-	/** HELPER METHODS **/
+	#endregion
+
+	#region section and cell methods
 
 	// Retrive object for section of ship
 	public GameObject GetSection(int section) {
 		return shipSections[section];
 	}
-
+	
 	public CellScript GetCellForSection(GameObject section) {
 		int index = shipSections.IndexOf(section);
 		return cells[index];
 	}
+
+	#endregion
+
+	#region movement and rotation
 
 	/*
 	 * Handles movement of ship
@@ -434,6 +444,158 @@ public class ShipScript : MonoBehaviour {
 		//rpcScript.EndTurn();
 	}
 
+	/*
+	 * Rotates the ship
+	 */
+	public void RotateShip(bool clockwise, int local) {
+		
+		if (local == 1){
+			rpcScript.NetworkRotateShip(shipID,clockwise);
+			return;
+		}
+		
+		//Calculate new turn direction
+		Debug.Log("Turning " + clockwise);
+		int curRot = (int)curDir;
+		int newRot;
+		if (!clockwise) {
+			newRot =(curRot - rotSteps);
+			if (newRot == -1) newRot = 3;
+		} else {
+			newRot = ((curRot + rotSteps) % 4);
+		}
+		
+		//Check for obstacles
+		bool obstacle = false;
+		CellScript cell = cells[0];
+		// Perform check based on the orientation of the ship
+		if (curDir == GameScript.Direction.North || curDir == GameScript.Direction.South) {
+			int sign = 1;
+			if (curDir == GameScript.Direction.North && ! clockwise ||
+			    curDir == GameScript.Direction.South && clockwise) sign = -1;
+			
+			int ysign = 1;
+			if (curDir == GameScript.Direction.South) ysign = -1;
+			for (int w = 1; w < shipSize; w++) {
+				if (gridScript.GetCell(cell.gridPositionX+sign*w, cell.gridPositionY+ysign*w).curCellState != GameScript.CellState.Available) {
+					obstacle = true;
+					//break;
+				}
+				//For debugging
+				//gridScript.GetCell(cell.gridPositionX+sign*w, cell.gridPositionY+ysign*w).renderer.material.color = Color.magenta;
+			}
+			
+		} else {
+			int sign = 1;
+			if (curDir == GameScript.Direction.East && clockwise ||
+			    curDir == GameScript.Direction.West && !clockwise) sign = -1;
+			
+			int xsign = 1;
+			if (curDir == GameScript.Direction.West) xsign = -1;
+			for (int w = shipSize-1; w > 0; w--) {
+				if (gridScript.GetCell(cell.gridPositionX+xsign*w, cell.gridPositionY+sign*w).curCellState != GameScript.CellState.Available) {
+					obstacle = true;
+					break;
+				}
+				//For debugging
+				//gridScript.GetCell(cell.gridPositionX+xsign*w, cell.gridPositionY+sign*w).renderer.material.color = Color.magenta;
+			}
+		}
+		
+		if (!obstacle) {
+			curDir = (GameScript.Direction)newRot;
+			// Reset all except rotation base cells to be unoccupied
+			CellScript baseCellScript = cells[0];
+			foreach (CellScript oCellScript in cells) {
+				if (oCellScript == baseCellScript) continue;
+				
+				Debug.Log ("Resetting cell at position: " + oCellScript.gridPositionX + " " + oCellScript.gridPositionY);
+				oCellScript.occupier = null;
+				oCellScript.selected = false;
+				oCellScript.available = true;
+				oCellScript.curCellState = GameScript.CellState.Available;
+			}
+			cells.Clear();
+			cells.Add(baseCellScript);
+			
+			// Based on direction of ship set currently occupied cells
+			switch(curDir) {
+			case GameScript.Direction.East:
+				for (int i = 1; i < shipSize; i++) {
+					CellScript newCellScript = gridScript.grid[baseCellScript.gridPositionX + i, baseCellScript.gridPositionY];
+					newCellScript.occupier = this.gameObject;
+					cells.Add(newCellScript);
+				}
+				break;
+			case GameScript.Direction.North:
+				for (int i = 1; i < shipSize; i++) {
+					Debug.Log (baseCellScript.gridPositionX + " " + baseCellScript.gridPositionY);
+					CellScript newCellScript = gridScript.grid[baseCellScript.gridPositionX, baseCellScript.gridPositionY + i];
+					newCellScript.occupier = this.gameObject;
+					cells.Add(newCellScript);
+				}
+				break;
+			case GameScript.Direction.South:
+				for (int i = 1; i < shipSize; i++) {
+					CellScript newCellScript = gridScript.grid[baseCellScript.gridPositionX, baseCellScript.gridPositionY - i];
+					newCellScript.occupier = this.gameObject;
+					cells.Add(newCellScript);
+				}
+				break;
+			case GameScript.Direction.West:
+				for (int i = 1; i < shipSize; i++) {
+					CellScript newCellScript = gridScript.grid[baseCellScript.gridPositionX - i, baseCellScript.gridPositionY];
+					newCellScript.occupier = this.gameObject;
+					cells.Add(newCellScript);
+				}
+				break;
+			}
+			
+			foreach (CellScript oCellScript in cells) {
+				oCellScript.occupier = this.gameObject;
+				oCellScript.available = false;
+				oCellScript.curCellState = GameScript.CellState.Ship;
+				oCellScript.selected = true;
+			}
+		} else {
+			Debug.Log ("Obstacle in rotation path");
+			//display an error message
+		}
+		
+		//rpcScript.EndTurn();
+		SetRotation();
+		gameScript.EndTurn();
+	}
+
+	/*
+	 * Set rotation of ship based on direction
+	 */
+	public void SetRotation () {
+		Quaternion tempRot = Quaternion.identity;
+		switch(curDir) {
+		case GameScript.Direction.East:
+			tempRot.eulerAngles = new Vector3(0, 90, 0);
+			break;
+		case GameScript.Direction.North:
+			tempRot = Quaternion.identity;
+			break;
+		case GameScript.Direction.South:
+			tempRot.eulerAngles = new Vector3(0, 180, 0);
+			break;
+		case GameScript.Direction.West:
+			tempRot.eulerAngles = new Vector3(0, 270, 0);
+			break;
+		default:
+			break;
+		}
+		
+		transform.rotation = tempRot;
+	}
+
+	#endregion
+
+	#region handle action
+
 	public void HandleCannon(GameObject section, int local, int damage) {
 		int sectionIndex = shipSections.IndexOf(section);
 		if (local==1) {
@@ -560,128 +722,9 @@ public class ShipScript : MonoBehaviour {
 		}
 	}
 
-	/*
-	 * Rotates the ship
-	 */
-	public void RotateShip(bool clockwise, int local) {
+	#endregion
 
-		if (local == 1){
-			rpcScript.NetworkRotateShip(shipID,clockwise);
-			return;
-		}
-
-		//Calculate new turn direction
-		Debug.Log("Turning " + clockwise);
-		int curRot = (int)curDir;
-		int newRot;
-		if (!clockwise) {
-			newRot =(curRot - rotSteps);
-			if (newRot == -1) newRot = 3;
-		} else {
-			newRot = ((curRot + rotSteps) % 4);
-		}
-
-		//Check for obstacles
-		bool obstacle = false;
-		CellScript cell = cells[0];
-		// Perform check based on the orientation of the ship
-		if (curDir == GameScript.Direction.North || curDir == GameScript.Direction.South) {
-			int sign = 1;
-			if (curDir == GameScript.Direction.North && ! clockwise ||
-			    curDir == GameScript.Direction.South && clockwise) sign = -1;
-
-			int ysign = 1;
-			if (curDir == GameScript.Direction.South) ysign = -1;
-			for (int w = 1; w < shipSize; w++) {
-				if (gridScript.GetCell(cell.gridPositionX+sign*w, cell.gridPositionY+ysign*w).curCellState != GameScript.CellState.Available) {
-					obstacle = true;
-					//break;
-				}
-				//For debugging
-				//gridScript.GetCell(cell.gridPositionX+sign*w, cell.gridPositionY+ysign*w).renderer.material.color = Color.magenta;
-			}
-
-		} else {
-			int sign = 1;
-			if (curDir == GameScript.Direction.East && clockwise ||
-			    curDir == GameScript.Direction.West && !clockwise) sign = -1;
-
-			int xsign = 1;
-			if (curDir == GameScript.Direction.West) xsign = -1;
-			for (int w = shipSize-1; w > 0; w--) {
-				if (gridScript.GetCell(cell.gridPositionX+xsign*w, cell.gridPositionY+sign*w).curCellState != GameScript.CellState.Available) {
-					obstacle = true;
-					break;
-				}
-				//For debugging
-				//gridScript.GetCell(cell.gridPositionX+xsign*w, cell.gridPositionY+sign*w).renderer.material.color = Color.magenta;
-			}
-		}
-
-		if (!obstacle) {
-			curDir = (GameScript.Direction)newRot;
-			// Reset all except rotation base cells to be unoccupied
-			CellScript baseCellScript = cells[0];
-			foreach (CellScript oCellScript in cells) {
-				if (oCellScript == baseCellScript) continue;
-
-				Debug.Log ("Resetting cell at position: " + oCellScript.gridPositionX + " " + oCellScript.gridPositionY);
-				oCellScript.occupier = null;
-				oCellScript.selected = false;
-				oCellScript.available = true;
-				oCellScript.curCellState = GameScript.CellState.Available;
-			}
-			cells.Clear();
-			cells.Add(baseCellScript);
-	
-			// Based on direction of ship set currently occupied cells
-			switch(curDir) {
-			case GameScript.Direction.East:
-				for (int i = 1; i < shipSize; i++) {
-					CellScript newCellScript = gridScript.grid[baseCellScript.gridPositionX + i, baseCellScript.gridPositionY];
-					newCellScript.occupier = this.gameObject;
-					cells.Add(newCellScript);
-				}
-				break;
-			case GameScript.Direction.North:
-				for (int i = 1; i < shipSize; i++) {
-					Debug.Log (baseCellScript.gridPositionX + " " + baseCellScript.gridPositionY);
-					CellScript newCellScript = gridScript.grid[baseCellScript.gridPositionX, baseCellScript.gridPositionY + i];
-					newCellScript.occupier = this.gameObject;
-					cells.Add(newCellScript);
-				}
-				break;
-			case GameScript.Direction.South:
-				for (int i = 1; i < shipSize; i++) {
-					CellScript newCellScript = gridScript.grid[baseCellScript.gridPositionX, baseCellScript.gridPositionY - i];
-					newCellScript.occupier = this.gameObject;
-					cells.Add(newCellScript);
-				}
-				break;
-			case GameScript.Direction.West:
-				for (int i = 1; i < shipSize; i++) {
-					CellScript newCellScript = gridScript.grid[baseCellScript.gridPositionX - i, baseCellScript.gridPositionY];
-					newCellScript.occupier = this.gameObject;
-					cells.Add(newCellScript);
-				}
-				break;
-			}
-
-			foreach (CellScript oCellScript in cells) {
-				oCellScript.occupier = this.gameObject;
-				oCellScript.available = false;
-				oCellScript.curCellState = GameScript.CellState.Ship;
-				oCellScript.selected = true;
-			}
-		} else {
-			Debug.Log ("Obstacle in rotation path");
-			//display an error message
-		}
-
-		//rpcScript.EndTurn();
-		SetRotation();
-		gameScript.EndTurn();
-	}
+	#region weapons
 
 	/*
 	 * Fire cannon at targeted cell
@@ -732,7 +775,7 @@ public class ShipScript : MonoBehaviour {
 				BaseScript hitBase = hitCell.occupier.GetComponent<BaseScript>();
 			} else if (hitCell.curCellState == GameScript.CellState.Mine) {
 				Debug.Log("Hit a mine");
-				// TODO: cause mine to explode
+				gridScript.Explode(hitCell.gridPositionX, hitCell.gridPositionY, GridScript.ExplodeType.Mine);
 			} else if (hitCell.curCellState == GameScript.CellState.Reef) {
 				Debug.Log("Hit a reef");
 			}
@@ -740,29 +783,20 @@ public class ShipScript : MonoBehaviour {
 		}
 	}
 
-	// Set rotation of ship based on direction
-	public void SetRotation () {
-		Quaternion tempRot = Quaternion.identity;
-		switch(curDir) {
-		case GameScript.Direction.East:
-			tempRot.eulerAngles = new Vector3(0, 90, 0);
-			break;
-		case GameScript.Direction.North:
-			tempRot = Quaternion.identity;
-			break;
-		case GameScript.Direction.South:
-			tempRot.eulerAngles = new Vector3(0, 180, 0);
-			break;
-		case GameScript.Direction.West:
-			tempRot.eulerAngles = new Vector3(0, 270, 0);
-			break;
-		default:
-			break;
+	/*
+	 * To make mine laying fit into the overall structure of Cellscript calling back to ShipScript,
+	 * we need to have this method in every ShipScript. 
+	 */
+	public void LayMine(CellScript cell, int local) {
+		if (local == 1) {
+			rpcScript.PlaceMine(cell.gridPositionX, cell.gridPositionY);
 		}
-
-		transform.rotation = tempRot;
+		DisplayMineRange (false);
 	}
 
+	#endregion
+
+	#region display
 	/** DISPLAY **/
 
 	public void DisplayMoveRange (bool status) {
@@ -860,6 +894,19 @@ public class ShipScript : MonoBehaviour {
 			break;
 		}
 	}
+	
+	void DisplayMineRange(bool display) {
+		foreach (CellScript cell in this.cells) {
+			foreach (CellScript neighbour in gridScript.GetCellNeighbours(cell)) {
+				if (neighbour.curCellState == GameScript.CellState.Available) 
+					gridScript.DisplayCellForShoot(display, neighbour);
+			}
+		}
+	}
+
+	#endregion
+
+	#region visibility
 
 	// Display range of cannon
 	public void UpdateRadarVisibility (bool status) {
@@ -926,14 +973,6 @@ public class ShipScript : MonoBehaviour {
 		}
 	}
 
-
-
-	/*
-	 * To make mine laying fit into the overall structure of Cellscript calling back to ShipScript,
-	 * we need to have this method in every ShipScript. 
-	 */
-	public virtual void LayMine(CellScript cell) {
-		Debug.LogWarning ("Attempted to drop a mine from a ship that is not a MineLayer. Something is horribly wrong.");
-	}
-
+	#endregion
+	
 }

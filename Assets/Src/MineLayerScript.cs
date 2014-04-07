@@ -39,18 +39,5 @@ public class MineLayerScript : ShipScript {
 			}
 		}
 	}
-	public override void LayMine(CellScript cell) {
-		cell.curCellState = GameScript.CellState.Mine;
-		cell.available = false;
-		DisplayMineRange (false);
-	}
 
-	void DisplayMineRange(bool display) {
-		foreach (CellScript cell in this.cells) {
-			foreach (CellScript neighbour in gridScript.GetCellNeighbours(cell)) {
-				if (neighbour.curCellState == GameScript.CellState.Available) 
-					gridScript.DisplayCellForShoot(display, neighbour);
-			}
-		}
-	}
 }

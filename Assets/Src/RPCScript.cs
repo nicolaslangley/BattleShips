@@ -253,6 +253,16 @@ public class RPCScript : MonoBehaviour {
 		gridScript.Explode(x,y,type);
 	}
 
+	public void PlaceMine(int x, int y)
+	{
+		networkView.RPC ("RPCPlaceMine",RPCMode.AllBuffered,x,y);
+	}
+
+	[RPC]
+	void RPCPlaceMine(int x, int y) {
+		gridScript.PlaceMine(x, y);
+	}
+
 
 	// Update is called once per frame
 	void Update () {
