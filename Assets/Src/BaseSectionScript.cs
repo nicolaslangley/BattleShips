@@ -36,15 +36,17 @@ public class BaseSectionScript : MonoBehaviour {
 			// Only allow for repair or selection if the base is mine.
 			return; 
 		} else {
-			Debug.Log (parent.playerType + " " + gameScript.myPlayerType);
-			Debug.Log("base selection changed");
-			parent.selected = !parent.selected;
 			if (parent.selected == true) {
-				//gameObject.renderer.material.color = Color.cyan;
+				parent.selected = false;
+				parent.gameScript.existSelection = false;
+			} else if (parent.gameScript.existSelection == false) {
+				parent.selected = true;
 				foreach (CellScript oCellScript in parent.cells) {
 					oCellScript.selected = true;
 					//cs.DisplaySelection();
 				}
+				parent.gameScript.selectedBase = parent;
+				parent.gameScript.existSelection = true;
 			}
 		}
 	}
