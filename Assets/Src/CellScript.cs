@@ -75,19 +75,21 @@ public class CellScript : MonoBehaviour {
 				gameScript.curPlayAction = GameScript.PlayAction.None;
 			}
 		} else {
-			Debug.Log ("Selection changing");
-			selected = !selected;
-			if (selected == true) {
-				// Verify that selection is valid otherwise return
-				if (gridScript.AddToSelection(this) == false) {
-					selected = false;
-					return;
+			if (gameScript.curGameState == GameScript.GameState.Setup && availableForDock) {
+				Debug.Log ("Selection changing");
+				selected = !selected;
+				if (selected == true) {
+					// Verify that selection is valid otherwise return
+					if (gridScript.AddToSelection(this) == false) {
+						selected = false;
+						return;
+					}
+					//selected = false;
+				} else {
+					gridScript.RemoveFromSelection(this);
 				}
-				//selected = false;
-			} else {
-				gridScript.RemoveFromSelection(this);
+				DisplaySelection();
 			}
-			DisplaySelection();
 		}
 	}
 
@@ -159,6 +161,12 @@ public class CellScript : MonoBehaviour {
 		curCellState = GameScript.CellState.Reef;
 		available = false;
 		gameObject.renderer.material.color = Color.black;
+	}
+
+	public void SetAvailable() {
+		curCellState = GameScript.CellState.Available;
+		available = true;
+		gameObject.renderer.material.color = Color.blue;
 	}
 
 	public void handleCellDamage(int damage, GridScript.ExplodeType type, CellScript origin) {

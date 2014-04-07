@@ -17,6 +17,7 @@ public class GridScript : MonoBehaviour {
 	public GameObject radar;
 	public GameObject cruiser;
 	public GameObject torpedo;
+	public GameObject kamikaze;
 	public GameObject playerBase;
 	#endregion
 
@@ -30,9 +31,10 @@ public class GridScript : MonoBehaviour {
 	private GameScript gameScript;
 	private RPCScript rpcScript;
 
-
+	private int refreshCounter;
 	private int reefSeed;
 	private Stack idSeedStack;
+	private List<CellScript> reefCells;
 	#endregion
 
 
@@ -43,16 +45,6 @@ public class GridScript : MonoBehaviour {
 	// Use this for initialization
 	public void Init () {
 		// Create grid of cells
-
-
-
-		System.DateTime current = System.DateTime.Now;
-		int hours = System.DateTime.Now.Hour;
-		int mins = System.DateTime.Now.Minute;
-
-		reefSeed = hours+mins;
-
-		Debug.Log("ReefSeed: " + reefSeed);
 
 		//rpcScript.shareReefSeed(reefSeed);
 
@@ -67,6 +59,8 @@ public class GridScript : MonoBehaviour {
 
 		// Initialize references to system and current selection
 		currentSelection = new List<CellScript>();
+		reefCells = new List<CellScript>();;
+		refreshCounter = 0;
 		system = GameObject.FindGameObjectWithTag("System");
 		gameScript = system.GetComponent<GameScript>();
 		rpcScript = system.GetComponent<RPCScript>();
@@ -85,6 +79,41 @@ public class GridScript : MonoBehaviour {
 	public void setReefSeed(int seed)
 	{
 		reefSeed = seed;
+	}
+
+	public void refreshReef()
+	{
+		System.DateTime current = System.DateTime.Now;
+		int hours = System.DateTime.Now.Hour;
+		int mins = System.DateTime.Now.Minute;
+		
+		reefSeed = hours+mins+refreshCounter;
+
+		Random.seed = reefSeed;
+		Debug.Log(Random.seed);
+		// Create reefs on grid
+
+		foreach (CellScript c in reefCells) 
+		{
+			c.SetAvailable();
+			c.SetVisible(false);
+		}
+
+		reefCells.Clear();
+
+		for (int i = 0; i < 24; i++) {
+			int xVal = Random.Range(11, 20);
+			int yVal = Random.Range(3, 27);
+			while(grid[xVal, yVal].curCellState == GameScript.CellState.Reef) {
+				xVal = Random.Range(11, 20);
+				yVal = Random.Range(3, 27);
+			}
+			grid[xVal, yVal].SetReef();
+			grid[xVal, yVal].SetVisible(false);
+			reefCells.Add(grid[xVal,yVal]);
+		}
+		refreshCounter++;
+		
 	}
 
 	public void setShip(GameScript.ShipTypes shipType)
@@ -158,6 +187,12 @@ public class GridScript : MonoBehaviour {
 			break;
 		case(GameScript.ShipTypes.Torpedo):
 			newShip = Instantiate(torpedo,pos,Quaternion.identity) as GameObject; 
+			break;
+		case(GameScript.ShipTypes.Radar):
+			newShip = Instantiate(radar,pos,Quaternion.identity) as GameObject;
+			break;
+		case(GameScript.ShipTypes.Kamikaze):
+			newShip = Instantiate(kamikaze,pos,Quaternion.identity) as GameObject;
 			break;
 		default: break;
 		}
@@ -286,21 +321,7 @@ public class GridScript : MonoBehaviour {
 			player2BaseScript.cells.Add(grid[29,10+i]);
 		}
 
-
-
-		Random.seed = reefSeed;
-		Debug.Log(Random.seed);
-		// Create reefs on grid
-		for (int i = 0; i < 24; i++) {
-			int xVal = Random.Range(11, 20);
-			int yVal = Random.Range(3, 27);
-			while(grid[xVal, yVal].curCellState == GameScript.CellState.Reef) {
-				xVal = Random.Range(11, 20);
-				yVal = Random.Range(3, 27);
-			}
-			grid[xVal, yVal].SetReef();
-			grid[xVal, yVal].SetVisible(false);
-		}
+		refreshReef();
 
 	}
 
