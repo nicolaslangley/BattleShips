@@ -688,12 +688,6 @@ public class ShipScript : MonoBehaviour {
 		Debug.Log ("Repair handled");
 
 		int index = shipSections.IndexOf(section);
-
-		if (local == 1)
-		{
-			rpcScript.handleShipRepair(shipID,index);
-			return;
-		}
 		CellScript cell = cells[index];
 		if (cell.availableForDock) {
 			for (int i = 0; i < shipSize; i++) {
@@ -701,13 +695,7 @@ public class ShipScript : MonoBehaviour {
 
 				if (health[i] <= 0) {
 					Debug.Log("Repairing section " + i);
-					int armor = 1;
-					if (heavyArmor) {
-						armor = 2;
-					}
-					health[i] = armor;
-					shipSections[i].renderer.material.color = Color.yellow;
-					//section.renderer.material.color = Color.yellow;
+					rpcScript.repairShipWithIndex(shipID,i);
 					break;
 				}
 			}
@@ -716,10 +704,28 @@ public class ShipScript : MonoBehaviour {
 
 			}
 
+
+
             // TODO: return cell to original color value
 		} else {
 			Debug.Log ("This square is not available for repair");
 		}
+
+	}
+
+	public void repairSection(int index, int local)
+	{
+		if (local == 1) {
+			rpcScript.repairShipWithIndex(shipID,index);
+			return;
+		}
+		int armor = 1;
+		if (heavyArmor) {
+			armor = 2;
+		}
+		health[index] = armor;
+		shipSections[index].renderer.material.color = Color.yellow;
+		gameScript.EndTurn();
 	}
 
 	#endregion

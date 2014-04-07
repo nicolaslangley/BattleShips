@@ -65,7 +65,7 @@ public class RPCScript : MonoBehaviour {
 
 	public void EndTurn()
 	{
-		networkView.RPC ("RPCEndTurn",RPCMode.All);
+		networkView.RPC ("RPCEndTurn",RPCMode.AllBuffered);
 	}
 
 	[RPC]
@@ -209,20 +209,20 @@ public class RPCScript : MonoBehaviour {
 			}
 		}
 	}
-	public void handleShipRepair(string shipID, int section)
+	
+	public void repairShipWithIndex(string shipid, int index) 
 	{
-		networkView.RPC("RPCHandleShipRepair",RPCMode.AllBuffered,shipID,section);
+		networkView.RPC ("RPCRepairShipWithIndex",RPCMode.AllBuffered,shipid,index);
 	}
 
 	[RPC]
-	void RPCHandleShipRepair (string shipID, int section) 
+	void RPCRepairShipWithIndex (string shipid, int index) 
 	{
-		foreach(ShipScript shipscript in gameScript.ships)
+		foreach (ShipScript shipscript in gameScript.ships)
 		{
-			if (shipscript.shipID == shipID)
+			if (shipscript.shipID == shipid)
 			{
-				Debug.Log ("Found correct ship");
-				shipscript.HandleRepair(shipscript.GetSection(section),0);
+				shipscript.repairSection(index,0);
 				break;
 			}
 		}
