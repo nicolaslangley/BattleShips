@@ -52,6 +52,7 @@ public class CellScript : MonoBehaviour {
 		Debug.Log ("CurGameAction is: " + gameScript.curPlayAction);
 		// Don't act on mouse click if in wait state
 		if (gameScript.curGameState == GameScript.GameState.Wait) return;
+		if (gameScript.curGameState == GameScript.GameState.End) return;
 
 		// Handle selection if moving ship
 		if (gameScript.curPlayAction == GameScript.PlayAction.Move) {

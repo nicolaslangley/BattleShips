@@ -28,6 +28,7 @@ public class ShipSectionScript : MonoBehaviour {
 		GameScript gameScript = parent.gameScript;
 		// Don't act on mouse click if in wait state
 		if (gameScript.curGameState == GameScript.GameState.Wait) return;
+		if (gameScript.curGameState == GameScript.GameState.End) return;
 
 		// Handle selection if cannon ship
 		if (gameScript.curPlayAction == GameScript.PlayAction.Cannon) {
