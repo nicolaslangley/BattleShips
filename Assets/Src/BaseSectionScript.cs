@@ -30,6 +30,9 @@ public class BaseSectionScript : MonoBehaviour {
 			gameScript.selectedShip.DisplayCannonRange(false);
 			gameScript.curPlayAction = GameScript.PlayAction.None;
 
+		} else if (parent.playerType != gameScript.myPlayerType) {
+			// Only allow for repair or selection if the base is mine.
+			return; 
 		} else {
 			Debug.Log (parent.playerType + " " + gameScript.myPlayerType);
 			if ((int)parent.playerType == (int)(gameScript.myPlayerType)) {
