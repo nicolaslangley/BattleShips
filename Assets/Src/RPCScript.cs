@@ -142,13 +142,13 @@ public class RPCScript : MonoBehaviour {
 		}
 	}
 
-	public void NetworkRotateShip(string shipID, bool clockwise)
+	public void NetworkRotateShip(string shipID, bool clockwise, int steps)
 	{
-		networkView.RPC ("RPCRotateShip",RPCMode.AllBuffered,shipID,clockwise);
+		networkView.RPC ("RPCRotateShip",RPCMode.AllBuffered,shipID,clockwise, steps);
 	}
 
 	[RPC]
-	void RPCRotateShip(string shipID, bool clockwise)
+	void RPCRotateShip(string shipID, bool clockwise, int steps)
 	{
 		Debug.Log("Ship: "+shipID+" Rotated: " + clockwise);
 	
@@ -157,7 +157,7 @@ public class RPCScript : MonoBehaviour {
 			if (shipscript.shipID == shipID)
 			{
 				Debug.Log ("Found correct ship");
-				shipscript.RotateShip(clockwise,0);
+				shipscript.RotateShip(clockwise,0, steps);
 				break;
 			}
 		}

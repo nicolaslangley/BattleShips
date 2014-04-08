@@ -83,13 +83,21 @@ public class ShipScript : MonoBehaviour {
 			}
 			if (canRotate) {
 				if (GUI.Button(new Rect(Screen.width - 150, 130, 120, 30), "Rotate Clockwise")) {
-					RotateShip(true,1);
+					RotateShip(true,1,1);
 				}
 				if (GUI.Button(new Rect(Screen.width - 150, 170, 120, 30), "Rotate Counterclockwise")) {
-					RotateShip(false,1);
+					RotateShip(false,1,1);
+				}
+				if (rotSteps > 1) {
+					if (GUI.Button(new Rect(Screen.width - 150, 210, 120, 30), "Rotate 180 Clockwise")) {
+						RotateShip(true,1,2);
+					}
+					if (GUI.Button(new Rect(Screen.width - 150, 250, 120, 30), "Rotate 180 Counterclockwise")) {
+						RotateShip(false,1,2);
+					}
 				}
 			}
-			if (GUI.Button(new Rect(Screen.width - 150, 270, 100, 30), "Cancel Action")) {
+			if (GUI.Button(new Rect(Screen.width - 150, 290, 100, 30), "Cancel Action")) {
 				gameScript.curPlayAction = GameScript.PlayAction.None;
 				DisplayMoveRange(false);
 				DisplayCannonRange(false);
@@ -447,10 +455,10 @@ public class ShipScript : MonoBehaviour {
 	/*
 	 * Rotates the ship
 	 */
-	public virtual void RotateShip(bool clockwise, int local) {
+	public virtual void RotateShip(bool clockwise, int local, int steps) {
 		
 		if (local == 1){
-			rpcScript.NetworkRotateShip(shipID,clockwise);
+			rpcScript.NetworkRotateShip(shipID,clockwise, 1);
 			return;
 		}
 		
