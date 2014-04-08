@@ -38,10 +38,13 @@ public class GameScript : MonoBehaviour {
 	public bool player2SetupAcceptance;
 
 	private bool setupAccepted;
+	private bool isLoadedGame;
 
+	private string loadFilePath;
 	
 
 	public bool waitTurn;
+	
 
 	private bool gridInited;
 
@@ -86,6 +89,20 @@ public class GameScript : MonoBehaviour {
 		rpcScript.sendPlayerName(myname);
 		setPlayerType();
 
+		int LoadedInt = PlayerPrefs.GetInt("LoadedGame");
+
+		if (LoadedInt == 1) {
+			//This is a loaded game
+			//isLoadedGame = true;
+			//Send RPC to say its a loaded game.
+
+			//Change current game state.
+			isLoadedGame = true;
+			loadFilePath = PlayerPrefs.GetString("LoadedGamePath");
+			Debug.Log(loadFilePath);
+		}
+
+
 		player1SetupDone = false;
 		player2SetupDone = false;
 		player1SetupAcceptance = false;
@@ -116,6 +133,12 @@ public class GameScript : MonoBehaviour {
 			if (!gridInited) {
 				gridInited = true;
 				gridScript.Init();
+
+				if (isLoadedGame) {
+					//Load game
+					//GameSaverScript.Load("String",this);
+				}
+
 			}
 
 			if (player1SetupAcceptance && player2SetupAcceptance)
@@ -417,6 +440,11 @@ public class GameScript : MonoBehaviour {
 		gridScript.ResetSelection();
 		existSelection = false;
 	}
+
+	private void LoadGame() {
+
+	}
+
 
 	IEnumerator updateStat(WWW w)
 	{
