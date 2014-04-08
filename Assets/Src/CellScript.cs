@@ -173,6 +173,7 @@ public class CellScript : MonoBehaviour {
 		if (occupier != null) {
 			ShipScript ship = occupier.GetComponent<ShipScript>();
 			//Do one for base as well
+			BaseScript based = occupier.GetComponent<BaseScript>();
 			if (ship != null )
 			{
 				if (type == GridScript.ExplodeType.Mine) {
@@ -181,6 +182,11 @@ public class CellScript : MonoBehaviour {
 					ship.HandleHit(this,damage);
 				}
 			}
+			if (based != null)
+			{
+				based.HandleHit(this,damage);
+			}
+
 			//Occupier handles explosion
 		}
 	}

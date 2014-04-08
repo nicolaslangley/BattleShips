@@ -807,6 +807,7 @@ public class ShipScript : MonoBehaviour {
 			} else if (hitCell.curCellState == GameScript.CellState.Base) {
 				Debug.Log("Hit a base");
 				BaseScript hitBase = hitCell.occupier.GetComponent<BaseScript>();
+				hitBase.HandleHit(hitCell,1);
 			} else if (hitCell.curCellState == GameScript.CellState.Mine) {
 				Debug.Log("Hit a mine");
 				gridScript.Explode(hitCell.gridPositionX, hitCell.gridPositionY, GridScript.ExplodeType.Mine);
