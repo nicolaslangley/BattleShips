@@ -4,7 +4,7 @@ using System.Collections;
 public class RadarBoatScript : ShipScript {
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		this.shipSize = 3;
 		this.heavyArmor = false;
 		this.heavyCannon = false;
@@ -35,15 +35,17 @@ public class RadarBoatScript : ShipScript {
 	}
 
 	void OnGUI () {
-		shipGUI();
-		RadarGUI();
-
+		if (selected) {
+			shipGUI();
+			RadarGUI();
+		}
 	}
 
 	void RadarGUI() {
 		Debug.Log("Radar gui");
 		if (GUI.Button(new Rect(Screen.width - 170, 90, 120, 30), "Toggle Long Range")) {
 			ToggleLongRange();
+			rpcScript.EndTurn();
 		}
 	}
 	
