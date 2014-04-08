@@ -176,9 +176,9 @@ public class GameLobbyScript : MonoBehaviour
 
         GUI.Label(new Rect(10, 80, 150, 20), "Current players");
         GUI.Label(new Rect(150, 80, 100, 100), players);
-
-		DirectoryInfo dir = new DirectoryInfo("Assets/Saves");
-		FileInfo[] info = dir.GetFiles("*.xml");
+//
+//		DirectoryInfo dir = new DirectoryInfo("Assets/Saves");
+//		FileInfo[] info = dir.GetFiles("*.xml");
 
 		
 		
