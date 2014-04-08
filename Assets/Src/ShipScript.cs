@@ -301,7 +301,7 @@ public class ShipScript : MonoBehaviour {
 	 * Handles movement of ship
 	 * Moves ship to target cell
 	 */
-	public void MoveShip (CellScript destCell, int local) {
+	public virtual void MoveShip (CellScript destCell, int local) {
 		// Get front cell of ship
 
 		if (local == 1) {
@@ -677,7 +677,6 @@ public class ShipScript : MonoBehaviour {
 
 	public void HandleDoubleHit(CellScript cell, int damage, CellScript origin) {
 		int index = cells.IndexOf(origin);
-		int originIndex = cells.IndexOf(origin);
 		Debug.Log ("Handling mine for index: "+ index);
 		//Hits front of ship, then remove front and one behind.
 		if (shipSize == 1) {
@@ -835,7 +834,7 @@ public class ShipScript : MonoBehaviour {
 	#region display
 	/** DISPLAY **/
 
-	public void DisplayMoveRange (bool status) {
+	public virtual void DisplayMoveRange (bool status) {
 
 		// Display movement options in forward and backwards direction
 		CellScript frontCellScript = cells[cells.Count - 1];
@@ -890,9 +889,6 @@ public class ShipScript : MonoBehaviour {
 
 	// Display range of cannon
 	public void DisplayCannonRange (bool status) {
-		Color setColor;
-		if (status) setColor = Color.red;
-		else setColor = Color.blue;
 		
 		// Get front cell of ship
 		CellScript backCellScript = cells[0];
@@ -1012,7 +1008,6 @@ public class ShipScript : MonoBehaviour {
 		//Debug.Log ("Updating ship visiblity for ship " + name);
 		for (int i = 0; i < cells.Count; i++) {
 			//Debug.Log ("ship " + name + "cell " + i + " position is " + cells[i].gridPositionX + " " + cells[i].gridPositionY + " visibility is " + cells[i].isVisible);
-			bool visible = cells[i].isVisible;
 			if (!cells[i].isVisible) {
 				shipSections[i].renderer.enabled = false;
 			} else {
