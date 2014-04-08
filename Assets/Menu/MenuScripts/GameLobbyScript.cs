@@ -177,8 +177,8 @@ public class GameLobbyScript : MonoBehaviour
         GUI.Label(new Rect(10, 80, 150, 20), "Current players");
         GUI.Label(new Rect(150, 80, 100, 100), players);
 //
-//		DirectoryInfo dir = new DirectoryInfo("Assets/Saves");
-//		FileInfo[] info = dir.GetFiles("*.xml");
+		DirectoryInfo dir = new DirectoryInfo("Assets/Saves");
+		FileInfo[] info = dir.GetFiles("*.xml");
 
 		
 		
@@ -187,31 +187,37 @@ public class GameLobbyScript : MonoBehaviour
 
 			
 			if (currentPlayerCount == 2) {
-
-//				int i = 0;
-//				int matched = 0;
-//
-//				foreach (FileInfo f in info) 
-//				{ 
-//					string[] usernames = f.Name.Split('_','.');
-//
-//					foreach (PlayerInfo ins in playerList) {
-//						if (ins.username == usernames[0] || ins.username == usernames[1]) {
-//							matched++;
-//						}
-//					}
-//					if (matched == 2)
-//					{
-//						Debug.Log("In file with: "+ f.Name);
-//						GUI.Button(new Rect(160, 120+i, 150, 20), f.Name);
-//						i = i + 20;
-//					}
-//
-//					matched = 0;
-//				}
+				int i = 0;
+				int matched = 0;
+				
+				foreach (FileInfo f in info) 
+				{ 
+					string[] usernames = f.Name.Split('_','.');
+					
+					foreach (PlayerInfo ins in playerList) {
+						if (ins.username == usernames[0] || ins.username == usernames[1]) {
+							matched++;
+						}
+					}
+					if (matched == 2)
+					{
+						Debug.Log("In file with: "+ f.Name);
+						if (GUI.Button(new Rect(160, 120+i, 150, 20), f.Name)) {
+							PlayerPrefs.SetInt("LoadedGame",1);
+							PlayerPrefs.SetString("LoadedGamePath",f.FullName);
+							HostLaunchGame();
+							//Debug.Log(f.FullName);
+						}
+						i = i + 20;
+					}
+					
+					matched = 0;
+				}
+			
 
 				if (GUI.Button(new Rect(25, 140, 150, 20), "Start the game"))
 				{
+					PlayerPrefs.SetInt("LoadedGame",0);
 					HostLaunchGame();
 				}
 			} else {
