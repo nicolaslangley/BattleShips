@@ -16,6 +16,8 @@ public class CellScript : MonoBehaviour {
 	public bool availableForShoot = false;
 	public bool availableForDock = false;
 	public GameObject occupier = null;
+	public bool isMineRadius = false;
+
 	//[XmlAttribute("cell_state")]
 	public GameScript.CellState curCellState = GameScript.CellState.Available;
 	[XmlAttribute("gridPositionX")]
@@ -25,6 +27,8 @@ public class CellScript : MonoBehaviour {
 	[XmlAttribute("instanceID")]
 	public int instanceID;
 	public bool isVisible = false;
+
+	public CellScript mineParentCell;
 
 	private GameObject system;
 	private GridScript gridScript;
@@ -170,13 +174,18 @@ public class CellScript : MonoBehaviour {
 	}
 
 	public void handleCellDamage(int damage, GridScript.ExplodeType type, CellScript origin) {
+		Debug.Log("Handing cell damage for " + gridPositionX + " " + gridPositionY);
 		if (occupier != null) {
+			Debug.Log ("Occupier isn't null");
 			ShipScript ship = occupier.GetComponent<ShipScript>();
 			//Do one for base as well
 			BaseScript based = occupier.GetComponent<BaseScript>();
 			if (ship != null )
 			{
+				Debug.Log ("Ship isn't null");
 				if (type == GridScript.ExplodeType.Mine) {
+					Debug.Log("Mine damage");
+
 					ship.HandleDoubleHit(this,damage, origin);
 				} else {
 					ship.HandleHit(this,damage);
