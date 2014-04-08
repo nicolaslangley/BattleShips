@@ -28,7 +28,7 @@ public class GridSaverScript {
 	public void Restore(GameScript gameScript) {
 		XmlSerializer serialize = new XmlSerializer(typeof(CellSaverScript));
 		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.Encoding = new UnicodeEncoding(false, false); // no BOM in a .NET string
+		settings.Encoding = new UnicodeEncoding(false, false);
 		settings.Indent = false;
 		settings.OmitXmlDeclaration = false;
 		//We assume that gridScript has already been instantiated to the correct size

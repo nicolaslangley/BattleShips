@@ -3,6 +3,8 @@ using System.Collections;
 
 public class MineLayerScript : ShipScript {
 
+	int minesLeft;
+
 	// Use this for initialization
 	void Awake () {
 		this.shipSize = 2;
@@ -23,6 +25,8 @@ public class MineLayerScript : ShipScript {
 		this.canRotate = true;
 
 		this.shipType = "minelayer";
+
+		minesLeft = 5;
 	}
 
 	void OnGUI () {
@@ -32,7 +36,7 @@ public class MineLayerScript : ShipScript {
 	}
 
 	void MineLayerGUI() {
-		if (selected) {
+		if (selected && minesLeft > 0) {
 			if (GUI.Button(new Rect(Screen.width - 150, 210, 100, 30), "Drop Mine")) {
 				DisplayMineRange(true);
 				gameScript.curPlayAction = GameScript.PlayAction.DropMine;

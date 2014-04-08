@@ -202,6 +202,37 @@ public class GameScript : MonoBehaviour {
 		}
 	}
 
+	public void NotifyDetonation(string weapon, CellScript cell) {
+		string message = "Hit nothing";
+		if (cell != null) {
+			switch (cell.curCellState) {
+			case CellState.Available:
+				message = "Hit nothing";
+				break;
+			case CellState.Base:
+				message = "Hit player base";
+				break;
+			case CellState.Mine:
+				message = "Mine Hit... this shouldn't happen";
+				break;
+			case CellState.Ship:
+				message = "Hit Ship";
+				break;
+			case CellState.Reef:
+				message = "Hit reef";
+				break;
+			}
+			message += " by a " + weapon + " at location (" + cell.gridPositionX + "," + cell.gridPositionY + ")";
+			Debug.Log (message);
+		}
+		else Debug.Log ("Notify Detonation was passed a null cell.");
+		GlobalNotify (message);
+	}
+
+	public void GlobalNotify(string message) {
+		this.messages = message;
+	}
+
 	// Display GUI overlay for game
 	void OnGUI () {
 		GUI.Label(new Rect(150, 50, 100, 100), "Player turn: "+turn);
