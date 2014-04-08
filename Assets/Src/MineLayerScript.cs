@@ -26,7 +26,7 @@ public class MineLayerScript : ShipScript {
 	}
 
 	void OnGUI () {
-		Debug.Log ("Mine Layer GUI called");
+		//Debug.Log ("Mine Layer GUI called");
 		shipGUI();
 		MineLayerGUI();
 	}

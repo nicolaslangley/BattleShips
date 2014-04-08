@@ -334,7 +334,7 @@ public class GridScript : MonoBehaviour {
 	/*
 	 * Returns the valid destination cell within the given path
 	 */
-	public CellScript VerifyCellPath (int positionX, int positionY, int dist, GameScript.Direction dir, CellScript destCell, string type) {
+	public CellScript VerifyCellPath (int positionX, int positionY, int dist, GameScript.Direction dir, CellScript destCell, string type, bool isMineLayer) {
 		bool obstacleEncountered = false;
 		int offset = 0;
 		if (type == "Move") offset = 1;
@@ -344,10 +344,15 @@ public class GridScript : MonoBehaviour {
 			for (int x = 1; x <= dist; x++) {
 				if (positionX + x < 0 || positionX + x > 29) break;
 				CellScript curCellScript = grid[positionX + x, positionY];
-				if (curCellScript.available != true) {
-					obstacleEncountered = true;
-					encounteredObstacle = grid[positionX + (x-offset), positionY].GetComponent<CellScript>();
-					break;
+				// if mine then minelayer stops before, everyone else hits mineradius
+				// if minelayer, minelayer goes through, everyone else stops
+				// everything else stops minelayer
+				if (curCellScript.available != true || curCellScript.isMineRadius) {
+					if (!isMineLayer) {
+						obstacleEncountered = true;
+						encounteredObstacle = grid[positionX + (x-offset), positionY].GetComponent<CellScript>();
+						break;
+					}
 				}
 			}
 			break;
@@ -355,7 +360,8 @@ public class GridScript : MonoBehaviour {
 			for (int x = 1; x <= dist; x++) {
 				if (positionX - x < 0 || positionX - x > 29) break;
 				CellScript curCellScript = grid[positionX - x, positionY];
-				if (curCellScript.available != true) {
+				if (curCellScript.available != true || curCellScript.isMineRadius) {
+
 					obstacleEncountered = true;
 					encounteredObstacle = grid[positionX - (x-offset), positionY].GetComponent<CellScript>();
 					break;
@@ -366,7 +372,7 @@ public class GridScript : MonoBehaviour {
 			for (int y = 1; y <= dist; y++) {
 				if (positionY + y < 0 || positionY + y > 29) break;
 				CellScript curCellScript = grid[positionX, positionY + y];
-				if (curCellScript.available != true) {
+				if (curCellScript.available != true || curCellScript.isMineRadius) {
 					obstacleEncountered = true;
 					encounteredObstacle = grid[positionX, positionY + (y-offset)].GetComponent<CellScript>();
 					break;
@@ -377,7 +383,7 @@ public class GridScript : MonoBehaviour {
 			for (int y = 1; y <= dist; y++) {
 				if (positionY - y < 0 || positionY - y > 29) break;
 				CellScript curCellScript = grid[positionX, positionY - y];
-				if (curCellScript.available != true) {
+				if (curCellScript.available != true || curCellScript.isMineRadius) {
 					obstacleEncountered = true;
 					encounteredObstacle = grid[positionX, positionY - (y-offset)].GetComponent<CellScript>();
 					break;
@@ -385,6 +391,7 @@ public class GridScript : MonoBehaviour {
 			}
 			break;
 		}
+
 		return encounteredObstacle;
 	}
 
@@ -547,13 +554,32 @@ public class GridScript : MonoBehaviour {
 		for (int x = (centerX > 0 ? centerX-1 : centerX); x <= centerX+1 && x < this.grid.GetLength(0); x++) {
 			for (int y = (centerY > 0 ? centerY-1 : centerY); y <= centerY+1 && y < this.grid.GetLength(1); y++) {
 				GetCell(x,y).handleCellDamage(2,type,GetCell(centerX,centerY));
+				if (type == ExplodeType.Mine) {
+					CellScript curCell = GetCell(x,y);
+					if (curCell.curCellState == GameScript.CellState.Mine || curCell.isMineRadius) {
+						curCell.curCellState = GameScript.CellState.Available;
+						curCell.isMineRadius = false;
+						curCell.mineParentCell = null;
+					}
+				}
 			}
 		}
 	}
 
-	public void PlaceMine(int x, int y) {
-		CellScript cell = grid[x, y];
+	public void PlaceMine(int centerX, int centerY) {
+		Debug.Log("Place mine at: " + centerX + " " + centerY);
+		CellScript cell = grid[centerX, centerY];
 		cell.curCellState = GameScript.CellState.Mine;
+		cell.isMineRadius = true;
+		for (int x = (centerX > 0 ? centerX-1 : centerX); x <= centerX+1 && x < this.grid.GetLength(0); x++) {
+			for (int y = (centerY > 0 ? centerY-1 : centerY); y <= centerY+1 && y < this.grid.GetLength(1); y++) {
+				if (grid[x,y].curCellState == GameScript.CellState.Available && grid[x,y].curCellState != GameScript.CellState.Reef) {
+					//grid[x,y].curCellState = GameScript.CellState.MineRadius;
+					grid[x,y].isMineRadius = true;
+					grid[x,y].mineParentCell = cell;
+				}
+			}
+		}
 		cell.available = false;
 		gameScript.EndTurn();
 	}

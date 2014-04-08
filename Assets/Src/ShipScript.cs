@@ -308,6 +308,8 @@ public class ShipScript : MonoBehaviour {
 			rpcScript.NetworkMoveShip(shipID, destCell.gridPositionX, destCell.gridPositionY);
 			return;
 		}
+		bool isMineLayer = false;
+		if (this.shipType == "minelayer") { isMineLayer = true;}
 
 		Debug.Log("cell count: "+ cells.Count.ToString());
 		CellScript frontCellScript = cells[cells.Count - 1];
@@ -319,6 +321,8 @@ public class ShipScript : MonoBehaviour {
 		// Calculate distance to movement cell
 		int distance = 0;
 		bool forward = false;
+		bool triggerMine = false;
+		GameScript.CellState previousState = GameScript.CellState.Available;
 
 		if (curDir == GameScript.Direction.East || curDir == GameScript.Direction.West) {
 			if (destCell.gridPositionY < startY) destCell = gridScript.GetCell(backX, backY - 1);
@@ -340,7 +344,11 @@ public class ShipScript : MonoBehaviour {
 		// Distance will be 0 only if the move is sideways
 		if (distance == 0) {
 			bool validMove = gridScript.VerifySidewaysMove(destCell.gridPositionX, destCell.gridPositionY, shipSize, curDir);
+
+			//rear most cell
+
 			if (!validMove) {
+
 				return;
 			}
 			StartCoroutine(MoveShipSideways(destCell.transform.position));
@@ -356,12 +364,22 @@ public class ShipScript : MonoBehaviour {
 				Debug.Log ("Cannot move that far");
 				return;
 			}
-		
-			CellScript validDestCell = gridScript.VerifyCellPath(startX, startY, distance, curDir, destCell, "Move");
+
+			CellScript validDestCell = gridScript.VerifyCellPath(startX, startY, distance, curDir, destCell, "mine",isMineLayer);
 			if (validDestCell != destCell) {
 				Debug.Log ("Invalid path, moving up until collision");
+				if (validDestCell.curCellState != GameScript.CellState.Mine && !validDestCell.isMineRadius) {
+					CellScript newDestCell = gridScript.VerifyCellPath(startX, startY, distance, curDir, destCell, "Move",isMineLayer);
+					destCell = newDestCell;
+				} else {
+					Debug.Log("Was MINEEE");
+					destCell = validDestCell;
+					triggerMine = true;
+					previousState = destCell.curCellState;
+				}
+
+
 				// TODO: Potentially notify other player of reef collision? Does damage occur?
-				destCell = validDestCell;
 			}
 			forward = true;
 			StartCoroutine(MoveShipForward(destCell.transform.position));
@@ -442,8 +460,18 @@ public class ShipScript : MonoBehaviour {
 
 		//Debug.Log("X: "+ destCell.gridPositionX + " Y: " + destCell.gridPositionY);
 
+		if (triggerMine) {
+			if (previousState == GameScript.CellState.Mine) {
+				Debug.Log("Explode");
+				gridScript.Explode(destCell.gridPositionX,destCell.gridPositionY,GridScript.ExplodeType.Mine);
+			}
+			if (destCell.isMineRadius) {
+				CellScript mine = destCell.mineParentCell;
+				Debug.Log("Explode");
 
-
+				gridScript.Explode(mine.gridPositionX,mine.gridPositionY,GridScript.ExplodeType.Mine);
+			}
+		}
 
 		// End the current turn
 //		gameScript.curGameState = GameScript.GameState.Wait;
@@ -475,6 +503,7 @@ public class ShipScript : MonoBehaviour {
 		
 		//Check for obstacles
 		bool obstacle = false;
+		bool obstacleMine = false;
 		CellScript cell = cells[0];
 		// Perform check based on the orientation of the ship
 		if (curDir == GameScript.Direction.North || curDir == GameScript.Direction.South) {
@@ -486,6 +515,11 @@ public class ShipScript : MonoBehaviour {
 			if (curDir == GameScript.Direction.South) ysign = -1;
 			for (int w = 1; w < shipSize-1; w++) {
 				if (gridScript.GetCell(cell.gridPositionX+sign*w, cell.gridPositionY+ysign*w).curCellState != GameScript.CellState.Available) {
+					if (gridScript.GetCell(cell.gridPositionX+sign*w, cell.gridPositionY+ysign*w).isMineRadius ||
+					    gridScript.GetCell(cell.gridPositionX+sign*w, cell.gridPositionY+ysign*w).curCellState == GameScript.CellState.Mine)
+					{
+						obstacleMine = true;
+					}
 					obstacle = true;
 					//break;
 				}
@@ -502,6 +536,7 @@ public class ShipScript : MonoBehaviour {
 			if (curDir == GameScript.Direction.West) xsign = -1;
 			for (int w = shipSize-1; w > 0; w--) {
 				if (gridScript.GetCell(cell.gridPositionX+xsign*w, cell.gridPositionY+sign*w).curCellState != GameScript.CellState.Available) {
+
 					obstacle = true;
 					break;
 				}
@@ -646,7 +681,7 @@ public class ShipScript : MonoBehaviour {
 				c.available = true;
 				c.occupier = null;
 				c.isVisible = false;
-
+				c.curCellState = GameScript.CellState.Available;
 			}
 			Destroy(gameObject);
 			//Take care of stats, etc.
@@ -676,17 +711,22 @@ public class ShipScript : MonoBehaviour {
 	}
 
 	public void HandleDoubleHit(CellScript cell, int damage, CellScript origin) {
-		int index = cells.IndexOf(origin);
+		int index = cells.IndexOf(cell);
+		int originIndex = cells.IndexOf(origin);
 		Debug.Log ("Handling mine for index: "+ index);
 		//Hits front of ship, then remove front and one behind.
 		if (shipSize == 1) {
 			HandleHit(shipSections[index],0,damage);
 		} else if (index == shipSize - 1) {
 			HandleHit(shipSections[index],0,damage);
-			HandleHit(shipSections[index-1],0,damage);
+			if ((index-1 >= 0)) {
+				HandleHit(shipSections[index-1],0,damage);
+			}
 		} else {
 			HandleHit(shipSections[index],0,damage);
-			HandleHit(shipSections[index+1],0,damage);
+			if ((index + 1) < shipSize) {
+				HandleHit(shipSections[index+1],0,damage);
+			}
 		}
 	}
 
@@ -779,12 +819,14 @@ public class ShipScript : MonoBehaviour {
 		CellScript frontCellScript = cells[cells.Count - 1];
 		int startX = frontCellScript.gridPositionX;
 		int startY = frontCellScript.gridPositionY;
-		CellScript hitCell = gridScript.VerifyCellPath(startX, startY, 10, curDir, null, "Torpedo");
+		CellScript hitCell = gridScript.VerifyCellPath(startX, startY, 10, curDir, null, "Torpedo",false);
 		if (hitCell == null) {
 			// Nothing was hit by the torpedo
 			Debug.Log ("Nothing was hit by the torpedo");
+			gameScript.messages = "Torpedo floats off into the sea.";
 		} else {
 			// Handle hit on object
+			gameScript.messages = "Torpedo has hit something!!!";
 			if (hitCell.curCellState == GameScript.CellState.Ship) {
 				Debug.Log("Hit a ship");
 				ShipScript hitShip = hitCell.occupier.GetComponent<ShipScript>();

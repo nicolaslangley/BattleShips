@@ -7,7 +7,7 @@ public class GameScript : MonoBehaviour {
 	/** Enums **/
 	public enum GameState {Connecting, Setup,SetupWaiting, Play, Wait, End};
 	public enum Direction {North, East, South, West};
-	public enum CellState {Available, Mine, Reef, Ship, Base};
+	public enum CellState {Available, Mine, MineRadius, Reef, Ship, Base};
 	public enum PlayAction {Move, Cannon, Torpedo, DropMine, PickupMine, Repair, None};
 	public enum ShipTypes {Cruiser, Destroyer, Torpedo, Mine, Radar, Kamikaze};
 
@@ -186,7 +186,7 @@ public class GameScript : MonoBehaviour {
 
 		switch(curGameState) {
 		case (GameState.Setup):
-			Debug.Log ("-----------Player type: " + ((int)myPlayerType-1));
+			//Debug.Log ("-----------Player type: " + ((int)myPlayerType-1));
 			if (bases.Count > 0) bases[((int)myPlayerType - 1)].DisplayDockingRegion(true);
 			// GUI to be displayed during setup phase
 			if (GUI.Button(new Rect(10, 10, 100, 30), "Play Game")) {
