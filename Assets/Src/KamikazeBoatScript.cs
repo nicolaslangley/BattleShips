@@ -67,6 +67,71 @@ public class KamikazeBoatScript : ShipScript {
 		}
 	}
 
+	CellScript checkValidMove(CellScript destCell, int startX, int startY) {
+		CellScript validDestCell = destCell;
+		int destX = destCell.gridPositionX;
+		int destY = destCell.gridPositionY;
+		if (destY == startY) {
+			if (destX < startX) {
+				validDestCell = gridScript.VerifyCellPath(startX, startY, 2, GameScript.Direction.West, destCell, "Move", false);
+			} else {
+				// destX > startX
+				validDestCell = gridScript.VerifyCellPath(startX, startY, 2, GameScript.Direction.East, destCell, "Move", false);
+			}
+		} else if (destX == startX) {
+			if (destY < startY) {
+				validDestCell = gridScript.VerifyCellPath(startX, startY, 2, GameScript.Direction.South, destCell, "Move", false);
+			} else {
+				// destY > startY
+				validDestCell = gridScript.VerifyCellPath(startX, startY, 2, GameScript.Direction.North, destCell, "Move", false);
+			}
+		} else {
+			// Check diagonals
+			if (destX < startX && destY > startY) {
+				// Upper left diagonal
+				while (destX < startX && destY > startY) {
+					destX += 1;
+					destY -= 1;
+					if (!gridScript.VerifyCell(destX, destY)) {
+						validDestCell = gridScript.grid[destX, destY];
+					}
+				}
+			} 
+			if (destX > startX && destY > startY) {
+				// Upper right diagonal
+				while (destX > startX && destY > startY) {
+					destX -= 1;
+					destY -= 1;
+					if (!gridScript.VerifyCell(destX, destY)) {
+						validDestCell = gridScript.grid[destX, destY];
+					}
+				}
+			}
+			if (destX < startX && destY < startY) {
+				// Bottom left diagonal
+				while (destX < startX && destY < startY) {
+					destX += 1;
+					destY += 1;
+					if (!gridScript.VerifyCell(destX, destY)) {
+						validDestCell = gridScript.grid[destX, destY];
+					}
+				}
+			}
+			if (destX > startX && destY < startY) {
+				// Bottom right diagonal
+				while (destX > startX && destY < startY) {
+					destX -= 1;
+					destY += 1;
+					if (!gridScript.VerifyCell(destX, destY)) {
+						validDestCell = gridScript.grid[destX, destY];
+					}
+				}
+			}
+		}
+		return validDestCell;
+	}
+
+
 	public override void MoveShip (CellScript destCell, int local) {
 		if (local == 1) {
 			rpcScript.NetworkMoveShip(shipID, destCell.gridPositionX, destCell.gridPositionY);
@@ -100,7 +165,6 @@ public class KamikazeBoatScript : ShipScript {
 	}
 
 	public override void DisplayMoveRange(bool status) {
-
 		CellScript backCellScript = cells[0];
 		int startX = backCellScript.gridPositionX;
 		int startY = backCellScript.gridPositionY;
