@@ -3,12 +3,21 @@ using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
+using System.Text;
 
 [XmlRoot("SavedGame")]
 public class GameSaverScript {
 	[XmlArray("Ships")]
 	[XmlArrayItem("Ship")]
 	public List<ShipSaverScript> ships;
+
+	public string myname;
+	public string opponentname;
+	public string turn;
+	
+	public GameScript.PlayerType myPlayerType;
+	public GameScript.PlayerType winner;
+	public GameScript.GameState curGameState;
 
 	public GridSaverScript grid;
 
@@ -38,26 +47,27 @@ public class GameSaverScript {
 			loader = serializer.Deserialize (stream) as GameSaverScript;
 		}
 		//Set values from saver scripts
+		loader.grid.Restore (gameScript);
+		gameScript.myname = loader.myname;
+		gameScript.opponentname = loader.opponentname;
+		gameScript.turn = loader.turn;
+		gameScript.myPlayerType = loader.myPlayerType;
+		gameScript.winner = loader.winner;
+		gameScript.curGameState = loader.curGameState;
 
-		loader.grid.Restore (gameScript.gridScript);
+		XmlSerializer serialize = new XmlSerializer(typeof(ShipSaverScript));
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Encoding = new UnicodeEncoding(false, false); // no BOM in a .NET string
+		settings.Indent = false;
+		settings.OmitXmlDeclaration = false;
 
 		foreach (ShipSaverScript shipSaver in loader.ships) {
-			ShipScript ship;
-			//I'm assuming this is how PlaceShip works.
-			int startX = shipSaver.cells[0].gridPositionX;
-			int startY = shipSaver.cells[0].gridPositionY;
-			int length = shipSaver.cells.Count;
-			int endX = shipSaver.cells[length-1].gridPositionX;
-			int endY = shipSaver.cells[length-1].gridPositionY;
-
-			float startPosX = gameScript.gridScript.grid[startX, startY].transform.position.x;
-			float startPosZ = gameScript.gridScript.grid[startX, startY].transform.position.z;
-			float endPosX = gameScript.gridScript.grid[endX, endY].transform.position.x;
-			float endPosZ = gameScript.gridScript.grid[endX, endY].transform.position.z;
-			int local = 1; //Not sure what to do about this...
-			ship = gameScript.gridScript.PlaceShip(startPosX, startPosZ, endPosX, endPosZ, local, shipSaver.player, GameScript.ShipTypes.Mine, GameScript.PlayerType.Player1);
-
-			shipSaver.Restore(ship, gameScript);
+			using(StringWriter textWriter = new StringWriter()) {
+				using(XmlWriter xmlWriter = XmlWriter.Create(textWriter, settings)) {
+					serialize.Serialize(xmlWriter, shipSaver);
+				}
+				gameScript.rpcScript.CreateShip(textWriter.ToString());
+			}
 		}
 	}
 }

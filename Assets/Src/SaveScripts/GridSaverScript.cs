@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml;
+using System.Xml.Serialization;
+using System.IO;
+using System.Text;
 
 public class GridSaverScript {
 	public int gridSize;
@@ -21,11 +25,21 @@ public class GridSaverScript {
 		}
 	}
 
-	public void Restore(GridScript gridScript) {
+	public void Restore(GameScript gameScript) {
+		XmlSerializer serialize = new XmlSerializer(typeof(CellSaverScript));
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Encoding = new UnicodeEncoding(false, false); // no BOM in a .NET string
+		settings.Indent = false;
+		settings.OmitXmlDeclaration = false;
 		//We assume that gridScript has already been instantiated to the correct size
 		for (int x = 0; x < grid.Count; x++) {
 			for (int y = 0; y < grid[x].Count; y++) {
-				grid[x][y].Restore(gridScript.grid[x,y]);
+				using(StringWriter textWriter = new StringWriter()) {
+					using(XmlWriter xmlWriter = XmlWriter.Create(textWriter, settings)) {
+						serialize.Serialize(xmlWriter, grid[x][y]);
+					}
+					gameScript.rpcScript.SetGridCell(textWriter.ToString());
+				}
 			}
 		}
 	}
