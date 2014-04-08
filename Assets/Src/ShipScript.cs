@@ -686,7 +686,7 @@ public class ShipScript : MonoBehaviour {
 			Destroy(gameObject);
 			//Take care of stats, etc.
 		} else {
-			section.renderer.material.color = Color.red;
+			section.renderer.material.color = (health[sectionIndex] > 0 ? Color.magenta : Color.red);
 			Debug.Log ("My Maxspeed: " + maxSpeed);
 			Debug.Log ("My shipsize: " + shipSize);
 
