@@ -301,7 +301,7 @@ public class ShipScript : MonoBehaviour {
 	 * Handles movement of ship
 	 * Moves ship to target cell
 	 */
-	public void MoveShip (CellScript destCell, int local) {
+	public virtual void MoveShip (CellScript destCell, int local) {
 		// Get front cell of ship
 
 		if (local == 1) {
@@ -513,7 +513,7 @@ public class ShipScript : MonoBehaviour {
 			
 			int ysign = 1;
 			if (curDir == GameScript.Direction.South) ysign = -1;
-			for (int w = 1; w < shipSize; w++) {
+			for (int w = 1; w < shipSize-1; w++) {
 				if (gridScript.GetCell(cell.gridPositionX+sign*w, cell.gridPositionY+ysign*w).curCellState != GameScript.CellState.Available) {
 					if (gridScript.GetCell(cell.gridPositionX+sign*w, cell.gridPositionY+ysign*w).isMineRadius ||
 					    gridScript.GetCell(cell.gridPositionX+sign*w, cell.gridPositionY+ysign*w).curCellState == GameScript.CellState.Mine)
@@ -876,7 +876,7 @@ public class ShipScript : MonoBehaviour {
 	#region display
 	/** DISPLAY **/
 
-	public void DisplayMoveRange (bool status) {
+	public virtual void DisplayMoveRange (bool status) {
 
 		// Display movement options in forward and backwards direction
 		CellScript frontCellScript = cells[cells.Count - 1];
@@ -931,9 +931,6 @@ public class ShipScript : MonoBehaviour {
 
 	// Display range of cannon
 	public void DisplayCannonRange (bool status) {
-		Color setColor;
-		if (status) setColor = Color.red;
-		else setColor = Color.blue;
 		
 		// Get front cell of ship
 		CellScript backCellScript = cells[0];
@@ -1000,6 +997,10 @@ public class ShipScript : MonoBehaviour {
 					if (startX + x < 0 || startX + x > 29 || startY + y < 0 || startY + y > 29) continue;
 					CellScript curCellScript = gridScript.grid[startX + x, startY + y];
 					curCellScript.SetVisible(true);
+					Debug.Log ("Ship type is: " + shipType);
+					if (curCellScript.curCellState == GameScript.CellState.Mine && shipType == "minelayer") {
+						curCellScript.renderer.material.color = Color.gray;
+					}
 				}
 			}
 			break;
@@ -1009,6 +1010,9 @@ public class ShipScript : MonoBehaviour {
 					if (startX - x < 0 || startX - x > 29 || startY + y < 0 || startY + y > 29) continue;
 					CellScript curCellScript = gridScript.grid[startX - x, startY + y];
 					curCellScript.SetVisible(true);
+					if (curCellScript.curCellState == GameScript.CellState.Mine && shipType == "minelayer") {
+						curCellScript.renderer.material.color = Color.gray;
+					}
 				}
 			}
 			break;
@@ -1018,6 +1022,9 @@ public class ShipScript : MonoBehaviour {
 					if (startX + x < 0 || startX + x > 29 || startY + y < 0 || startY + y > 29) continue;
 					CellScript curCellScript = gridScript.grid[startX + x, startY + y];
 					curCellScript.SetVisible(true);
+					if (curCellScript.curCellState == GameScript.CellState.Mine && shipType == "minelayer") {
+						curCellScript.renderer.material.color = Color.gray;
+					}
 				}
 			}
 			break;
@@ -1027,6 +1034,9 @@ public class ShipScript : MonoBehaviour {
 					if (startX + x < 0 || startX + x > 29 || startY - y < 0 || startY - y > 29) continue;
 					CellScript curCellScript = gridScript.grid[startX + x, startY - y];
 					curCellScript.SetVisible(true);
+					if (curCellScript.curCellState == GameScript.CellState.Mine && shipType == "minelayer") {
+						curCellScript.renderer.material.color = Color.gray;
+					}
 				}
 			}
 			break;
@@ -1040,7 +1050,6 @@ public class ShipScript : MonoBehaviour {
 		//Debug.Log ("Updating ship visiblity for ship " + name);
 		for (int i = 0; i < cells.Count; i++) {
 			//Debug.Log ("ship " + name + "cell " + i + " position is " + cells[i].gridPositionX + " " + cells[i].gridPositionY + " visibility is " + cells[i].isVisible);
-			bool visible = cells[i].isVisible;
 			if (!cells[i].isVisible) {
 				shipSections[i].renderer.enabled = false;
 			} else {
