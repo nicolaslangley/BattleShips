@@ -138,10 +138,12 @@ public class CellScript : MonoBehaviour {
 		isVisible = visibility;
 		if (isVisible) {
 			Color tempColor = gameObject.renderer.material.color;
+			if (curCellState == GameScript.CellState.Mine && !availableForMove && !availableForShoot && !availableForDock) tempColor = Color.blue;
 			tempColor.a = 1.0f;
 			gameObject.renderer.material.color = tempColor;
 		} else {
 			Color tempColor = gameObject.renderer.material.color;
+			if (curCellState == GameScript.CellState.Mine && !availableForMove && !availableForShoot && !availableForDock) tempColor = Color.blue;
 			tempColor.a = 0.3f;
 			gameObject.renderer.material.color = tempColor;
 		}

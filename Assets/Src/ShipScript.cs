@@ -484,7 +484,7 @@ public class ShipScript : MonoBehaviour {
 			
 			int ysign = 1;
 			if (curDir == GameScript.Direction.South) ysign = -1;
-			for (int w = 1; w < shipSize; w++) {
+			for (int w = 1; w < shipSize-1; w++) {
 				if (gridScript.GetCell(cell.gridPositionX+sign*w, cell.gridPositionY+ysign*w).curCellState != GameScript.CellState.Available) {
 					obstacle = true;
 					//break;
@@ -959,6 +959,10 @@ public class ShipScript : MonoBehaviour {
 					if (startX + x < 0 || startX + x > 29 || startY + y < 0 || startY + y > 29) continue;
 					CellScript curCellScript = gridScript.grid[startX + x, startY + y];
 					curCellScript.SetVisible(true);
+					Debug.Log ("Ship type is: " + shipType);
+					if (curCellScript.curCellState == GameScript.CellState.Mine && shipType == "minelayer") {
+						curCellScript.renderer.material.color = Color.gray;
+					}
 				}
 			}
 			break;
@@ -968,6 +972,9 @@ public class ShipScript : MonoBehaviour {
 					if (startX - x < 0 || startX - x > 29 || startY + y < 0 || startY + y > 29) continue;
 					CellScript curCellScript = gridScript.grid[startX - x, startY + y];
 					curCellScript.SetVisible(true);
+					if (curCellScript.curCellState == GameScript.CellState.Mine && shipType == "minelayer") {
+						curCellScript.renderer.material.color = Color.gray;
+					}
 				}
 			}
 			break;
@@ -977,6 +984,9 @@ public class ShipScript : MonoBehaviour {
 					if (startX + x < 0 || startX + x > 29 || startY + y < 0 || startY + y > 29) continue;
 					CellScript curCellScript = gridScript.grid[startX + x, startY + y];
 					curCellScript.SetVisible(true);
+					if (curCellScript.curCellState == GameScript.CellState.Mine && shipType == "minelayer") {
+						curCellScript.renderer.material.color = Color.gray;
+					}
 				}
 			}
 			break;
@@ -986,6 +996,9 @@ public class ShipScript : MonoBehaviour {
 					if (startX + x < 0 || startX + x > 29 || startY - y < 0 || startY - y > 29) continue;
 					CellScript curCellScript = gridScript.grid[startX + x, startY - y];
 					curCellScript.SetVisible(true);
+					if (curCellScript.curCellState == GameScript.CellState.Mine && shipType == "minelayer") {
+						curCellScript.renderer.material.color = Color.gray;
+					}
 				}
 			}
 			break;
