@@ -70,12 +70,16 @@ public class CellScript : MonoBehaviour {
 			if (availableForShoot) {
 				gameScript.selectedShip.FireCannon(this, 1);
 				gameScript.curPlayAction = GameScript.PlayAction.None;
-
 			}
 		} 
 		else if (gameScript.curPlayAction == GameScript.PlayAction.DropMine) {
 			if (availableForShoot) {
 				gameScript.selectedShip.LayMine(this, 1);
+				gameScript.curPlayAction = GameScript.PlayAction.None;
+			}
+		} else if (gameScript.curPlayAction == GameScript.PlayAction.Detonate) {
+			if (availableForShoot) {
+				gameScript.selectedShip.Detonate(this, 1);
 				gameScript.curPlayAction = GameScript.PlayAction.None;
 			}
 		} else {

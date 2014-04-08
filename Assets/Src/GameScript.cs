@@ -8,7 +8,7 @@ public class GameScript : MonoBehaviour {
 	public enum GameState {Connecting, Setup,SetupWaiting, Play, Wait, End};
 	public enum Direction {North, East, South, West};
 	public enum CellState {Available, Mine, MineRadius, Reef, Ship, Base};
-	public enum PlayAction {Move, Cannon, Torpedo, DropMine, PickupMine, Repair, None};
+	public enum PlayAction {Move, Cannon, Torpedo, DropMine, PickupMine, Detonate, Repair, None};
 	public enum ShipTypes {Cruiser, Destroyer, Torpedo, Mine, Radar, Kamikaze};
 
 
