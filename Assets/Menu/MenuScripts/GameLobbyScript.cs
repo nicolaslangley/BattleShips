@@ -188,30 +188,28 @@ public class GameLobbyScript : MonoBehaviour
 			
 			if (currentPlayerCount == 2) {
 
-				int i = 0;
-				int matched = 0;
+//				int i = 0;
+//				int matched = 0;
+//
+//				foreach (FileInfo f in info) 
+//				{ 
+//					string[] usernames = f.Name.Split('_','.');
+//
+//					foreach (PlayerInfo ins in playerList) {
+//						if (ins.username == usernames[0] || ins.username == usernames[1]) {
+//							matched++;
+//						}
+//					}
+//					if (matched == 2)
+//					{
+//						Debug.Log("In file with: "+ f.Name);
+//						GUI.Button(new Rect(160, 120+i, 150, 20), f.Name);
+//						i = i + 20;
+//					}
+//
+//					matched = 0;
+//				}
 
-				foreach (FileInfo f in info) 
-				{ 
-					string[] usernames = f.Name.Split('_','.');
-
-					foreach (PlayerInfo ins in playerList) {
-						if (ins.username == usernames[0] || ins.username == usernames[1]) {
-							matched++;
-						}
-					}
-					if (matched == 2)
-					{
-						Debug.Log("In file with: "+ f.Name);
-						GUI.Button(new Rect(160, 120+i, 150, 20), f.Name);
-						i = i + 20;
-					}
-
-					matched = 0;
-				}
-
-				GameSaverScript.Load(Path.Combine(Application.persistentDataPath, "ships_saved.xml"),GetComponent<GameScript>());
-				Debug.Log("Loaded " + Path.Combine(Application.persistentDataPath, "ships_saved.xml").ToString());
 				if (GUI.Button(new Rect(25, 140, 150, 20), "Start the game"))
 				{
 					HostLaunchGame();
