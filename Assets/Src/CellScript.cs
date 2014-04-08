@@ -75,8 +75,17 @@ public class CellScript : MonoBehaviour {
 		} 
 		else if (gameScript.curPlayAction == GameScript.PlayAction.DropMine) {
 			if (availableForShoot) {
-				gameScript.selectedShip.LayMine(this, 1);
-				gameScript.curPlayAction = GameScript.PlayAction.None;
+				bool possible = true;
+				foreach (CellScript neighbor in neighbours) {
+					if (neighbor.occupier.GetComponent<ShipScript>() != gameScript.selectedShip) {
+						possible = possible || neighbor.curCellState == GameScript.CellState.Available;
+					}
+				}
+				if (possible) {
+					gameScript.selectedShip.LayMine(this, 1);
+					gameScript.selectedShip.DisplayMineRange(false);
+					gameScript.curPlayAction = GameScript.PlayAction.None;
+				}
 			}
 		} else {
 			if (gameScript.curGameState == GameScript.GameState.Setup && availableForDock) {

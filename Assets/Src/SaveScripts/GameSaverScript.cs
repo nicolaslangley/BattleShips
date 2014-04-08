@@ -55,9 +55,15 @@ public class GameSaverScript {
 		gameScript.winner = loader.winner;
 		gameScript.curGameState = loader.curGameState;
 
+		if (loader.myname == gameScript.myname) {
+
+		} else {
+
+		}
+
 		XmlSerializer serialize = new XmlSerializer(typeof(ShipSaverScript));
 		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.Encoding = new UnicodeEncoding(false, false); // no BOM in a .NET string
+		settings.Encoding = new UnicodeEncoding(false, false);
 		settings.Indent = false;
 		settings.OmitXmlDeclaration = false;
 
