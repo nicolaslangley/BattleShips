@@ -239,6 +239,20 @@ public class RPCScript : MonoBehaviour {
 			}
 		}
 	}
+
+	public void fireCannonBase(GameScript.PlayerType type, int section, int damage)
+	{
+		networkView.RPC ("RPCFireCannonBase",RPCMode.AllBuffered,(int)type, section, damage);
+	}
+	
+	[RPC]
+	void RPCFireCannonBase(int player, int section, int damage)
+	{
+
+		BaseScript baseScript;
+		baseScript = gameScript.bases[player-1];
+		baseScript.HandleCannon(baseScript.GetSection(section),0,damage);
+	}
 	
 	public void repairShipWithIndex(string shipid, int index) 
 	{

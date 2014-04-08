@@ -30,9 +30,9 @@ public class BaseSectionScript : MonoBehaviour {
 			if (curCell.availableForShoot) {
 				gameObject.renderer.material.color = Color.red;
 				if (gameScript.selectedShip.heavyCannon)
-					parent.HandleHit(this.gameObject, 1, 2);
+					parent.HandleCannon(this.gameObject,1,2);
 				else
-					parent.HandleHit(this.gameObject,1, 1);
+					parent.HandleCannon(this.gameObject,1,1);
 				gameScript.selectedShip.DisplayCannonRange(false);
 				gameScript.curPlayAction = GameScript.PlayAction.None;
 			}

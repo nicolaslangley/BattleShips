@@ -105,8 +105,28 @@ public class BaseScript : MonoBehaviour {
 		}
 		
 		//rpcScript.EndTurn();
-		gameScript.EndTurn();
+		//gameScript.EndTurn();
 	}
+
+	public void HandleCannon(GameObject section, int local, int damage) {
+		int sectionIndex = baseSections.IndexOf(section);
+		if (local==1) {
+			rpcScript.fireCannonBase(myPlayerType,sectionIndex,damage);
+			return;
+		}
+		
+		HandleHit(section,local,damage);
+		gameScript.EndTurn();
+		
+	}
+
+
+	public void HandleHit(CellScript cell, int damage) {
+		int index = cells.IndexOf(cell);
+		Debug.Log("Handing on index: "+index);
+		HandleHit(baseSections[index],0,damage);
+	}
+
 		
 	/*
 	 * TODO: handle display for when part of base has been destroyed
