@@ -343,20 +343,80 @@ public class ShipScript : MonoBehaviour {
 
 		// Distance will be 0 only if the move is sideways
 		if (distance == 0) {
-			bool validMove = gridScript.VerifySidewaysMove(destCell.gridPositionX, destCell.gridPositionY, shipSize, curDir);
+//			bool validMove = gridScript.VerifySidewaysMove(destCell.gridPositionX, destCell.gridPositionY, shipSize, curDir,isMineLayer);
+			List<CellScript> validMove = gridScript.VerifySidewaysMove(destCell.gridPositionX, destCell.gridPositionY, shipSize, curDir,isMineLayer);
 
 			//rear most cell
+			bool doNotMove = false;
+			bool isMine= false;
 
-			if (!validMove) {
+			CellScript tCell = destCell;
 
-				return;
+			foreach (CellScript c in validMove) {
+				if (!c.available) {
+					//Do not move
+					return;
+				}
+
+				if (c.isMineRadius) {
+					if (!isMineLayer) {
+						isMine = true;
+						triggerMine = true;
+						tCell = destCell;
+					}
+				}
 			}
 			StartCoroutine(MoveShipSideways(destCell.transform.position));
+			destCell = tCell;
+
+
+//			if (!validMove) {
+//				for (int i = 0; i < shipSize; i++) {
+//
+//
+//
+//					CellScript curCellScript = gridScript.VerifyCellPath(cells[i].gridPositionX, cells[i].gridPositionY,1,curDir,destCell,"mine"
+//					if (curCellScript.isMineRadius || curCellScript.curCellState == GameScript.CellState.Mine) {
+//						isMine = true;
+//					} else if (!curCellScript.available) {
+//						doNotMove = true;
+//					}
+//				}
+//
+//				if (doNotMove) {
+//					return;
+//				}
+//				if (isMine) {
+//					if (isMineLayer){
+//						//Do not explode. Do not move
+//						return;
+//					} else {
+//						// Move, explode
+//						triggerMine = true;
+//					}
+//				}
+//
+//			}
+				//CellScript validDestCell = gridScript.VerifyCellPath(startX, startY, distance, curDir, destCell, "mine",isMineLayer);
+
+//				return;
+//			}
+//			StartCoroutine(MoveShipSideways(destCell.transform.position));
+
 		} else if (distance < 0) {
-			bool validMove = gridScript.VerifyCell(destCell.gridPositionX, destCell.gridPositionY);
-			if (!validMove) {
+			if (!destCell.available) {
+				//Do not move
 				return;
 			}
+			if (destCell.isMineRadius) {
+				if (!isMineLayer) {
+					triggerMine = true;
+				}
+			}
+//			bool validMove = gridScript.VerifyCell(destCell.gridPositionX, destCell.gridPositionY);
+//			if (!validMove) {
+//				return;
+//			}
 			StartCoroutine(MoveShipBackward());
 		} else {
 			// Verify that destination cell is within correct range
@@ -751,8 +811,6 @@ public class ShipScript : MonoBehaviour {
 
 			}
 
-
-
             // TODO: return cell to original color value
 		} else {
 			Debug.Log ("This square is not available for repair");
@@ -819,7 +877,7 @@ public class ShipScript : MonoBehaviour {
 		CellScript frontCellScript = cells[cells.Count - 1];
 		int startX = frontCellScript.gridPositionX;
 		int startY = frontCellScript.gridPositionY;
-		CellScript hitCell = gridScript.VerifyCellPath(startX, startY, 10, curDir, null, "Torpedo",false);
+		CellScript hitCell = gridScript.VerifyCellPath(startX, startY, 10, curDir, null, "Torpedo",true);
 		if (hitCell == null) {
 			// Nothing was hit by the torpedo
 			Debug.Log ("Nothing was hit by the torpedo");
