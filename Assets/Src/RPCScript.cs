@@ -1,5 +1,8 @@
 using UnityEngine;
 using System.Collections;
+using System.Xml;
+using System.Xml.Serialization;
+using System.IO;
 
 public class RPCScript : MonoBehaviour {
 
@@ -30,6 +33,57 @@ public class RPCScript : MonoBehaviour {
 		gameScript.opponentname = username;
 		Debug.Log("opponent name is: " + gameScript.opponentname);
 
+	}
+
+	public void SetGridCell(string serializedCellSaver) {
+		networkView.RPC ("RPCSetGridCell", RPCMode.AllBuffered, serializedCellSaver);
+	}
+
+	[RPC]
+	void RPCSetGridCell(string serializedCellSaver) {
+		CellSaverScript cellSaver;
+
+		XmlSerializer serializer = new XmlSerializer (typeof(CellSaverScript));
+		XmlReaderSettings settings = new XmlReaderSettings();
+		
+		using(StringReader textReader = new StringReader(serializedCellSaver)) {
+			using(XmlReader xmlReader = XmlReader.Create(textReader, settings)) {
+				cellSaver = (CellSaverScript) serializer.Deserialize(xmlReader);
+			}
+		}
+	}
+
+	public void CreateShip(string serializedShipSaver) {
+		networkView.RPC ("RPCCreateShip", RPCMode.AllBuffered, serializedShipSaver);
+	}
+
+	[RPC]
+	void RPCCreateShip(string serializedShipSaver) {
+		ShipSaverScript shipSaver;
+
+		XmlSerializer serializer = new XmlSerializer (typeof(ShipSaverScript));
+		XmlReaderSettings settings = new XmlReaderSettings();
+
+		using(StringReader textReader = new StringReader(serializedShipSaver)) {
+			using(XmlReader xmlReader = XmlReader.Create(textReader, settings)) {
+				shipSaver = (ShipSaverScript) serializer.Deserialize(xmlReader);
+			}
+		}
+
+		ShipScript ship;
+		int startX = shipSaver.cells[0].gridPositionX;
+		int startY = shipSaver.cells[0].gridPositionY;
+		int length = shipSaver.cells.Count;
+		int endX = shipSaver.cells[length-1].gridPositionX;
+		int endY = shipSaver.cells[length-1].gridPositionY;
+		
+		float startPosX = gameScript.gridScript.grid[startX, startY].transform.position.x;
+		float startPosZ = gameScript.gridScript.grid[startX, startY].transform.position.z;
+		float endPosX = gameScript.gridScript.grid[endX, endY].transform.position.x;
+		float endPosZ = gameScript.gridScript.grid[endX, endY].transform.position.z;
+		int local = 0;
+		ship = gameScript.gridScript.PlaceShip(startPosX, startPosZ, endPosX, endPosZ, local, shipSaver.player, GameScript.ShipTypes.Mine, GameScript.PlayerType.Player1);
+		shipSaver.Restore(ship, gameScript);
 	}
 	
 	public void SignalPlayer()
@@ -215,8 +269,8 @@ public class RPCScript : MonoBehaviour {
 				Debug.Log ("Found correct ship");
 				//shipscript.HandleHit(shipscript.GetSection(section),0, damage);
 				shipscript.HandleCannon(shipscript.GetSection(section),0,damage);
-				gameScript.messages = "Hit ship with ID: " + shipID;
-
+				CellScript cellHit = shipscript.cells[section];
+				gameScript.messages = "Hit ship at ("+cellHit.gridPositionX + ","+cellHit.gridPositionY+")";
 				break;
 			}
 		}
