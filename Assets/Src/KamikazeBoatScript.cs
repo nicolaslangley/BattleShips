@@ -46,6 +46,7 @@ public class KamikazeBoatScript : ShipScript {
 								this.rpcScript.fireCannonShip(ship.shipID, 0, 1);
 							}
 						}
+						gameScript.NotifyDetonation("Kamikaze boat", temp);
 					}
 				}
 			}

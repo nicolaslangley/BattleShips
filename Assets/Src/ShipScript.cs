@@ -791,14 +791,7 @@ public class ShipScript : MonoBehaviour {
 		DisplayCannonRange(false);
 		StartCoroutine(DisplayHit(targetCell.gameObject));
 
-		if (targetCell.curCellState != GameScript.CellState.Available)
-		{
-			Debug.Log ("Hit Something at " +targetCell.gridPositionX + ", " + targetCell.gridPositionY);
-			gameScript.messages = "Something hit at "+targetCell.gridPositionX+", "+targetCell.gridPositionY;
-		} else {
-			Debug.Log ("Hit Nothing");
-			gameScript.messages = "Hit Nothing";
-		}
+		gameScript.NotifyDetonation("cannon", targetCell);
 
 		Debug.Log("Ending turn after shootin");
 		gameScript.EndTurn();
@@ -821,14 +814,10 @@ public class ShipScript : MonoBehaviour {
 		int startY = frontCellScript.gridPositionY;
 		CellScript hitCell = gridScript.VerifyCellPath(startX, startY, 10, curDir, null, "Torpedo",false);
 		if (hitCell == null) {
-			// Nothing was hit by the torpedo
-			Debug.Log ("Nothing was hit by the torpedo");
 			gameScript.messages = "Torpedo floats off into the sea.";
 		} else {
 			// Handle hit on object
-			gameScript.messages = "Torpedo has hit something!!!";
 			if (hitCell.curCellState == GameScript.CellState.Ship) {
-				Debug.Log("Hit a ship");
 				ShipScript hitShip = hitCell.occupier.GetComponent<ShipScript>();
 				if (curDir == GameScript.Direction.East || curDir == GameScript.Direction.West) {
 					if (hitShip.curDir == GameScript.Direction.North || hitShip.curDir == GameScript.Direction.South) {
@@ -846,15 +835,12 @@ public class ShipScript : MonoBehaviour {
 					}
 				}
 			} else if (hitCell.curCellState == GameScript.CellState.Base) {
-				Debug.Log("Hit a base");
 				BaseScript hitBase = hitCell.occupier.GetComponent<BaseScript>();
 				hitBase.HandleHit(hitCell,1);
 			} else if (hitCell.curCellState == GameScript.CellState.Mine) {
-				Debug.Log("Hit a mine");
 				gridScript.Explode(hitCell.gridPositionX, hitCell.gridPositionY, GridScript.ExplodeType.Mine);
-			} else if (hitCell.curCellState == GameScript.CellState.Reef) {
-				Debug.Log("Hit a reef");
 			}
+			gameScript.NotifyDetonation("torpedo", hitCell); 
 			StartCoroutine(DisplayHit(hitCell.gameObject));
 		}
 		gameScript.EndTurn();
