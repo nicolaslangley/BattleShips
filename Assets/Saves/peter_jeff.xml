@@ -3,19 +3,19 @@
   <Ships>
     <Ship shipID="peter49" player="peter" shipType="cruiser" speed="10">
       <cells_occupied>
-        <cell gridPositionX="22" gridPositionY="19" instanceID="-588854">
+        <cell gridPositionX="23" gridPositionY="19" instanceID="-700692">
           <curCellState>Ship</curCellState>
         </cell>
-        <cell gridPositionX="21" gridPositionY="19" instanceID="-588434">
+        <cell gridPositionX="22" gridPositionY="19" instanceID="-700272">
           <curCellState>Ship</curCellState>
         </cell>
-        <cell gridPositionX="20" gridPositionY="19" instanceID="-588014">
+        <cell gridPositionX="21" gridPositionY="19" instanceID="-699852">
           <curCellState>Ship</curCellState>
         </cell>
-        <cell gridPositionX="19" gridPositionY="19" instanceID="-587594">
+        <cell gridPositionX="20" gridPositionY="19" instanceID="-699432">
           <curCellState>Ship</curCellState>
         </cell>
-        <cell gridPositionX="18" gridPositionY="19" instanceID="-587174">
+        <cell gridPositionX="19" gridPositionY="19" instanceID="-699012">
           <curCellState>Ship</curCellState>
         </cell>
       </cells_occupied>
@@ -27,39 +27,17 @@
         <int>2</int>
         <int>2</int>
       </health>
+      <myPlayerType>Player2</myPlayerType>
     </Ship>
-    <Ship shipID="jeff48" player="jeff" shipType="destroyer" speed="8">
+    <Ship shipID="peter48" player="peter" shipType="torpedoboat" speed="9">
       <cells_occupied>
-        <cell gridPositionX="1" gridPositionY="18" instanceID="-580020">
+        <cell gridPositionX="28" gridPositionY="12" instanceID="-702694">
           <curCellState>Ship</curCellState>
         </cell>
-        <cell gridPositionX="2" gridPositionY="18" instanceID="-580440">
+        <cell gridPositionX="27" gridPositionY="12" instanceID="-702274">
           <curCellState>Ship</curCellState>
         </cell>
-        <cell gridPositionX="3" gridPositionY="18" instanceID="-580860">
-          <curCellState>Ship</curCellState>
-        </cell>
-        <cell gridPositionX="4" gridPositionY="18" instanceID="-581280">
-          <curCellState>Ship</curCellState>
-        </cell>
-      </cells_occupied>
-      <curDir>East</curDir>
-      <health>
-        <int>1</int>
-        <int>1</int>
-        <int>1</int>
-        <int>1</int>
-      </health>
-    </Ship>
-    <Ship shipID="peter47" player="peter" shipType="torpedoboat" speed="9">
-      <cells_occupied>
-        <cell gridPositionX="28" gridPositionY="11" instanceID="-591262">
-          <curCellState>Ship</curCellState>
-        </cell>
-        <cell gridPositionX="27" gridPositionY="11" instanceID="-590842">
-          <curCellState>Ship</curCellState>
-        </cell>
-        <cell gridPositionX="26" gridPositionY="11" instanceID="-590422">
+        <cell gridPositionX="26" gridPositionY="12" instanceID="-701854">
           <curCellState>Ship</curCellState>
         </cell>
       </cells_occupied>
@@ -69,22 +47,23 @@
         <int>1</int>
         <int>1</int>
       </health>
+      <myPlayerType>Player2</myPlayerType>
     </Ship>
-    <Ship shipID="jeff46" player="jeff" shipType="cruiser" speed="10">
+    <Ship shipID="jeff47" player="jeff" shipType="cruiser" speed="10">
       <cells_occupied>
-        <cell gridPositionX="9" gridPositionY="14" instanceID="-583324">
+        <cell gridPositionX="7" gridPositionY="18" instanceID="-693958">
           <curCellState>Ship</curCellState>
         </cell>
-        <cell gridPositionX="10" gridPositionY="14" instanceID="-583744">
+        <cell gridPositionX="8" gridPositionY="18" instanceID="-694378">
           <curCellState>Ship</curCellState>
         </cell>
-        <cell gridPositionX="11" gridPositionY="14" instanceID="-584164">
+        <cell gridPositionX="9" gridPositionY="18" instanceID="-694798">
           <curCellState>Ship</curCellState>
         </cell>
-        <cell gridPositionX="12" gridPositionY="14" instanceID="-584584">
+        <cell gridPositionX="10" gridPositionY="18" instanceID="-695218">
           <curCellState>Ship</curCellState>
         </cell>
-        <cell gridPositionX="13" gridPositionY="14" instanceID="-585004">
+        <cell gridPositionX="11" gridPositionY="18" instanceID="-695638">
           <curCellState>Ship</curCellState>
         </cell>
       </cells_occupied>
@@ -96,16 +75,56 @@
         <int>2</int>
         <int>2</int>
       </health>
+      <myPlayerType>Player1</myPlayerType>
     </Ship>
-    <Ship shipID="jeff45" player="jeff" shipType="radarboat" speed="3">
+    <Ship shipID="peter46" player="peter" shipType="radarboat" speed="3">
       <cells_occupied>
-        <cell gridPositionX="1" gridPositionY="12" instanceID="-579936">
+        <cell gridPositionX="28" gridPositionY="15" instanceID="-702736">
           <curCellState>Ship</curCellState>
         </cell>
-        <cell gridPositionX="2" gridPositionY="12" instanceID="-580356">
+        <cell gridPositionX="27" gridPositionY="15" instanceID="-702316">
           <curCellState>Ship</curCellState>
         </cell>
-        <cell gridPositionX="3" gridPositionY="12" instanceID="-580776">
+        <cell gridPositionX="26" gridPositionY="15" instanceID="-701896">
+          <curCellState>Ship</curCellState>
+        </cell>
+      </cells_occupied>
+      <curDir>West</curDir>
+      <health>
+        <int>1</int>
+        <int>1</int>
+        <int>1</int>
+      </health>
+      <myPlayerType>Player2</myPlayerType>
+    </Ship>
+    <Ship shipID="jeff45" player="jeff" shipType="minelayer" speed="6">
+      <cells_occupied>
+        <cell gridPositionX="1" gridPositionY="15" instanceID="-691396">
+          <curCellState>Ship</curCellState>
+        </cell>
+        <cell gridPositionX="2" gridPositionY="15" instanceID="-691816">
+          <curCellState>Ship</curCellState>
+        </cell>
+      </cells_occupied>
+      <curDir>East</curDir>
+      <health>
+        <int>2</int>
+        <int>2</int>
+      </health>
+      <myPlayerType>Player1</myPlayerType>
+    </Ship>
+    <Ship shipID="jeff44" player="jeff" shipType="destroyer" speed="8">
+      <cells_occupied>
+        <cell gridPositionX="1" gridPositionY="12" instanceID="-691354">
+          <curCellState>Ship</curCellState>
+        </cell>
+        <cell gridPositionX="2" gridPositionY="12" instanceID="-691774">
+          <curCellState>Ship</curCellState>
+        </cell>
+        <cell gridPositionX="3" gridPositionY="12" instanceID="-692194">
+          <curCellState>Ship</curCellState>
+        </cell>
+        <cell gridPositionX="4" gridPositionY="12" instanceID="-692614">
           <curCellState>Ship</curCellState>
         </cell>
       </cells_occupied>
@@ -114,7 +133,9 @@
         <int>1</int>
         <int>1</int>
         <int>1</int>
+        <int>1</int>
       </health>
+      <myPlayerType>Player1</myPlayerType>
     </Ship>
   </Ships>
   <myname>peter</myname>
@@ -122,7 +143,7 @@
   <turn>peter</turn>
   <myPlayerType>Player2</myPlayerType>
   <winner>None</winner>
-  <curGameState>Wait</curGameState>
+  <curGameState>Play</curGameState>
   <grid>
     <gridSize>30</gridSize>
     <cellSize>
