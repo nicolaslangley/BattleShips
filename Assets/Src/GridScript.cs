@@ -689,10 +689,10 @@ public class GridScript : MonoBehaviour {
 		cell.isMineRadius = true;
 		for (int x = (centerX > 0 ? centerX-1 : centerX); x <= centerX+1 && x < this.grid.GetLength(0); x++) {
 			for (int y = (centerY > 0 ? centerY-1 : centerY); y <= centerY+1 && y < this.grid.GetLength(1); y++) {
-				if (grid[x,y].curCellState == GameScript.CellState.Available && grid[x,y].curCellState != GameScript.CellState.Reef) {
-					//grid[x,y].curCellState = GameScript.CellState.MineRadius;
-					grid[x,y].isMineRadius = true;
-					grid[x,y].mineParentCell = cell;
+				CellScript curCell = grid[x,y];
+				if (curCell.curCellState == GameScript.CellState.Available && curCell.curCellState != GameScript.CellState.Reef) {
+					curCell.isMineRadius = true;
+					curCell.mineParentCell = cell;
 				}
 			}
 		}
@@ -701,15 +701,18 @@ public class GridScript : MonoBehaviour {
 	}
 
 	public void RemoveMine(int centerX, int centerY) {
+		Debug.Log ("Remove Mine is called");
 		CellScript cell = grid[centerX, centerY];
 		cell.curCellState = GameScript.CellState.Available;
 		cell.isMineRadius = false;
+		cell.mineParentCell = null;
 		for (int x = (centerX > 0 ? centerX-1 : centerX); x <= centerX+1 && x < this.grid.GetLength(0); x++) {
 			for (int y = (centerY > 0 ? centerY-1 : centerY); y <= centerY+1 && y < this.grid.GetLength(1); y++) {
-				if (grid[x,y].curCellState == GameScript.CellState.MineRadius && grid[x,y].curCellState != GameScript.CellState.Reef) {
-					//grid[x,y].curCellState = GameScript.CellState.MineRadius;
-					grid[x,y].isMineRadius = false;
-					grid[x,y].mineParentCell = null;
+				CellScript curCell = grid[x,y];
+				if (curCell.curCellState == GameScript.CellState.MineRadius && curCell.curCellState != GameScript.CellState.Reef) {
+					Debug.Log ("Setting mine radius to false for cell: " + x + " " + y);
+					curCell.isMineRadius = false;
+					curCell.mineParentCell = null;
 				}
 			}
 		}
