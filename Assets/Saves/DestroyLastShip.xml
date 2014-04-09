@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<SavedGame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Ships>
+    <Ship shipID="Nic49" player="Nic" shipType="minelayer" speed="6">
+      <cells_occupied>
+        <cell gridPositionX="7" gridPositionY="21" instanceID="-1149080">
+          <curCellState>Ship</curCellState>
+        </cell>
+        <cell gridPositionX="8" gridPositionY="21" instanceID="-1149500">
+          <curCellState>Ship</curCellState>
+        </cell>
+      </cells_occupied>
+      <curDir>East</curDir>
+      <health>
+        <int>2</int>
+        <int>2</int>
+      </health>
+      <myPlayerType>Player1</myPlayerType>
+    </Ship>
+    <Ship shipID="peter48" player="peter" shipType="cruiser" speed="10">
+      <cells_occupied>
+        <cell gridPositionX="8" gridPositionY="14" instanceID="-1149402">
+          <curCellState>Ship</curCellState>
+        </cell>
+        <cell gridPositionX="8" gridPositionY="15" instanceID="-1149416">
+          <curCellState>Ship</curCellState>
+        </cell>
+        <cell gridPositionX="8" gridPositionY="16" instanceID="-1149430">
+          <curCellState>Ship</curCellState>
+        </cell>
+        <cell gridPositionX="8" gridPositionY="17" instanceID="-1149444">
+          <curCellState>Ship</curCellState>
+        </cell>
+        <cell gridPositionX="8" gridPositionY="18" instanceID="-1149458">
+          <curCellState>Ship</curCellState>
+        </cell>
+      </cells_occupied>
+      <curDir>North</curDir>
+      <health>
+        <int>2</int>
+        <int>2</int>
+        <int>2</int>
+        <int>2</int>
+        <int>2</int>
+      </health>
+      <myPlayerType>Player2</myPlayerType>
+    </Ship>
+  </Ships>
+  <myname>peter</myname>
+  <opponentname>Nic</opponentname>
+  <turn>peter</turn>
+  <myPlayerType>Player2</myPlayerType>
+  <winner>None</winner>
+  <curGameState>Play</curGameState>
+  <grid>
+    <gridSize>30</gridSize>
+    <cellSize>
+      <x>1</x>
+      <y>1</y>
+    </cellSize>
+    <grid />
+  </grid>
+</SavedGame>
