@@ -565,6 +565,7 @@ public class ShipScript : MonoBehaviour {
 		bool obstacleMine = false;
 
 		CellScript cell = cells[0];
+		CellScript mineCell = null;
 		// Perform check based on the orientation of the ship
 		if (curDir == GameScript.Direction.North || curDir == GameScript.Direction.South) {
 			int sign = 1;
@@ -573,12 +574,13 @@ public class ShipScript : MonoBehaviour {
 			
 			int ysign = 1;
 			if (curDir == GameScript.Direction.South) ysign = -1;
-			for (int w = 1; w < shipSize-1; w++) {
+			for (int w = 1; w < shipSize; w++) {
 				if (gridScript.GetCell(cell.gridPositionX+sign*w, cell.gridPositionY+ysign*w).curCellState != GameScript.CellState.Available) {
 					if (gridScript.GetCell(cell.gridPositionX+sign*w, cell.gridPositionY+ysign*w).isMineRadius ||
 					    gridScript.GetCell(cell.gridPositionX+sign*w, cell.gridPositionY+ysign*w).curCellState == GameScript.CellState.Mine)
 					{
 						obstacleMine = true;
+						mineCell = gridScript.GetCell(cell.gridPositionX+sign*w, cell.gridPositionY+ysign*w);
 					}
 					obstacle = true;
 					break;
@@ -594,9 +596,14 @@ public class ShipScript : MonoBehaviour {
 			
 			int xsign = 1;
 			if (curDir == GameScript.Direction.West) xsign = -1;
-			for (int w = shipSize-1; w > 0; w--) {
+			for (int w = shipSize; w > 0; w--) {
 				if (gridScript.GetCell(cell.gridPositionX+xsign*w, cell.gridPositionY+sign*w).curCellState != GameScript.CellState.Available) {
-
+					if (gridScript.GetCell(cell.gridPositionX+xsign*w, cell.gridPositionY+sign*w).isMineRadius ||
+					    gridScript.GetCell(cell.gridPositionX+xsign*w, cell.gridPositionY+sign*w).curCellState == GameScript.CellState.Mine)
+					{
+						obstacleMine = true;
+						mineCell = gridScript.GetCell(cell.gridPositionX+xsign*w, cell.gridPositionY+sign*w);
+					}
 					obstacle = true;
 					break;
 				}
@@ -664,6 +671,21 @@ public class ShipScript : MonoBehaviour {
 			Debug.Log ("Obstacle in rotation path");
 			//display an error message
 		}
+
+		// Handle damage if rotation was supposed to happen and mine occured.
+		if (obstacleMine) {
+			foreach (CellScript c in cells) {
+				List<CellScript> neighbours = gridScript.GetCellNeighbours(c);
+				foreach (CellScript nc in cells) {
+					if (nc.isMineRadius || nc.curCellState == GameScript.CellState.Mine) {
+						HandleDoubleHit(c, 2, c);
+						break;
+					}
+				}
+			}
+			gridScript.Explode(mineCell.gridPositionX, mineCell.gridPositionY, GridScript.ExplodeType.Mine);
+		}
+
 		
 		//rpcScript.EndTurn();
 		SetRotation();
