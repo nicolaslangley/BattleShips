@@ -17,7 +17,7 @@ public class SaveLoadGUI : MonoBehaviour {
 		if (GUI.Button (new Rect (Screen.width-150, 90, 100, 80), "Save")) {
 			gameSaver = new GameSaverScript(GetComponent<GameScript>());
 			string filename = gameSaver.myname + "_" + gameSaver.opponentname + ".xml";
-			gameSaver.Save(Path.Combine(Application.persistentDataPath, filename));
+			gameSaver.Save(Path.Combine("Assets/Saves", filename));
 			Debug.Log("Saved to " + Path.Combine(Application.persistentDataPath, filename).ToString());
 		}
 
