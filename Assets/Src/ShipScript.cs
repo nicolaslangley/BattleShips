@@ -783,7 +783,7 @@ public class ShipScript : MonoBehaviour {
 				
 				gameScript.curGameState = GameScript.GameState.End;
 			}
-			gameScript.GlobalNotify("Ship at (" +cells[0].gridPositionX + ","+cells[0].gridPositionY+") was destroyed.");
+			gameScript.messages2 = "Ship at (" +cells[0].gridPositionX + ","+cells[0].gridPositionY+") was destroyed.";
 			//Take care of stats, etc.
 		} else {
 			section.renderer.material.color = (health[sectionIndex] > 0 ? Color.magenta : Color.red);

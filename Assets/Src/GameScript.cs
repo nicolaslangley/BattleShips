@@ -35,6 +35,7 @@ public class GameScript : MonoBehaviour {
 	public PlayerType winner;
 
 	public string messages;
+	public string messages2
 
 	public bool player1SetupDone;
 	public bool player2SetupDone;
@@ -260,6 +261,7 @@ public class GameScript : MonoBehaviour {
 	void OnGUI () {
 		GUI.Label(new Rect(150, 50, 100, 100), "Player turn: "+turn);
 		GUI.Label(new Rect(100, 250, 100, 100), messages);
+		GUI.Label (new Rect (100, 290, 100, 100), messages2);
 
 		if (GUI.Button(new Rect (10, Screen.height-80, 100, 40), "Leave")) {
 			if (Application.CanStreamedLevelBeLoaded("lobby"))
