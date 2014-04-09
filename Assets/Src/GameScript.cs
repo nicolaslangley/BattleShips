@@ -459,6 +459,7 @@ public class GameScript : MonoBehaviour {
 		Debug.Log("Checking win conditions");
 
 		foreach (ShipScript s in ships) {
+			Debug.Log ("Ships player type: " + s.myPlayerType + " with type " + s.shipType);
 			if (s.myPlayerType == GameScript.PlayerType.Player1) {
 				player1HasShips = true;
 			} else if (s.myPlayerType == GameScript.PlayerType.Player2) {
