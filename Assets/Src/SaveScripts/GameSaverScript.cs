@@ -29,6 +29,12 @@ public class GameSaverScript {
 		foreach (ShipScript ship in gameScript.ships) {
 			ships.Add (new ShipSaverScript(ship));
 		}
+		myname = gameScript.myname;
+		opponentname = gameScript.opponentname;
+		turn = gameScript.turn;
+		curGameState = gameScript.curGameState;
+		myPlayerType = gameScript.myPlayerType;
+		winner = gameScript.winner;
 	}
  
 	public void Save(string path) {
