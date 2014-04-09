@@ -11,7 +11,11 @@ public class GameScript : MonoBehaviour {
 	public enum PlayAction {Move, Cannon, Torpedo, DropMine, PickupMine, Detonate, Repair, None};
 	public enum ShipTypes {Cruiser, Destroyer, Torpedo, Mine, Radar, Kamikaze};
 
-
+	/** Audio Clips **/
+	public AudioClip cannonMiss;
+	public AudioClip cannonHit;
+	public AudioClip shipExplode;
+	public AudioSource audioPlayer;
 	
 	public enum PlayerType {None = 0, Player1 =1, Player2=2}
 	/** Properties **/

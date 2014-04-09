@@ -290,7 +290,7 @@ public class RPCScript : MonoBehaviour {
 				break;
 			}
 		}
-
+		gameScript.audioPlayer.PlayOneShot (gameScript.cannonMiss);
 	}
 
 	public void fireCannonShip(string shipID, int section, int damage)
@@ -313,6 +313,7 @@ public class RPCScript : MonoBehaviour {
 				break;
 			}
 		}
+		gameScript.audioPlayer.PlayOneShot (gameScript.cannonHit);
 	}
 
 	public void fireTorpedo(string shipID) 
