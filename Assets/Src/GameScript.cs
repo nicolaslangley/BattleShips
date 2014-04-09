@@ -142,6 +142,7 @@ public class GameScript : MonoBehaviour {
 				
 				if (isLoadedGame) {
 					//Load game
+					Debug.Log("Loading game");
 					GameSaverScript.Load(loadFilePath,this);
 				}
 
