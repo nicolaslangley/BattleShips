@@ -121,11 +121,11 @@ public class GridScript : MonoBehaviour {
 		Debug.Log ("Set Ship called");
 		if (currentSelection.Count == 1 && currentSelection.Count != 0){
 			Vector3 startPos = currentSelection[0].transform.position;
-			Vector3 endPos = startPos;
+			GameScript.Direction shipDir;
 			if (gameScript.myPlayerType == GameScript.PlayerType.Player1) {
-				endPos.x += 1;
+				shipDir = GameScript.Direction.East;
 			} else {
-				endPos.x -= 1;
+				shipDir = GameScript.Direction.West;
 			}
 
 			CellScript startCell = grid[(int)startPos.x, (int)startPos.z];
@@ -133,7 +133,7 @@ public class GridScript : MonoBehaviour {
 			Debug.Log ("End Pos: " + endPos + " Start Pos: " + startPos);
 			if (startCell.availableForDock) {
 				Debug.Log ("Placing ship because cell is available for dock");
-				PlaceShip(startPos.x, startPos.z, endPos.x, endPos.z, 1, gameScript.myname, shipType, gameScript.myPlayerType);
+				PlaceShip(startPos.x, startPos.z, shipDir, 1, gameScript.myname, shipType, gameScript.myPlayerType);
 				int playerNum = (int)gameScript.myPlayerType - 1;
 				BaseScript myBase = gameScript.bases[playerNum];
 				myBase.DisplayDockingRegion(false);
@@ -143,35 +143,15 @@ public class GridScript : MonoBehaviour {
 		}
 	}
 
-	public ShipScript PlaceShip (float startPosX, float startPosZ, float endPosX, float endPosZ, int local, string Player, GameScript.ShipTypes types, GameScript.PlayerType playerType) {
+	public ShipScript PlaceShip (float startPosX, float startPosZ, GameScript.Direction dir, int local, string Player, GameScript.ShipTypes types, GameScript.PlayerType playerType) {
 		if (local == 1)
 		{
-			rpcScript.setShip(startPosX, startPosZ, endPosX, endPosZ, Player, types, playerType);
+			rpcScript.setShip(startPosX, startPosZ, (int)dir, Player, types, playerType);
 		}
-		float newX = ((endPosX - startPosX)/2) + startPosX - 0.5f;
-		float newZ = ((endPosZ - startPosZ)/2) + startPosZ - 0.5f;
-		float newY = 0.5f;
 		// Update newZ and newX based on orientation
-		GameScript.Direction shipDir = GameScript.Direction.East;
-		// Ship is facing either North or South
-		if (endPosX - startPosX == 0) {
-			if (endPosZ > startPosZ) shipDir = GameScript.Direction.North;
-			else shipDir = GameScript.Direction.South;
-			newX += 0.5f;
-		}
-			// Ship is facing either East or West
-		if (endPosZ - startPosZ == 0) { 
-			if (endPosX > startPosX) shipDir = GameScript.Direction.East;
-			else { 
-				shipDir = GameScript.Direction.West;
-				newX += 1.0f;
-			}
-			newZ += 0.5f;
-		}
-		Vector3 pos = new Vector3(newX, newY, newZ);
-		// Create ship
-		// TODO: Place new ship at correct orientation
+		GameScript.Direction shipDir = dir;
 		GameObject newShip = null;
+		Vector3 pos = new Vector3(startPosX, 0.5f, startPosZ);
 		Debug.Log ("New Ship at " + pos);
 
 		switch(types) {

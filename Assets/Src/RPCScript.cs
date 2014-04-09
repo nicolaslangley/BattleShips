@@ -92,8 +92,7 @@ public class RPCScript : MonoBehaviour {
 		
 		float startPosX = gameScript.gridScript.grid[startX, startY].transform.position.x;
 		float startPosZ = gameScript.gridScript.grid[startX, startY].transform.position.z;
-		float endPosX = gameScript.gridScript.grid[endX, endY].transform.position.x;
-		float endPosZ = gameScript.gridScript.grid[endX, endY].transform.position.z;
+		GameScript.Direction dir = shipSaver.curDir;
 		string shipType = shipSaver.shipType;
 		Debug.Log ("Creating ship of type " + shipSaver.shipType + " at (" + startX + "," + startY + ") and (" + endX + "," + endY + ")");
 		Debug.Log ("Float Positions (" + startPosX + "," + startPosZ + ")");
@@ -122,7 +121,7 @@ public class RPCScript : MonoBehaviour {
 		}
 
 		int local = 0;
-		ship = gameScript.gridScript.PlaceShip(startPosX, startPosZ, endPosX, endPosZ, local, shipSaver.player, shiptype, pType);
+		ship = gameScript.gridScript.PlaceShip(startPosX, startPosZ, dir, local, shipSaver.player, shiptype, pType);
 		shipSaver.Restore(ship, gameScript);
 	}
 	
@@ -257,15 +256,15 @@ public class RPCScript : MonoBehaviour {
 		}
 	}
 
-	public void setShip(float startPosX, float startPosZ, float endPosX, float endPosZ, string playerName, GameScript.ShipTypes shiptype, GameScript.PlayerType myType)
+	public void setShip(float startPosX, float startPosZ, GameScript.Direction dir, string playerName, GameScript.ShipTypes shiptype, GameScript.PlayerType myType)
 	{
-		networkView.RPC ("RPCSetShip",RPCMode.OthersBuffered, startPosX, startPosZ, endPosX, endPosZ, playerName, (int)shiptype, (int) myType);
+		networkView.RPC ("RPCSetShip",RPCMode.OthersBuffered, startPosX, startPosZ, (int)dir, playerName, (int)shiptype, (int) myType);
 	}
 
 	[RPC]
-	void RPCSetShip(float startPosX, float startPosZ, float endPosX, float endPosZ, string playerName, int shipType, int myType)
+	void RPCSetShip(float startPosX, float startPosZ, int dir, string playerName, int shipType, int myType)
 	{
-		gridScript.PlaceShip(startPosX,startPosZ,endPosX,endPosZ,0, playerName, (GameScript.ShipTypes) shipType, (GameScript.PlayerType) myType);
+		gridScript.PlaceShip(startPosX,startPosZ,(GameScript.Direction)dir,0, playerName, (GameScript.ShipTypes) shipType, (GameScript.PlayerType) myType);
 	}
 	
 	public void fireCannonCell(string shipID, int x, int y)
