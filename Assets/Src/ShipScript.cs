@@ -748,6 +748,13 @@ public class ShipScript : MonoBehaviour {
 				c.curCellState = GameScript.CellState.Available;
 			}
 			Destroy(gameObject);
+			gameScript.winner = gameScript.checkWinner();
+			if (gameScript.winner != GameScript.PlayerType.None) {
+				//Debug.Log("winner is +" winner);
+				Debug.Log("Winner decided");
+				
+				gameScript.curGameState = GameScript.GameState.End;
+			}
 			gameScript.GlobalNotify("Ship at (" +cells[0].gridPositionX + ","+cells[0].gridPositionY+") was destroyed.");
 			//Take care of stats, etc.
 		} else {
