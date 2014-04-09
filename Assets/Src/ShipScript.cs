@@ -520,7 +520,7 @@ public class ShipScript : MonoBehaviour {
 		}
 
 		//Debug.Log("X: "+ destCell.gridPositionX + " Y: " + destCell.gridPositionY);
-
+		Debug.Log ("Trigger mine value is: " + triggerMine);
 		if (triggerMine) {
 			if (previousState == GameScript.CellState.Mine) {
 				Debug.Log("Explode");
