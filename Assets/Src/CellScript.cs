@@ -82,11 +82,12 @@ public class CellScript : MonoBehaviour {
 				bool possible = true;
 				foreach (CellScript neighbor in neighbours) {
 					if (neighbor.occupier.GetComponent<ShipScript>() != gameScript.selectedShip) {
-						possible = possible || neighbor.curCellState == GameScript.CellState.Available;
+						possible = possible && neighbor.curCellState == GameScript.CellState.Available;
 					}
 				}
 				if (possible) {
 					gameScript.selectedShip.LayMine(this, 1);
+					gameScript.selectedShip.DecreaseMines();
 					gameScript.selectedShip.DisplayMineRange(false);
 					gameScript.curPlayAction = GameScript.PlayAction.None;
 				}

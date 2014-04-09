@@ -30,6 +30,7 @@ public class ShipScript : MonoBehaviour {
 	public List<CellScript> cells;
 	public List<GameObject> shipSections;
 	public int speed; 
+	public int minesLeft = 0;
 	protected bool immobile = false;
 	protected int maxSpeed; //Speed at full health
 	protected int rotSteps = 1; // increments of 90 degrees. Most ships have 1, Torpedo Boats have 2
@@ -59,6 +60,9 @@ public class ShipScript : MonoBehaviour {
 		shipGUI();
 	}
 
+	public void DecreaseMines() {
+		minesLeft --;
+	}
 
 	protected virtual void shipGUI() {
 		if (gameScript.curGameState == GameScript.GameState.Wait) return;
