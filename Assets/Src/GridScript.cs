@@ -349,7 +349,7 @@ public class GridScript : MonoBehaviour {
 				// everything else stops minelayer
 
 				if (isMineLayer) {
-					if (curCellScript.available != true && !curCellScript.isMineRadius) {
+					if (curCellScript.available != true) {
 						obstacleEncountered = true;
 						encounteredObstacle = grid[positionX + (x-offset), positionY].GetComponent<CellScript>();
 						break;
@@ -362,7 +362,6 @@ public class GridScript : MonoBehaviour {
 						break;
 					}
 				}
-
 
 //				if (curCellScript.available != true || curCellScript.isMineRadius) {
 //						obstacleEncountered = true;
@@ -378,7 +377,7 @@ public class GridScript : MonoBehaviour {
 				CellScript curCellScript = grid[positionX - x, positionY];
 
 				if (isMineLayer) {
-					if (curCellScript.available != true && !curCellScript.isMineRadius) {
+					if (curCellScript.available != true) {
 						obstacleEncountered = true;
 						encounteredObstacle = grid[positionX - (x-offset), positionY].GetComponent<CellScript>();
 						break;
@@ -404,7 +403,7 @@ public class GridScript : MonoBehaviour {
 				CellScript curCellScript = grid[positionX, positionY + y];
 
 				if (isMineLayer) {
-					if (curCellScript.available != true && !curCellScript.isMineRadius) {
+					if (curCellScript.available != true) {
 						obstacleEncountered = true;
 						encounteredObstacle = grid[positionX, positionY + (y-offset)].GetComponent<CellScript>();
 						break;
@@ -430,7 +429,7 @@ public class GridScript : MonoBehaviour {
 				CellScript curCellScript = grid[positionX, positionY - y];
 
 				if (isMineLayer) {
-					if (curCellScript.available != true && !curCellScript.isMineRadius) {
+					if (curCellScript.available != true) {
 						obstacleEncountered = true;
 						encounteredObstacle = grid[positionX, positionY - (y-offset)].GetComponent<CellScript>();
 						break;

@@ -360,48 +360,16 @@ public class ShipScript : MonoBehaviour {
 
 				if (c.isMineRadius) {
 					if (!isMineLayer) {
+						Debug.Log ("Not mine layer. CHecking hit");
 						isMine = true;
 						triggerMine = true;
-						tCell = destCell;
+						tCell = c;
 					}
 				}
 			}
 			StartCoroutine(MoveShipSideways(destCell.transform.position));
 			destCell = tCell;
 
-
-//			if (!validMove) {
-//				for (int i = 0; i < shipSize; i++) {
-//
-//
-//
-//					CellScript curCellScript = gridScript.VerifyCellPath(cells[i].gridPositionX, cells[i].gridPositionY,1,curDir,destCell,"mine"
-//					if (curCellScript.isMineRadius || curCellScript.curCellState == GameScript.CellState.Mine) {
-//						isMine = true;
-//					} else if (!curCellScript.available) {
-//						doNotMove = true;
-//					}
-//				}
-//
-//				if (doNotMove) {
-//					return;
-//				}
-//				if (isMine) {
-//					if (isMineLayer){
-//						//Do not explode. Do not move
-//						return;
-//					} else {
-//						// Move, explode
-//						triggerMine = true;
-//					}
-//				}
-//
-//			}
-				//CellScript validDestCell = gridScript.VerifyCellPath(startX, startY, distance, curDir, destCell, "mine",isMineLayer);
-
-//				return;
-//			}
-//			StartCoroutine(MoveShipSideways(destCell.transform.position));
 
 		} else if (distance < 0) {
 			if (!destCell.available) {
@@ -428,7 +396,7 @@ public class ShipScript : MonoBehaviour {
 			CellScript validDestCell = gridScript.VerifyCellPath(startX, startY, distance, curDir, destCell, "mine",isMineLayer);
 			if (validDestCell != destCell) {
 				Debug.Log ("Invalid path, moving up until collision");
-				if (validDestCell.curCellState != GameScript.CellState.Mine && !validDestCell.isMineRadius) {
+				if ( !validDestCell.isMineRadius || isMineLayer) {
 					CellScript newDestCell = gridScript.VerifyCellPath(startX, startY, distance, curDir, destCell, "Move",isMineLayer);
 					destCell = newDestCell;
 				} else {
