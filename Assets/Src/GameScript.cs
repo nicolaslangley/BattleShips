@@ -205,6 +205,13 @@ public class GameScript : MonoBehaviour {
 			}
 			myBase = bases[((int)myPlayerType)-1];
 			myBase.UpdateBaseVisibility(true);
+			winner = checkWinner();
+			if (winner != PlayerType.None) {
+				//Debug.Log("winner is +" winner);
+				Debug.Log("Winner decided");
+				
+				curGameState = GameState.End;
+			}
 			break;
 		case (GameState.Wait):
 			gridScript.ResetVisibility();
@@ -213,7 +220,17 @@ public class GameScript : MonoBehaviour {
 			}
 			myBase = bases[((int)myPlayerType)-1];
 			myBase.UpdateBaseVisibility(true);
+			winner = checkWinner();
+			if (winner != PlayerType.None) {
+				//Debug.Log("winner is +" winner);
+				Debug.Log("Winner decided");
+				
+				curGameState = GameState.End;
+			}
+
 			break;
+
+
 		case (GameState.End):
 			Debug.Log("In end state");
 			break;
@@ -435,13 +452,7 @@ public class GameScript : MonoBehaviour {
 		myBase.UpdateBaseVisibility(true);
 
 
-		winner = checkWinner();
-		if (winner != PlayerType.None) {
-			//Debug.Log("winner is +" winner);
-			Debug.Log("Winner decided");
-			
-			curGameState = GameState.End;
-		}
+	
 
 
 		if (curGameState == GameState.Wait)
