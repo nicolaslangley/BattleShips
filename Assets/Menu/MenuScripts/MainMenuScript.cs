@@ -11,6 +11,7 @@ public class MainMenuScript : MonoBehaviour
 
     private bool requirePlayerName = false;
     private string playerNameInput = "";
+	public Texture backgroundTexture;
 
     public static string user = "", name = "";
     private string password = "", rePass = "", message = "";
@@ -37,7 +38,7 @@ public class MainMenuScript : MonoBehaviour
         // {
         // if (message != "")
         //     GUILayout.Box(message);
-
+		GUI.DrawTexture(new Rect(0,0,Screen.width,Screen.height),backgroundTexture);
         // GUILayout.Window(9, new Rect(Screen.width / 2 - 150, Screen.height / 2 - 100, 300, 100), NameMenu, "Register/Login");
         // }
         if (message != "")
