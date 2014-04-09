@@ -35,7 +35,7 @@ public class GameScript : MonoBehaviour {
 	public PlayerType winner;
 
 	public string messages;
-	public string messages2
+	public string messages2;
 
 	public bool player1SetupDone;
 	public bool player2SetupDone;
