@@ -571,7 +571,7 @@ public class ShipScript : MonoBehaviour {
 			
 			int ysign = 1;
 			if (curDir == GameScript.Direction.South) ysign = -1;
-			for (int w = 1; w < shipSize-1; w++) {
+			for (int w = 1; w < shipSize; w++) {
 				if (gridScript.GetCell(cell.gridPositionX+sign*w, cell.gridPositionY+ysign*w).curCellState != GameScript.CellState.Available) {
 					if (gridScript.GetCell(cell.gridPositionX+sign*w, cell.gridPositionY+ysign*w).isMineRadius ||
 					    gridScript.GetCell(cell.gridPositionX+sign*w, cell.gridPositionY+ysign*w).curCellState == GameScript.CellState.Mine)
@@ -592,7 +592,7 @@ public class ShipScript : MonoBehaviour {
 			
 			int xsign = 1;
 			if (curDir == GameScript.Direction.West) xsign = -1;
-			for (int w = shipSize-1; w > 0; w--) {
+			for (int w = shipSize; w > 0; w--) {
 				if (gridScript.GetCell(cell.gridPositionX+xsign*w, cell.gridPositionY+sign*w).curCellState != GameScript.CellState.Available) {
 
 					obstacle = true;
