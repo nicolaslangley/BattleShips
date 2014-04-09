@@ -111,6 +111,7 @@ public class CellScript : MonoBehaviour {
 			}
 		} else if (gameScript.curPlayAction == GameScript.PlayAction.Detonate) {
 			if (availableForShoot) {
+				gameScript.selectedShip.MoveShip(this, 1);
 				gameScript.selectedShip.Detonate(this, 1);
 				gameScript.curPlayAction = GameScript.PlayAction.None;
 			}
