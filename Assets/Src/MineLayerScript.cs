@@ -34,13 +34,7 @@ public class MineLayerScript : ShipScript {
 		MineLayerGUI();
 	}
 
-	void MineLayerGUI() {
-		if (selected && minesLeft > 0) {
-			if (GUI.Button(new Rect(Screen.width - 150, 210, 100, 30), "Drop Mine")) {
-				DisplayMineRange(true);
-				gameScript.curPlayAction = GameScript.PlayAction.DropMine;
-			}
-		}
+	void Update () {
 		if (selected) {
 			foreach (CellScript cell in this.cells) {
 				foreach (CellScript neighbor in cell.neighbours) {
@@ -48,10 +42,20 @@ public class MineLayerScript : ShipScript {
 						mineRadius = true;
 						break;
 					}
-
+					
 				}
 			}
 		}
+	}
+
+	void MineLayerGUI() {
+		if (selected && minesLeft > 0) {
+			if (GUI.Button(new Rect(Screen.width - 150, 210, 100, 30), "Drop Mine")) {
+				DisplayMineRange(true);
+				gameScript.curPlayAction = GameScript.PlayAction.DropMine;
+			}
+		}
+
 		if (selected && mineRadius) { 
 			if (GUI.Button(new Rect(Screen.width - 150, 250, 100, 30), "Pickup Mine")) {
 				DisplayMineRange(true);
