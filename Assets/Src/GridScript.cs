@@ -347,47 +347,106 @@ public class GridScript : MonoBehaviour {
 				// if mine then minelayer stops before, everyone else hits mineradius
 				// if minelayer, minelayer goes through, everyone else stops
 				// everything else stops minelayer
-				if (curCellScript.available != true || curCellScript.isMineRadius) {
-					if (!isMineLayer) {
+
+				if (isMineLayer) {
+					if (curCellScript.available != true) {
+						obstacleEncountered = true;
+						encounteredObstacle = grid[positionX + (x-offset), positionY].GetComponent<CellScript>();
+						break;
+					}
+
+				} else {
+					if (curCellScript.available != true || curCellScript.isMineRadius) {
 						obstacleEncountered = true;
 						encounteredObstacle = grid[positionX + (x-offset), positionY].GetComponent<CellScript>();
 						break;
 					}
 				}
+
+//				if (curCellScript.available != true || curCellScript.isMineRadius) {
+//						obstacleEncountered = true;
+//						encounteredObstacle = grid[positionX + (x-offset), positionY].GetComponent<CellScript>();
+//						break;
+//					
+//				}
 			}
 			break;
 		case GameScript.Direction.West:
 			for (int x = 1; x <= dist; x++) {
 				if (positionX - x < 0 || positionX - x > 29) break;
 				CellScript curCellScript = grid[positionX - x, positionY];
-				if (curCellScript.available != true || curCellScript.isMineRadius) {
 
-					obstacleEncountered = true;
-					encounteredObstacle = grid[positionX - (x-offset), positionY].GetComponent<CellScript>();
-					break;
+				if (isMineLayer) {
+					if (curCellScript.available != true) {
+						obstacleEncountered = true;
+						encounteredObstacle = grid[positionX - (x-offset), positionY].GetComponent<CellScript>();
+						break;
+					}
+					
+				} else {
+					if (curCellScript.available != true || curCellScript.isMineRadius) {
+						obstacleEncountered = true;
+						encounteredObstacle = grid[positionX - (x-offset), positionY].GetComponent<CellScript>();
+						break;
+					}
 				}
+//				if (curCellScript.available != true || curCellScript.isMineRadius) {
+//					obstacleEncountered = true;
+//					encounteredObstacle = grid[positionX - (x-offset), positionY].GetComponent<CellScript>();
+//					break;
+//				}
 			}
 			break;
 		case GameScript.Direction.North:
 			for (int y = 1; y <= dist; y++) {
 				if (positionY + y < 0 || positionY + y > 29) break;
 				CellScript curCellScript = grid[positionX, positionY + y];
-				if (curCellScript.available != true || curCellScript.isMineRadius) {
-					obstacleEncountered = true;
-					encounteredObstacle = grid[positionX, positionY + (y-offset)].GetComponent<CellScript>();
-					break;
+
+				if (isMineLayer) {
+					if (curCellScript.available != true) {
+						obstacleEncountered = true;
+						encounteredObstacle = grid[positionX, positionY + (y-offset)].GetComponent<CellScript>();
+						break;
+					}
+					
+				} else {
+					if (curCellScript.available != true || curCellScript.isMineRadius) {
+						obstacleEncountered = true;
+						encounteredObstacle = grid[positionX, positionY + (y-offset)].GetComponent<CellScript>();
+						break;
+					}
 				}
+//				if (curCellScript.available != true || curCellScript.isMineRadius) {
+//					obstacleEncountered = true;
+//					encounteredObstacle = grid[positionX, positionY + (y-offset)].GetComponent<CellScript>();
+//					break;
+//				}
 			}
 			break;
 		case GameScript.Direction.South:
 			for (int y = 1; y <= dist; y++) {
 				if (positionY - y < 0 || positionY - y > 29) break;
 				CellScript curCellScript = grid[positionX, positionY - y];
-				if (curCellScript.available != true || curCellScript.isMineRadius) {
-					obstacleEncountered = true;
-					encounteredObstacle = grid[positionX, positionY - (y-offset)].GetComponent<CellScript>();
-					break;
+
+				if (isMineLayer) {
+					if (curCellScript.available != true) {
+						obstacleEncountered = true;
+						encounteredObstacle = grid[positionX, positionY - (y-offset)].GetComponent<CellScript>();
+						break;
+					}
+					
+				} else {
+					if (curCellScript.available != true || curCellScript.isMineRadius) {
+						obstacleEncountered = true;
+						encounteredObstacle = grid[positionX, positionY - (y-offset)].GetComponent<CellScript>();
+						break;
+					}
 				}
+//				if (curCellScript.available != true || curCellScript.isMineRadius) {
+//					obstacleEncountered = true;
+//					encounteredObstacle = grid[positionX, positionY - (y-offset)].GetComponent<CellScript>();
+//					break;
+//				}
 			}
 			break;
 		}
@@ -398,47 +457,103 @@ public class GridScript : MonoBehaviour {
 	/*
 	 * Returns a boolean value denoting whether side move is valid: true = valid, false = invalid
 	 */
-	public bool VerifySidewaysMove(int startX, int startY, int length, GameScript.Direction dir) {
+	public List<CellScript> VerifySidewaysMove(int startX, int startY, int length, GameScript.Direction dir, bool isMineLayer) {
 		bool obstacleEncountered = false;
+		List<CellScript> sides = new List<CellScript>();
 		switch (dir) {
 		case GameScript.Direction.East:
 			for (int i = 0; i < length; i++) {
 				CellScript curCellScript = grid[startX + i, startY];
-				if (curCellScript.available != true) {
-					obstacleEncountered = true;
-					break;
-				}
+				sides.Add(curCellScript);
+
+//				if (isMineLayer) {
+//					if (curCellScript.available != true && !curCellScript.isMineRadius) {
+//						obstacleEncountered = true;
+//						break;
+//					}
+//				} else {
+//
+//				
+//				if (curCellScript.available != true || curCellScript.isMineRadius) {
+//					obstacleEncountered = true;
+//					break;
+//				}
+//				}
 			}
 			break;
 		case GameScript.Direction.West:
 			for (int i = 0; i < length; i++) {
 				CellScript curCellScript = grid[startX - i, startY];
-				if (curCellScript.available != true) {
-					obstacleEncountered = true;
-					break;
-				}
+				sides.Add(curCellScript);
+
+//				if (isMineLayer) {
+//					if (curCellScript.available != true && !curCellScript.isMineRadius) {
+//						obstacleEncountered = true;
+//						break;
+//					}
+//				} else {
+//					
+//				
+//				if (curCellScript.available != true || curCellScript.isMineRadius) {
+//					obstacleEncountered = true;
+//					break;
+//				}
+//				}
 			}
 			break;
 		case GameScript.Direction.North:
 			for (int i = 0; i < length; i++) {
 				CellScript curCellScript = grid[startX, startY + i];
-				if (curCellScript.available != true) {
-					obstacleEncountered = true;
-					break;
-				}
+				sides.Add(curCellScript);
+
+//				if (isMineLayer) {
+//					if (curCellScript.available != true && !curCellScript.isMineRadius) {
+//						
+//						obstacleEncountered = true;
+//						break;
+//					}
+//				} else {
+//					
+//				
+//				if (curCellScript.available != true || curCellScript.isMineRadius) {
+//
+//					obstacleEncountered = true;
+//					break;
+//				}
+//				}
 			}
 			break;
 		case GameScript.Direction.South:
 			for (int i = 0; i < length; i++) {
 				CellScript curCellScript = grid[startX, startY - i];
-				if (curCellScript.available != true) {
-					obstacleEncountered = true;
-					break;
-				}
+				sides.Add(curCellScript);
+
+//				if (isMineLayer) {
+//
+//					if (curCellScript.available != true || curCellScript.isMineRadius) {
+//						
+//						obstacleEncountered = true;
+//						break;
+//					}
+//				} else {
+//					if (curCellScript.available != true || curCellScript.isMineRadius) {
+//						
+//						obstacleEncountered = true;
+//						break;
+//					}
+//				}
+//				if (curCellScript.available != true || curCellScript.isMineRadius) {
+//
+//					obstacleEncountered = true;
+//					break;
+//				}
 			}
 			break;
 		}
-		return !obstacleEncountered;
+		return sides;
+
+		//return !obstacleEncountered;
+
 	}
 
 	// Verify that a single cell is available
