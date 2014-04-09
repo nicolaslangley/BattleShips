@@ -45,18 +45,21 @@ public class MainMenuScript : MonoBehaviour
         if (requirePlayerName) {
             if (register)
             {
+				GUILayout.BeginArea (new Rect((Screen.width/2)-50, (Screen.height/3) , 100, 400));
+				GUILayout.FlexibleSpace();
                 GUILayout.Label("Username");
                 user = GUILayout.TextField(user);
                 GUILayout.Label("password");
                 password = GUILayout.PasswordField(password, "*"[0]);
                 GUILayout.Label("Re-password");
                 rePass = GUILayout.PasswordField(rePass, "*"[0]);
+				GUILayout.Button("HellO");
+                //GUILayout.BeginHorizontal();
                 
-                GUILayout.BeginHorizontal();
-                
-                if (GUILayout.Button("Back"))
+                if (GUILayout.Button("Back")) {
+
                     register = false;
-                
+				}
                 if (GUILayout.Button("Register"))
                 {
                     message = "";
@@ -78,16 +81,21 @@ public class MainMenuScript : MonoBehaviour
                     }
                 }
                 
-                GUILayout.EndHorizontal();
+               // GUILayout.EndHorizontal();
+				GUILayout.EndArea();
+
             }
             else
             {
+				GUILayout.BeginArea (new Rect((Screen.width/2)-100, 0 , 200, 200));
+				GUILayout.FlexibleSpace();
+
                 GUILayout.Label("User:");
                 user = GUILayout.TextField(user);
                 GUILayout.Label("Password:");
                 password = GUILayout.PasswordField(password, "*"[0]);
                 
-                GUILayout.BeginHorizontal();
+                //GUILayout.BeginHorizontal();
                 
                 if (GUILayout.Button("Login"))
                 {
@@ -105,10 +113,15 @@ public class MainMenuScript : MonoBehaviour
                     }
                 }
                 
-                if (GUILayout.Button("Register"))
+                if (GUILayout.Button("Register")){
                     register = true;
-                
-                GUILayout.EndHorizontal();
+				}
+				if (GUILayout.Button("Quit")) {
+					Application.Quit();
+				}
+              //  GUILayout.EndHorizontal();
+				GUILayout.EndArea();
+
             }
         }
     }
@@ -144,6 +157,7 @@ public class MainMenuScript : MonoBehaviour
 
     void registerMenu(int id)
     {
+		GUILayout.BeginArea(new Rect(0, 0, Screen.width, Screen.height));
         GUILayout.BeginVertical();
         GUILayout.Space(10);
 
@@ -213,11 +227,13 @@ public class MainMenuScript : MonoBehaviour
         }
         GUILayout.EndHorizontal();
         GUILayout.EndVertical();
-
+		GUILayout.EndArea();
     }
 
     void loginMenu(int id)
     {
+		GUILayout.BeginArea(new Rect(0, 0, Screen.width, Screen.height));
+
         GUILayout.BeginVertical();
         GUILayout.Space(10);
 
@@ -271,7 +287,7 @@ public class MainMenuScript : MonoBehaviour
 
         GUILayout.EndHorizontal();
         GUILayout.EndVertical();
-
+		GUILayout.EndArea();
     }
 
 

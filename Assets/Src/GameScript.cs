@@ -232,7 +232,7 @@ public class GameScript : MonoBehaviour {
 
 
 		case (GameState.End):
-			Debug.Log("In end state");
+			//Debug.Log("In end state");
 			break;
 		}
 	}
@@ -272,6 +272,16 @@ public class GameScript : MonoBehaviour {
 	void OnGUI () {
 		GUI.Label(new Rect(150, 50, 100, 100), "Player turn: "+turn);
 		GUI.Label(new Rect(100, 250, 100, 100), messages);
+
+		if (GUI.Button(new Rect (10, Screen.height-80, 100, 40), "Leave")) {
+			if (Application.CanStreamedLevelBeLoaded("lobby"))
+			{
+				GUI.Label(new Rect(Screen.width / 4 + 200, Screen.height / 2 - 25, 285, 150), "Going back to Main Menu.");
+				Application.LoadLevel("lobby");
+				Destroy(GameObject.Find("Persistent"));
+				Destroy(gameObject);
+			}
+		}
 
 		switch(curGameState) {
 		case (GameState.Setup):
