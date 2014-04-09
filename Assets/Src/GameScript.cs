@@ -405,7 +405,7 @@ public class GameScript : MonoBehaviour {
 			}
 
 
-			if (GUI.Button(new Rect(Screen.width - 110, 300, 100, 30), "Leave")) {
+			if (GUI.Button(new Rect(Screen.width - 150, 300, 100, 30), "Leave")) {
 				int uid = PlayerPrefs.GetInt("UID");
 
 				int played = PlayerPrefs.GetInt("Played");
