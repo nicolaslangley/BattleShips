@@ -700,6 +700,23 @@ public class GridScript : MonoBehaviour {
 		gameScript.EndTurn();
 	}
 
+	public void RemoveMine(int centerX, int centerY) {
+		CellScript cell = grid[centerX, centerY];
+		cell.curCellState = GameScript.CellState.Available;
+		cell.isMineRadius = false;
+		for (int x = (centerX > 0 ? centerX-1 : centerX); x <= centerX+1 && x < this.grid.GetLength(0); x++) {
+			for (int y = (centerY > 0 ? centerY-1 : centerY); y <= centerY+1 && y < this.grid.GetLength(1); y++) {
+				if (grid[x,y].curCellState == GameScript.CellState.MineRadius && grid[x,y].curCellState != GameScript.CellState.Reef) {
+					//grid[x,y].curCellState = GameScript.CellState.MineRadius;
+					grid[x,y].isMineRadius = false;
+					grid[x,y].mineParentCell = null;
+				}
+			}
+		}
+		cell.available = true;
+		gameScript.EndTurn();
+	}
+
 	#endregion
 
 	#region selection functions

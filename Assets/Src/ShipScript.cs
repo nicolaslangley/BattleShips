@@ -61,14 +61,6 @@ public class ShipScript : MonoBehaviour {
 		shipGUI();
 	}
 
-	public void DecreaseMines() {
-		minesLeft --;
-	}
-
-	public void IncreaseMines() {
-		minesLeft++;
-	}
-
 	protected virtual void shipGUI() {
 		if (gameScript.curGameState == GameScript.GameState.Wait) return;
 		if (gameScript.curGameState == GameScript.GameState.SetupWaiting) return;
@@ -947,6 +939,21 @@ public class ShipScript : MonoBehaviour {
 	public void LayMine(CellScript cell, int local) {
 		if (local == 1) {
 			rpcScript.PlaceMine(cell.gridPositionX, cell.gridPositionY);
+		}
+		DisplayMineRange (false);
+	}
+
+	public void DecreaseMines() {
+		minesLeft --;
+	}
+	
+	public void IncreaseMines() {
+		minesLeft++;
+	}
+
+	public void PickupMine(CellScript cell, int local) {
+		if (local == 1) {
+			rpcScript.RemoveMine(cell.gridPositionX, cell.gridPositionY);
 		}
 		DisplayMineRange (false);
 	}
