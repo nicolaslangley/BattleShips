@@ -2,7 +2,11 @@ fileFormatVersion: 2
 guid: 1d76b8a736cdb482f859f2b202369943
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - occupier: {instanceID: 0}
+  - reefTexture: {fileID: 2800000, guid: c14c14178683a4450b784d8fa8dffce3, type: 3}
+  - waterTexture: {fileID: 2800000, guid: 8e6bbaf055195427190c6eeda9cfe541, type: 3}
+  - mineParentCell: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

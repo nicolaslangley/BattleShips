@@ -14,6 +14,7 @@ public class ShipScript : MonoBehaviour {
 
 	#region prefabs
 	public GameObject explosion;
+	public GameObject waterSplash;
 	#endregion
 
 	#region properties
@@ -123,6 +124,11 @@ public class ShipScript : MonoBehaviour {
 		speed = maxSpeed;
 		health = new int[shipSize];
 		InitArmor ();
+
+		// Retrieve prefabs from resources
+		explosion = Resources.Load("explosion") as GameObject;
+		waterSplash = Resources.Load("water_splash") as GameObject;
+
 		// Add all child sections ship
 		GameObject[] tShipSection = new GameObject[shipSize];
 		//Correct Order of ship instantiation.
@@ -280,8 +286,19 @@ public class ShipScript : MonoBehaviour {
 
 		Instantiate(explosion, target.transform.position, Quaternion.identity);
 		CellScript targetCellScript = target.GetComponent<CellScript>();
-		if (targetCellScript.curCellState == GameScript.CellState.Reef) targetCellScript.renderer.material.color = Color.black;
-		else targetCellScript.renderer.material.color = Color.blue;
+		if (targetCellScript.curCellState == GameScript.CellState.Reef) {
+			targetCellScript.renderer.material.color = Color.black;
+			Instantiate(explosion, target.transform.position, Quaternion.identity);
+		}
+		else if (targetCellScript.curCellState == GameScript.CellState.Available) {
+			Instantiate(waterSplash, target.transform.position, Quaternion.identity);
+			targetCellScript.renderer.material.color = Color.blue;
+		}
+		else {
+			Instantiate(explosion, target.transform.position, Quaternion.identity);
+			targetCellScript.renderer.material.color = Color.blue;
+		} 
+			
 	}
 
 	#endregion

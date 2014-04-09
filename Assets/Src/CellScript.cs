@@ -18,6 +18,11 @@ public class CellScript : MonoBehaviour {
 	public GameObject occupier = null;
 	public bool isMineRadius = false;
 
+	#region textures
+	public Texture2D reefTexture;
+	public Texture2D waterTexture;
+	#endregion
+
 	//[XmlAttribute("cell_state")]
 	public GameScript.CellState curCellState = GameScript.CellState.Available;
 	[XmlAttribute("gridPositionX")]
@@ -179,6 +184,7 @@ public class CellScript : MonoBehaviour {
 	public void SetReef () {
 		curCellState = GameScript.CellState.Reef;
 		available = false;
+		gameObject.renderer.material.SetTexture("_MainTex", reefTexture);
 		gameObject.renderer.material.color = Color.black;
 	}
 
