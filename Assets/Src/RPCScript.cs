@@ -35,6 +35,19 @@ public class RPCScript : MonoBehaviour {
 
 	}
 
+	public void SetTurn(string player) {
+		networkView.RPC ("RPCSetTurn", RPCMode.AllBuffered, player);
+	}
+
+	[RPC]
+	void RPCSetTurn(string player) {
+		gameScript.turn = player;
+		if (player == gameScript.myname)
+			gameScript.curGameState = GameScript.GameState.Play;
+		else 
+			gameScript.curGameState = GameScript.GameState.Wait;
+	}
+
 	public void SetGridCell(string serializedCellSaver) {
 		networkView.RPC ("RPCSetGridCell", RPCMode.AllBuffered, serializedCellSaver);
 	}
