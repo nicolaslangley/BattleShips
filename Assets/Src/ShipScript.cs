@@ -281,7 +281,7 @@ public class ShipScript : MonoBehaviour {
 		// Perform the following until 1 second has passed
 		while(Time.time-startTime <= 1) {
 			// lerp from A to B in one second
-			transform.position = Vector3.Lerp(start,destPos,moveTime); 
+			transform.position = Vector3.Lerp(start,dest,moveTime); 
 			moveTime += Time.deltaTime/1;  
 			// Wait for next frame
 			yield return 1; 
