@@ -86,6 +86,9 @@ public class CellScript : MonoBehaviour {
 					for (int y = (centerY > 0 ? centerY-1 : centerY); y <= centerY+1 && y < gridScript.grid.GetLength(1); y++) {
 						CellScript curCell = gridScript.GetCell(x,y);
 						if (curCell.curCellState != GameScript.CellState.Available) {
+							if (curCell.curCellState == GameScript.CellState.Ship) {
+								if (curCell.occupier.GetComponent<ShipScript>() == gameScript.selectedShip) continue;
+							}
 							Debug.Log("Unavailable cell found - can't place mine");
 							possible = false;
 							break;
