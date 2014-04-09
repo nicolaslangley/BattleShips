@@ -95,6 +95,9 @@ public class RPCScript : MonoBehaviour {
 		float endPosX = gameScript.gridScript.grid[endX, endY].transform.position.x;
 		float endPosZ = gameScript.gridScript.grid[endX, endY].transform.position.z;
 		string shipType = shipSaver.shipType;
+
+		GameScript.PlayerType pType = shipSaver.myPlayerType;
+
 		GameScript.ShipTypes shiptype = GameScript.ShipTypes.Mine;
 		switch(shipType) {
 		case("minelayer"):
@@ -117,10 +120,8 @@ public class RPCScript : MonoBehaviour {
 			break;
 		}
 
-	
-
 		int local = 0;
-		ship = gameScript.gridScript.PlaceShip(startPosX, startPosZ, endPosX, endPosZ, local, shipSaver.player, shiptype, GameScript.PlayerType.Player1);
+		ship = gameScript.gridScript.PlaceShip(startPosX, startPosZ, endPosX, endPosZ, local, shipSaver.player, shiptype, pType);
 		shipSaver.Restore(ship, gameScript);
 	}
 	
