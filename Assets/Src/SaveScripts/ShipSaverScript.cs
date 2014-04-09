@@ -47,7 +47,7 @@ public class ShipSaverScript {
 			CellSaverScript cell = cells[i];
 			CellScript temp = gameScript.gridScript.grid[cell.gridPositionX,cell.gridPositionY];
 			ship.cells.Add(temp);
-			temp.occupier = ship.GetSection(i);
+			temp.occupier = ship.gameObject;
 		}
 
 		ship.curDir = curDir;
