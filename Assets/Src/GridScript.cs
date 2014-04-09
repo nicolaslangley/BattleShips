@@ -644,7 +644,7 @@ public class GridScript : MonoBehaviour {
 	public void Explode(int centerX, int centerY, ExplodeType type) {
 		Debug.Log("explode with " + centerX);
 		//Tell cells around it that it was hit by explosion
-		gameScript.GlobalNotify("Mine Explosion at (" +centerX +","+centerY+")"); 
+		gameScript.GlobalNotify("Explosion at (" +centerX +","+centerY+")"); 
 
 		for (int x = (centerX > 0 ? centerX-1 : centerX); x <= centerX+1 && x < this.grid.GetLength(0); x++) {
 			for (int y = (centerY > 0 ? centerY-1 : centerY); y <= centerY+1 && y < this.grid.GetLength(1); y++) {

@@ -423,23 +423,29 @@ public class ShipScript : MonoBehaviour {
 			}
 
 			CellScript validDestCell = gridScript.VerifyCellPath(startX, startY, distance, curDir, destCell, "mine",isMineLayer);
-			if (validDestCell != destCell) {
-				Debug.Log ("Invalid path, moving up until collision");
-				if ( !validDestCell.isMineRadius || isMineLayer) {
-					CellScript newDestCell = gridScript.VerifyCellPath(startX, startY, distance, curDir, destCell, "Move",isMineLayer);
-					destCell = newDestCell;
-					gameScript.GlobalNotify("Collision at (" +destCell.gridPositionX +","+destCell.gridPositionY+")"); 
-
-				} else {
-					Debug.Log("Was MINEEE");
-					destCell = validDestCell;
-					triggerMine = true;
-					previousState = destCell.curCellState;
-				}
-
-
-				// TODO: Potentially notify other player of reef collision? Does damage occur?
+			if (validDestCell.isMineRadius && !isMineLayer) {
+				// Go here and explode
+				triggerMine = true;
+				previousState = destCell.curCellState;
+				destCell = validDestCell;
 			}
+			if (!validDestCell.isMineRadius && isMineLayer) {
+				// Not a mine radius
+				if (validDestCell.curCellState == GameScript.CellState.Available) {
+					destCell = validDestCell;
+				} else {
+					gameScript.GlobalNotify("Collision at (" +destCell.gridPositionX +","+destCell.gridPositionY+")");
+					destCell = gridScript.VerifyCellPath(startX, startY, distance, curDir, destCell, "Move",isMineLayer);
+				}
+			} else {
+				if (validDestCell.curCellState == GameScript.CellState.Available) {
+					destCell = validDestCell;
+				} else {
+					gameScript.GlobalNotify("Collision at (" +destCell.gridPositionX +","+destCell.gridPositionY+")");
+					destCell = gridScript.VerifyCellPath(startX, startY, distance, curDir, destCell, "Move",isMineLayer);
+				}
+			}
+
 			forward = true;
 			moveTime = 0;
 			StartCoroutine(MoveShipForward(destCell.transform.position));
@@ -770,6 +776,13 @@ public class ShipScript : MonoBehaviour {
 				c.curCellState = GameScript.CellState.Available;
 			}
 			Destroy(gameObject);
+			gameScript.winner = gameScript.checkWinner();
+			if (gameScript.winner != GameScript.PlayerType.None) {
+				//Debug.Log("winner is +" winner);
+				Debug.Log("Winner decided");
+				
+				gameScript.curGameState = GameScript.GameState.End;
+			}
 			gameScript.GlobalNotify("Ship at (" +cells[0].gridPositionX + ","+cells[0].gridPositionY+") was destroyed.");
 			//Take care of stats, etc.
 		} else {
