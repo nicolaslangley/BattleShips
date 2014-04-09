@@ -381,6 +381,7 @@ public class ShipScript : MonoBehaviour {
 			foreach (CellScript c in validMove) {
 				if (!c.available) {
 					//Do not move
+					gameScript.GlobalNotify("Collision at (" +destCell.gridPositionX +","+destCell.gridPositionY+")"); 
 					return;
 				}
 
@@ -400,6 +401,7 @@ public class ShipScript : MonoBehaviour {
 		} else if (distance < 0) {
 			if (!destCell.available) {
 				//Do not move
+				gameScript.GlobalNotify("Collision at (" +destCell.gridPositionX +","+destCell.gridPositionY+")"); 
 				return;
 			}
 			if (destCell.isMineRadius) {
@@ -425,6 +427,8 @@ public class ShipScript : MonoBehaviour {
 				if ( !validDestCell.isMineRadius || isMineLayer) {
 					CellScript newDestCell = gridScript.VerifyCellPath(startX, startY, distance, curDir, destCell, "Move",isMineLayer);
 					destCell = newDestCell;
+					gameScript.GlobalNotify("Collision at (" +destCell.gridPositionX +","+destCell.gridPositionY+")"); 
+
 				} else {
 					Debug.Log("Was MINEEE");
 					destCell = validDestCell;
@@ -557,6 +561,7 @@ public class ShipScript : MonoBehaviour {
 		//Check for obstacles
 		bool obstacle = false;
 		bool obstacleMine = false;
+
 		CellScript cell = cells[0];
 		// Perform check based on the orientation of the ship
 		if (curDir == GameScript.Direction.North || curDir == GameScript.Direction.South) {
@@ -574,7 +579,7 @@ public class ShipScript : MonoBehaviour {
 						obstacleMine = true;
 					}
 					obstacle = true;
-					//break;
+					break;
 				}
 				//For debugging
 				//gridScript.GetCell(cell.gridPositionX+sign*w, cell.gridPositionY+ysign*w).renderer.material.color = Color.magenta;
@@ -698,6 +703,8 @@ public class ShipScript : MonoBehaviour {
 			rpcScript.fireCannonShip(shipID,sectionIndex,damage);
 			return;
 		}
+
+		gameScript.NotifyDetonation("Cannon",cells[sectionIndex]);
 
 		HandleHit(section,local,damage);
 		gameScript.EndTurn();
@@ -848,7 +855,7 @@ public class ShipScript : MonoBehaviour {
 		if (targetCell.curCellState != GameScript.CellState.Available)
 		{
 			Debug.Log ("Hit Something at " +targetCell.gridPositionX + ", " + targetCell.gridPositionY);
-			gameScript.messages = "Something hit at "+targetCell.gridPositionX+", "+targetCell.gridPositionY;
+			gameScript.NotifyDetonation("Cannon",targetCell);
 			if (targetCell.curCellState == GameScript.CellState.Mine) {
 				// Remove mine at this cell
 				targetCell.curCellState = GameScript.CellState.Available;

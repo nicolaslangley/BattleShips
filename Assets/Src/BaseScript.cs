@@ -114,7 +114,9 @@ public class BaseScript : MonoBehaviour {
 			rpcScript.fireCannonBase(myPlayerType,sectionIndex,damage);
 			return;
 		}
-		
+
+		gameScript.NotifyDetonation("cannon",cells[sectionIndex]);
+
 		HandleHit(section,local,damage);
 		gameScript.EndTurn();
 		
@@ -171,30 +173,30 @@ public class BaseScript : MonoBehaviour {
 			//Debug.Log ("Displaying docking region for base1");
 			for (int i = 0; i < 10; i++) {
 				if (health[i] > 0 || !status) { 
-					gridScript.grid[status, 1, 10+i].SetVisible(status);
+					gridScript.grid[1, 10+i].SetVisible(status);
 				}
 			}
 			
 			if (health[0] > 0 || !status) {
-				gridScript.grid[status,0,9].SetVisible(status);
+				gridScript.grid[0,9].SetVisible(status);
 				
 			}
 			if (health[9] > 0 || !status) {
-				gridScript.grid[status,0,20].SetVisible(status);
+				gridScript.grid[0,20].SetVisible(status);
 			}
 		} else if (cells[0].gridPositionX == 29) {
 			//Debug.Log ("Displaying docking region for base2");
 			for (int i = 0; i < 10; i++) {
 				if (health[i] > 0 || !status) {
-					gridScript.grid[status, 28, 10+i].SetVisible(status);
+					gridScript.grid[28, 10+i].SetVisible(status);
 				}
 			}
 			if (health[0] > 0 || !status) {
-				gridScript.grid[status,29,9].SetVisible(status);
+				gridScript.grid[29,9].SetVisible(status);
 				
 			}
 			if (health[9] > 0 || !status) {
-				gridScript.grid[status,29,20].SetVisible(status);
+				gridScript.grid[29,20].SetVisible(status);
 			}
 		} 
 	}
