@@ -80,9 +80,16 @@ public class CellScript : MonoBehaviour {
 		else if (gameScript.curPlayAction == GameScript.PlayAction.DropMine) {
 			if (availableForShoot) {
 				bool possible = true;
-				foreach (CellScript neighbor in neighbours) {
-					if (neighbor.occupier.GetComponent<ShipScript>() != gameScript.selectedShip) {
-						if (neighbor.curCellState != GameScript.CellState.Available) {
+				int centerX = gridPositionX;
+				int centerY = gridPositionY;
+				for (int x = (centerX > 0 ? centerX-1 : centerX); x <= centerX+1 && x < gridScript.grid.GetLength(0); x++) {
+					for (int y = (centerY > 0 ? centerY-1 : centerY); y <= centerY+1 && y < gridScript.grid.GetLength(1); y++) {
+						CellScript curCell = gridScript.GetCell(x,y);
+						if (curCell.curCellState != GameScript.CellState.Available) {
+							if (curCell.curCellState == GameScript.CellState.Ship) {
+								if (curCell.occupier.GetComponent<ShipScript>() == gameScript.selectedShip) continue;
+							}
+							Debug.Log("Unavailable cell found - can't place mine");
 							possible = false;
 							break;
 						}
@@ -104,6 +111,7 @@ public class CellScript : MonoBehaviour {
 					for (int y = (centerY > 0 ? centerY-1 : centerY); y <= centerY+1 && y < gridScript.grid.GetLength(1); y++) {
 						CellScript curCell = gridScript.GetCell(x,y);
 						if (curCell.isMineRadius) {
+							gameScript.selectedShip.IncreaseMines();
 							curCell.curCellState = GameScript.CellState.Available;
 							curCell.isMineRadius = false;
 							curCell.mineParentCell = null;
