@@ -46,6 +46,7 @@ public class GameLobbyScript : MonoBehaviour
         playerUID = PlayerPrefs.GetInt("UID");
 		playerPlayed = PlayerPrefs.GetInt ("Played");
 		playerWon = PlayerPrefs.GetInt("Won");
+		PlayerPrefs.SetInt("LoadedGame",0);
 
         lastRegTime = Time.time - 3600;
 
