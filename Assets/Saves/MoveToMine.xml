@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<SavedGame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Ships>
+    <Ship shipID="peter49" player="peter" shipType="minelayer" speed="6">
+      <cells_occupied>
+        <cell gridPositionX="23" gridPositionY="19" instanceID="-1107370">
+          <curCellState>Ship</curCellState>
+        </cell>
+        <cell gridPositionX="22" gridPositionY="19" instanceID="-1106950">
+          <curCellState>Ship</curCellState>
+        </cell>
+      </cells_occupied>
+      <curDir>West</curDir>
+      <health>
+        <int>2</int>
+        <int>2</int>
+      </health>
+      <myPlayerType>Player2</myPlayerType>
+    </Ship>
+    <Ship shipID="peter48" player="peter" shipType="cruiser" speed="10">
+      <cells_occupied>
+        <cell gridPositionX="28" gridPositionY="17" instanceID="-1109442">
+          <curCellState>Ship</curCellState>
+        </cell>
+        <cell gridPositionX="27" gridPositionY="17" instanceID="-1109022">
+          <curCellState>Ship</curCellState>
+        </cell>
+        <cell gridPositionX="26" gridPositionY="17" instanceID="-1108602">
+          <curCellState>Ship</curCellState>
+        </cell>
+        <cell gridPositionX="25" gridPositionY="17" instanceID="-1108182">
+          <curCellState>Ship</curCellState>
+        </cell>
+        <cell gridPositionX="24" gridPositionY="17" instanceID="-1107762">
+          <curCellState>Ship</curCellState>
+        </cell>
+      </cells_occupied>
+      <curDir>West</curDir>
+      <health>
+        <int>2</int>
+        <int>2</int>
+        <int>2</int>
+        <int>2</int>
+        <int>2</int>
+      </health>
+      <myPlayerType>Player2</myPlayerType>
+    </Ship>
+    <Ship shipID="Nic47" player="Nic" shipType="destroyer" speed="8">
+      <cells_occupied>
+        <cell gridPositionX="6" gridPositionY="17" instanceID="-1100202">
+          <curCellState>Ship</curCellState>
+        </cell>
+        <cell gridPositionX="7" gridPositionY="17" instanceID="-1100622">
+          <curCellState>Ship</curCellState>
+        </cell>
+        <cell gridPositionX="8" gridPositionY="17" instanceID="-1101042">
+          <curCellState>Ship</curCellState>
+        </cell>
+        <cell gridPositionX="9" gridPositionY="17" instanceID="-1101462">
+          <curCellState>Ship</curCellState>
+        </cell>
+      </cells_occupied>
+      <curDir>East</curDir>
+      <health>
+        <int>1</int>
+        <int>1</int>
+        <int>1</int>
+        <int>1</int>
+      </health>
+      <myPlayerType>Player1</myPlayerType>
+    </Ship>
+  </Ships>
+  <myname>peter</myname>
+  <opponentname>Nic</opponentname>
+  <turn>peter</turn>
+  <myPlayerType>Player2</myPlayerType>
+  <winner>None</winner>
+  <curGameState>Play</curGameState>
+  <grid>
+    <gridSize>30</gridSize>
+    <cellSize>
+      <x>1</x>
+      <y>1</y>
+    </cellSize>
+    <grid />
+  </grid>
+</SavedGame>

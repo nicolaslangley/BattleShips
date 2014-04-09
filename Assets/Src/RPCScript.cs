@@ -346,6 +346,7 @@ public class RPCScript : MonoBehaviour {
 		BaseScript baseScript;
 		baseScript = gameScript.bases[player-1];
 		baseScript.HandleCannon(baseScript.GetSection(section),0,damage);
+		gameScript.audioPlayer.PlayOneShot (gameScript.cannonHit);
 	}
 	
 	public void repairShipWithIndex(string shipid, int index) 
