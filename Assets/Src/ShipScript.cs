@@ -182,7 +182,6 @@ public class ShipScript : MonoBehaviour {
 			if (gameScript.curPlayAction == GameScript.PlayAction.Move) {
 				
 			}
-			Debug.Log("CustomPlayUpdate");
 		}
 		SetRotation();
 	}
