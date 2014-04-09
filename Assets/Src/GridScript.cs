@@ -172,7 +172,7 @@ public class GridScript : MonoBehaviour {
 		// Create ship
 		// TODO: Place new ship at correct orientation
 		GameObject newShip = null;
-
+		Debug.Log ("New Ship at " + pos);
 
 		switch(types) {
 		case(GameScript.ShipTypes.Destroyer):

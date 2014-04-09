@@ -95,7 +95,8 @@ public class RPCScript : MonoBehaviour {
 		float endPosX = gameScript.gridScript.grid[endX, endY].transform.position.x;
 		float endPosZ = gameScript.gridScript.grid[endX, endY].transform.position.z;
 		string shipType = shipSaver.shipType;
-
+		Debug.Log ("Creating ship of type " + shipSaver.shipType + " at (" + startX + "," + startY + ") and (" + endX + "," + endY + ")");
+		Debug.Log ("Float Positions (" + startPosX + "," + startPosZ + ")");
 		GameScript.PlayerType pType = shipSaver.myPlayerType;
 
 		GameScript.ShipTypes shiptype = GameScript.ShipTypes.Mine;
