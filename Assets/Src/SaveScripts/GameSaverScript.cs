@@ -61,6 +61,8 @@ public class GameSaverScript {
 		gameScript.winner = loader.winner;
 		gameScript.curGameState = loader.curGameState;
 
+		gameScript.rpcScript.SetTurn (loader.myname);
+
 		if (loader.myname == gameScript.myname) {
 
 		} else {
