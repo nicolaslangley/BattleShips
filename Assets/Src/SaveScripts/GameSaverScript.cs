@@ -28,6 +28,7 @@ public class GameSaverScript {
 	public GameSaverScript(GameScript gameScript)  {
 		grid = new GridSaverScript (gameScript.gridScript);
 		ships = new List<ShipSaverScript> ();
+		playerBases = new List<BaseSaverScript> ();
 		foreach (ShipScript ship in gameScript.ships) {
 			ships.Add (new ShipSaverScript(ship));
 		}
@@ -69,18 +70,21 @@ public class GameSaverScript {
 
 		gameScript.rpcScript.SetTurn (loader.myname);
 
-		foreach (BaseScript playerBase in gameScript.bases) {
-			foreach (BaseSaverScript baseSaver in loader.playerBases) {
-				if (playerBase.player == baseSaver.player)
-					baseSaver.Restore(playerBase);
-			}
-		}
+		XmlSerializer baseSerialize = new XmlSerializer(typeof(BaseSaverScript));
 
 		XmlSerializer serialize = new XmlSerializer(typeof(ShipSaverScript));
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Encoding = new UnicodeEncoding(false, false);
 		settings.Indent = false;
 		settings.OmitXmlDeclaration = false;
+		foreach (BaseSaverScript baseSaver in loader.playerBases) {
+			using(StringWriter textWriter = new StringWriter()) {
+				using(XmlWriter xmlWriter = XmlWriter.Create(textWriter, settings)) {
+					serialize.Serialize(xmlWriter, baseSaver);
+				}
+				gameScript.rpcScript.changePlayerBase(textWriter.ToString());
+			}
+		}
 
 		foreach (ShipSaverScript shipSaver in loader.ships) {
 			using(StringWriter textWriter = new StringWriter()) {

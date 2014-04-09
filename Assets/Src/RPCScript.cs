@@ -35,6 +35,29 @@ public class RPCScript : MonoBehaviour {
 
 	}
 
+	public void changePlayerBase(string playerBaseSerial) {
+		networkView.RPC ("RPCChangeBase", RPCMode.AllBuffered, playerBaseSerial);
+	}
+
+	[RPC]
+	public void RPCChangeBase(string playerBaseSerial) {
+		BaseSaverScript baseSaver;
+		
+		XmlSerializer serializer = new XmlSerializer (typeof(BaseSaverScript));
+		XmlReaderSettings settings = new XmlReaderSettings();
+		
+		using(StringReader textReader = new StringReader(playerBaseSerial)) {
+			using(XmlReader xmlReader = XmlReader.Create(textReader, settings)) {
+				baseSaver = (BaseSaverScript) serializer.Deserialize(xmlReader);
+			}
+		}
+
+		foreach (BaseScript playerBase in gameScript.bases) {
+			if (playerBase.player == baseSaver.player)
+				baseSaver.Restore(playerBase);
+		}
+	}
+
 	public void SetTurn(string player) {
 		networkView.RPC ("RPCSetTurn", RPCMode.AllBuffered, player);
 	}
@@ -64,6 +87,8 @@ public class RPCScript : MonoBehaviour {
 				cellSaver = (CellSaverScript) serializer.Deserialize(xmlReader);
 			}
 		}
+
+
 	}
 
 	public void CreateShip(string serializedShipSaver) {
