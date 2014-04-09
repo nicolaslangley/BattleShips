@@ -203,7 +203,7 @@ public class GameLobbyScript : MonoBehaviour
 					if (matched == 2)
 					{
 						Debug.Log("In file with: "+ f.Name);
-						if (GUI.Button(new Rect(160, 120+i, 150, 20), "Game: " + usernames[i])) {
+						if (GUI.Button(new Rect(160, 120+i, 150, 20), "Game: " + usernames[2])) {
 							PlayerPrefs.SetInt("LoadedGame",1);
 							PlayerPrefs.SetString("LoadedGamePath",f.FullName);
 							HostLaunchGame();
