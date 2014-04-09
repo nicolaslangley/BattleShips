@@ -59,7 +59,7 @@ public class KamikazeBoatScript : ShipScript {
 		// Perform the following until 1 second has passed
 		while(Time.time-startTime <= 2) {
 			// lerp from A to B in one second
-			transform.position = Vector3.Lerp(start,dest,moveTime); 
+			transform.position = Vector3.Lerp(start,destPos,moveTime); 
 			moveTime += Time.deltaTime/1;  
 			// Wait for next frame
 			yield return 1; 
@@ -161,6 +161,7 @@ public class KamikazeBoatScript : ShipScript {
 		destCell.selected = true;
 
 		// Move ship to target cell
+		moveTime = 0;
 		StartCoroutine(MoveKamikazeBoat(destCell.transform.position));
 		gameScript.EndTurn();
 	}

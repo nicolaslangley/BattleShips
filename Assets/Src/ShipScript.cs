@@ -43,7 +43,7 @@ public class ShipScript : MonoBehaviour {
 	protected int radarRangeStart = -2;
 	public bool heavyCannon;
 	protected bool heavyArmor;
-	private float moveTime;
+	protected float moveTime;
 	#endregion
 
 	#region GUI display booleans
