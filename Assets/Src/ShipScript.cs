@@ -61,10 +61,6 @@ public class ShipScript : MonoBehaviour {
 		shipGUI();
 	}
 
-	public void DecreaseMines() {
-		minesLeft --;
-	}
-
 	protected virtual void shipGUI() {
 		if (gameScript.curGameState == GameScript.GameState.Wait) return;
 		if (gameScript.curGameState == GameScript.GameState.SetupWaiting) return;
@@ -186,6 +182,7 @@ public class ShipScript : MonoBehaviour {
 			if (gameScript.curPlayAction == GameScript.PlayAction.Move) {
 				
 			}
+			Debug.Log("CustomPlayUpdate");
 		}
 		SetRotation();
 	}
@@ -243,7 +240,7 @@ public class ShipScript : MonoBehaviour {
 		while(Time.time-startTime <= 2) {
 			// lerp from A to B in one second
 			transform.position = Vector3.Lerp(start,destPos,moveTime); 
-			moveTime += Time.deltaTime/1;
+			moveTime += Time.deltaTime/1; 
 			// Wait for next frame
 			yield return 1; 
 		}
@@ -278,7 +275,7 @@ public class ShipScript : MonoBehaviour {
 		while(Time.time-startTime <= 2) {
 			// lerp from A to B in one second
 			transform.position = Vector3.Lerp(start,dest,moveTime); 
-			moveTime += Time.deltaTime/1;
+			moveTime += Time.deltaTime/1;  
 			// Wait for next frame
 			yield return 1; 
 		}
@@ -292,6 +289,7 @@ public class ShipScript : MonoBehaviour {
 			yield return 1; // wait for next frame
 		}
 
+		Instantiate(explosion, target.transform.position, Quaternion.identity);
 		CellScript targetCellScript = target.GetComponent<CellScript>();
 		if (targetCellScript.curCellState == GameScript.CellState.Reef) {
 			targetCellScript.renderer.material.color = Color.black;
@@ -523,7 +521,7 @@ public class ShipScript : MonoBehaviour {
 		}
 
 		//Debug.Log("X: "+ destCell.gridPositionX + " Y: " + destCell.gridPositionY);
-
+		Debug.Log ("Trigger mine value is: " + triggerMine);
 		if (triggerMine) {
 			if (previousState == GameScript.CellState.Mine) {
 				Debug.Log("Explode");
@@ -577,7 +575,7 @@ public class ShipScript : MonoBehaviour {
 			
 			int ysign = 1;
 			if (curDir == GameScript.Direction.South) ysign = -1;
-			for (int w = 1; w < shipSize; w++) {
+			for (int w = 1; w < shipSize-1; w++) {
 				if (gridScript.GetCell(cell.gridPositionX+sign*w, cell.gridPositionY+ysign*w).curCellState != GameScript.CellState.Available) {
 					if (gridScript.GetCell(cell.gridPositionX+sign*w, cell.gridPositionY+ysign*w).isMineRadius ||
 					    gridScript.GetCell(cell.gridPositionX+sign*w, cell.gridPositionY+ysign*w).curCellState == GameScript.CellState.Mine)
@@ -598,7 +596,7 @@ public class ShipScript : MonoBehaviour {
 			
 			int xsign = 1;
 			if (curDir == GameScript.Direction.West) xsign = -1;
-			for (int w = shipSize; w > 0; w--) {
+			for (int w = shipSize-1; w > 0; w--) {
 				if (gridScript.GetCell(cell.gridPositionX+xsign*w, cell.gridPositionY+sign*w).curCellState != GameScript.CellState.Available) {
 
 					obstacle = true;
@@ -942,6 +940,21 @@ public class ShipScript : MonoBehaviour {
 	public void LayMine(CellScript cell, int local) {
 		if (local == 1) {
 			rpcScript.PlaceMine(cell.gridPositionX, cell.gridPositionY);
+		}
+		DisplayMineRange (false);
+	}
+
+	public void DecreaseMines() {
+		minesLeft --;
+	}
+	
+	public void IncreaseMines() {
+		minesLeft++;
+	}
+
+	public void PickupMine(CellScript cell, int local) {
+		if (local == 1) {
+			rpcScript.RemoveMine(cell.gridPositionX, cell.gridPositionY);
 		}
 		DisplayMineRange (false);
 	}

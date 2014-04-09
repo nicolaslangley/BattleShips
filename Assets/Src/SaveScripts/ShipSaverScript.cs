@@ -20,6 +20,8 @@ public class ShipSaverScript {
 	[XmlAttribute("speed")]
 	public int speed; 
 
+	public GameScript.PlayerType myPlayerType;
+
 	public ShipSaverScript() {}
 
 	public ShipSaverScript(ShipScript ship) {
@@ -36,6 +38,7 @@ public class ShipSaverScript {
 		if (baseCell != null) baseCell = new CellSaverScript (ship.baseCell);
 		speed = ship.speed;
 		shipType = ship.shipType;
+		myPlayerType = ship.myPlayerType;
 	}
 
 	public void Restore(ShipScript ship, GameScript gameScript) {
@@ -47,13 +50,15 @@ public class ShipSaverScript {
 			CellSaverScript cell = cells[i];
 			CellScript temp = gameScript.gridScript.grid[cell.gridPositionX,cell.gridPositionY];
 			ship.cells.Add(temp);
-			temp.occupier = ship.GetSection(i);
+			temp.occupier = ship.gameObject;
 		}
 
 		ship.curDir = curDir;
 		ship.health = health;
 		if (baseCell != null) ship.baseCell = gameScript.gridScript.grid [baseCell.gridPositionX, baseCell.gridPositionY];
 		ship.speed = speed;
-		shipType = ship.shipType;
+		ship.shipType = shipType;
+
+		ship.myPlayerType = myPlayerType;
 	}
 }

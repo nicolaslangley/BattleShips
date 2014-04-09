@@ -35,6 +35,19 @@ public class RPCScript : MonoBehaviour {
 
 	}
 
+	public void SetTurn(string player) {
+		networkView.RPC ("RPCSetTurn", RPCMode.AllBuffered, player);
+	}
+
+	[RPC]
+	void RPCSetTurn(string player) {
+		gameScript.turn = player;
+		if (player == gameScript.myname)
+			gameScript.curGameState = GameScript.GameState.Play;
+		else 
+			gameScript.curGameState = GameScript.GameState.Wait;
+	}
+
 	public void SetGridCell(string serializedCellSaver) {
 		networkView.RPC ("RPCSetGridCell", RPCMode.AllBuffered, serializedCellSaver);
 	}
@@ -81,8 +94,34 @@ public class RPCScript : MonoBehaviour {
 		float startPosZ = gameScript.gridScript.grid[startX, startY].transform.position.z;
 		float endPosX = gameScript.gridScript.grid[endX, endY].transform.position.x;
 		float endPosZ = gameScript.gridScript.grid[endX, endY].transform.position.z;
+		string shipType = shipSaver.shipType;
+
+		GameScript.PlayerType pType = shipSaver.myPlayerType;
+
+		GameScript.ShipTypes shiptype = GameScript.ShipTypes.Mine;
+		switch(shipType) {
+		case("minelayer"):
+			shiptype = GameScript.ShipTypes.Mine;
+			break;
+		case("torpedoboat"):
+			shiptype = GameScript.ShipTypes.Torpedo;
+			break;
+		case("radarboat"):
+			shiptype = GameScript.ShipTypes.Radar;
+			break;
+		case("kamikaze"):
+			shiptype = GameScript.ShipTypes.Kamikaze;
+			break;
+		case("cruiser"):
+			shiptype = GameScript.ShipTypes.Cruiser;
+			break;
+		case("destroyer"):
+			shiptype = GameScript.ShipTypes.Destroyer;
+			break;
+		}
+
 		int local = 0;
-		ship = gameScript.gridScript.PlaceShip(startPosX, startPosZ, endPosX, endPosZ, local, shipSaver.player, GameScript.ShipTypes.Mine, GameScript.PlayerType.Player1);
+		ship = gameScript.gridScript.PlaceShip(startPosX, startPosZ, endPosX, endPosZ, local, shipSaver.player, shiptype, pType);
 		shipSaver.Restore(ship, gameScript);
 	}
 	
@@ -352,6 +391,25 @@ public class RPCScript : MonoBehaviour {
 		gridScript.Explode(x,y,(GridScript.ExplodeType)type);
 	}
 
+	public void DetonateKamikaze(int x, int y, string shipid)
+	{
+		networkView.RPC ("RPCDetonateKamikaze",RPCMode.AllBuffered,x,y,shipid);
+	}
+
+	[RPC]
+	void RPCDetonateKamikaze(int x, int y, string shipid)
+	{
+		CellScript targetCell = gridScript.grid[x, y];
+		foreach (ShipScript shipscript in gameScript.ships)
+		{
+			if (shipscript.shipID == shipid)
+			{
+				shipscript.Detonate(targetCell,0);
+				break;
+			}
+		}
+	}
+
 	public void PlaceMine(int x, int y)
 	{
 		networkView.RPC ("RPCPlaceMine",RPCMode.AllBuffered,x,y);
@@ -360,6 +418,16 @@ public class RPCScript : MonoBehaviour {
 	[RPC]
 	void RPCPlaceMine(int x, int y) {
 		gridScript.PlaceMine(x, y);
+	}
+
+	public void RemoveMine(int x, int y)
+	{
+		networkView.RPC ("RPCRemoveMine",RPCMode.AllBuffered,x,y);
+	}
+
+	[RPC]
+	void RPCRemoveMine(int x, int y) {
+		gridScript.RemoveMine(x, y);
 	}
 
 

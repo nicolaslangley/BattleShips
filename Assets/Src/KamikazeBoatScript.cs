@@ -29,14 +29,20 @@ public class KamikazeBoatScript : ShipScript {
 	}
 
 	void KamikazeGUI() {
-		if (GUI.Button(new Rect(Screen.width - 170, 90, 120, 30), "Detonate")) {
+		if (GUI.Button(new Rect(Screen.width - 150, 90, 120, 30), "Detonate")) {
 			DisplayCannonRange(true);
 			gameScript.curPlayAction = GameScript.PlayAction.Detonate;
 		}
 	}
 
+
+
 	public override void Detonate (CellScript targetCell, int local) {
-		DisplayCannonRange(false);
+		if (local == 1) {
+			DisplayCannonRange(false);
+			rpcScript.DetonateKamikaze(targetCell.gridPositionX, targetCell.gridPositionY, shipID);
+			return;
+		}
 		gridScript.Explode(targetCell.gridPositionX, targetCell.gridPositionY, GridScript.ExplodeType.Kamikaze);
 		// Destroy kamikaze ship
 		gameScript.ships.Remove(this);
@@ -49,7 +55,6 @@ public class KamikazeBoatScript : ShipScript {
 		}
 		Destroy(gameObject);
 	}
-	
 	
 	IEnumerator MoveKamikazeBoat (Vector3 destPos) {
 		destPos.y += 0.5f;
