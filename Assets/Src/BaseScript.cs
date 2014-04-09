@@ -165,5 +165,38 @@ public class BaseScript : MonoBehaviour {
 		} 
 
 	}
+
+	public void UpdateBaseVisibility(bool status) {
+		if (cells[0].gridPositionX == 0) {
+			//Debug.Log ("Displaying docking region for base1");
+			for (int i = 0; i < 10; i++) {
+				if (health[i] > 0 || !status) { 
+					gridScript.grid[status, 1, 10+i].SetVisible(status);
+				}
+			}
+			
+			if (health[0] > 0 || !status) {
+				gridScript.grid[status,0,9].SetVisible(status);
+				
+			}
+			if (health[9] > 0 || !status) {
+				gridScript.grid[status,0,20].SetVisible(status);
+			}
+		} else if (cells[0].gridPositionX == 29) {
+			//Debug.Log ("Displaying docking region for base2");
+			for (int i = 0; i < 10; i++) {
+				if (health[i] > 0 || !status) {
+					gridScript.grid[status, 28, 10+i].SetVisible(status);
+				}
+			}
+			if (health[0] > 0 || !status) {
+				gridScript.grid[status,29,9].SetVisible(status);
+				
+			}
+			if (health[9] > 0 || !status) {
+				gridScript.grid[status,29,20].SetVisible(status);
+			}
+		} 
+	}
 	
 }
