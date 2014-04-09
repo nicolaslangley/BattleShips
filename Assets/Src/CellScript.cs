@@ -18,6 +18,11 @@ public class CellScript : MonoBehaviour {
 	public GameObject occupier = null;
 	public bool isMineRadius = false;
 
+	#region textures
+	public Texture2D reefTexture;
+	public Texture2D waterTexture;
+	#endregion
+
 	//[XmlAttribute("cell_state")]
 	public GameScript.CellState curCellState = GameScript.CellState.Available;
 	[XmlAttribute("gridPositionX")]
@@ -70,7 +75,6 @@ public class CellScript : MonoBehaviour {
 			if (availableForShoot) {
 				gameScript.selectedShip.FireCannon(this, 1);
 				gameScript.curPlayAction = GameScript.PlayAction.None;
-
 			}
 		} 
 		else if (gameScript.curPlayAction == GameScript.PlayAction.DropMine) {
@@ -87,6 +91,11 @@ public class CellScript : MonoBehaviour {
 					gameScript.selectedShip.DisplayMineRange(false);
 					gameScript.curPlayAction = GameScript.PlayAction.None;
 				}
+			}
+		} else if (gameScript.curPlayAction == GameScript.PlayAction.Detonate) {
+			if (availableForShoot) {
+				gameScript.selectedShip.Detonate(this, 1);
+				gameScript.curPlayAction = GameScript.PlayAction.None;
 			}
 		} else {
 			if (gameScript.curGameState == GameScript.GameState.Setup && availableForDock) {
@@ -176,6 +185,7 @@ public class CellScript : MonoBehaviour {
 	public void SetReef () {
 		curCellState = GameScript.CellState.Reef;
 		available = false;
+		gameObject.renderer.material.SetTexture("_MainTex", reefTexture);
 		gameObject.renderer.material.color = Color.black;
 	}
 

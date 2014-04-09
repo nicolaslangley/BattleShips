@@ -36,6 +36,7 @@ public class BaseSectionScript : MonoBehaviour {
 				gameScript.selectedShip.DisplayCannonRange(false);
 				gameScript.curPlayAction = GameScript.PlayAction.None;
 			}
+			// TODO: add other options when clicking on base - i.e. movement up to and detonation
 		} else if ((int)parent.myPlayerType != (int)(gameScript.myPlayerType)) {
 			// Only allow for repair or selection if the base is mine.
 			return; 

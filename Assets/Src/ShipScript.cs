@@ -12,6 +12,11 @@ public class ShipScript : MonoBehaviour {
 	protected RPCScript rpcScript;
 	#endregion
 
+	#region prefabs
+	public GameObject explosion;
+	public GameObject waterSplash;
+	#endregion
+
 	#region properties
 	public string shipID;
 	public string player;
@@ -123,6 +128,11 @@ public class ShipScript : MonoBehaviour {
 		speed = maxSpeed;
 		health = new int[shipSize];
 		InitArmor ();
+
+		// Retrieve prefabs from resources
+		explosion = Resources.Load("explosion") as GameObject;
+		waterSplash = Resources.Load("water_splash") as GameObject;
+
 		// Add all child sections ship
 		GameObject[] tShipSection = new GameObject[shipSize];
 		//Correct Order of ship instantiation.
@@ -278,9 +288,21 @@ public class ShipScript : MonoBehaviour {
 			yield return 1; // wait for next frame
 		}
 
+		Instantiate(explosion, target.transform.position, Quaternion.identity);
 		CellScript targetCellScript = target.GetComponent<CellScript>();
-		if (targetCellScript.curCellState == GameScript.CellState.Reef) targetCellScript.renderer.material.color = Color.black;
-		else targetCellScript.renderer.material.color = Color.blue;
+		if (targetCellScript.curCellState == GameScript.CellState.Reef) {
+			targetCellScript.renderer.material.color = Color.black;
+			Instantiate(explosion, target.transform.position, Quaternion.identity);
+		}
+		else if (targetCellScript.curCellState == GameScript.CellState.Available) {
+			Instantiate(waterSplash, target.transform.position, Quaternion.identity);
+			targetCellScript.renderer.material.color = Color.blue;
+		}
+		else {
+			Instantiate(explosion, target.transform.position, Quaternion.identity);
+			targetCellScript.renderer.material.color = Color.blue;
+		} 
+			
 	}
 
 	#endregion
@@ -472,7 +494,6 @@ public class ShipScript : MonoBehaviour {
 			if (destCell.isMineRadius) {
 				CellScript mine = destCell.mineParentCell;
 				Debug.Log("Explode");
-
 				gridScript.Explode(mine.gridPositionX,mine.gridPositionY,GridScript.ExplodeType.Mine);
 			}
 		}
@@ -660,6 +681,8 @@ public class ShipScript : MonoBehaviour {
 	 */
 	public void HandleHit(GameObject section, int local, int damage) 
 	{
+		Instantiate(explosion, section.transform.position, Quaternion.identity);
+
 		int sectionIndex = shipSections.IndexOf(section);
 
 		if (local == 1)
@@ -796,7 +819,29 @@ public class ShipScript : MonoBehaviour {
 		DisplayCannonRange(false);
 		StartCoroutine(DisplayHit(targetCell.gameObject));
 
-		gameScript.NotifyDetonation("cannon", targetCell);
+		if (targetCell.curCellState != GameScript.CellState.Available)
+		{
+			Debug.Log ("Hit Something at " +targetCell.gridPositionX + ", " + targetCell.gridPositionY);
+			gameScript.messages = "Something hit at "+targetCell.gridPositionX+", "+targetCell.gridPositionY;
+			if (targetCell.curCellState == GameScript.CellState.Mine) {
+				// Remove mine at this cell
+				targetCell.curCellState = GameScript.CellState.Available;
+				int centerX = targetCell.gridPositionX;
+				int centerY = targetCell.gridPositionY;
+				for (int x = (centerX > 0 ? centerX-1 : centerX); x <= centerX+1 && x < gridScript.grid.GetLength(0); x++) {
+					for (int y = (centerY > 0 ? centerY-1 : centerY); y <= centerY+1 && y < gridScript.grid.GetLength(1); y++) {
+						if (gridScript.grid[x,y].curCellState == GameScript.CellState.Available && gridScript.grid[x,y].curCellState != GameScript.CellState.Reef) {
+							//grid[x,y].curCellState = GameScript.CellState.MineRadius;
+							gridScript.grid[x,y].isMineRadius = false;
+							gridScript.grid[x,y].mineParentCell = null;
+						}
+					}
+				}
+			}
+		} else {
+			Debug.Log ("Hit Nothing");
+			gameScript.messages = "Hit Nothing";
+		}
 
 		Debug.Log("Ending turn after shootin");
 		gameScript.EndTurn();
@@ -861,6 +906,8 @@ public class ShipScript : MonoBehaviour {
 		}
 		DisplayMineRange (false);
 	}
+
+	public virtual void Detonate (CellScript targetCell, int local) {}
 
 	#endregion
 
