@@ -362,6 +362,16 @@ public class RPCScript : MonoBehaviour {
 		gridScript.PlaceMine(x, y);
 	}
 
+	public void RemoveMine(int x, int y)
+	{
+		networkView.RPC ("RPCRemoveMine",RPCMode.AllBuffered,x,y);
+	}
+
+	[RPC]
+	void RPCRemoveMine(int x, int y) {
+		gridScript.RemoveMine(x, y);
+	}
+
 
 	// Update is called once per frame
 	void Update () {

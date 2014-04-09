@@ -37,7 +37,7 @@ public class MineLayerScript : ShipScript {
 	void Update () {
 		if (selected) {
 			foreach (CellScript cell in this.cells) {
-				foreach (CellScript neighbor in cell.neighbours) {
+				foreach (CellScript neighbor in gridScript.GetCellNeighbours(cell)) {
 					if (neighbor.curCellState == GameScript.CellState.Mine) {
 						mineRadius = true;
 						break;
