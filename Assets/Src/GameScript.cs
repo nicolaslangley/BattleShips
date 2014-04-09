@@ -130,18 +130,20 @@ public class GameScript : MonoBehaviour {
 			break;
 		case (GameState.Setup):
 			// Perform update to objects based on setup state
-			BaseScript myBase = bases[((int)myPlayerType)-1];
-			myBase.UpdateBaseVisibility(true);
+	
 			if (!gridInited) {
 				gridInited = true;
 				gridScript.Init();
 
 				if (isLoadedGame) {
 					//Load game
-					//GameSaverScript.Load("String",this);
+					GameSaverScript.Load(loadFilePath,this);
 				}
 
 			}
+
+			BaseScript myBase = bases[((int)myPlayerType)-1];
+			myBase.UpdateBaseVisibility(true);
 
 			if (player1SetupAcceptance && player2SetupAcceptance)
 			{
