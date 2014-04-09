@@ -42,10 +42,13 @@ public class MineLayerScript : ShipScript {
 			}
 		}
 		if (selected) {
-
 			foreach (CellScript cell in this.cells) {
 				foreach (CellScript neighbor in cell.neighbours) {
-					mineRadius = (mineRadius || (neighbor.curCellState == GameScript.CellState.Mine));
+					if (neighbor.curCellState == GameScript.CellState.Mine) {
+						mineRadius = true;
+						break;
+					}
+
 				}
 			}
 		}
