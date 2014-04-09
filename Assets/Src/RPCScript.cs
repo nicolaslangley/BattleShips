@@ -352,6 +352,25 @@ public class RPCScript : MonoBehaviour {
 		gridScript.Explode(x,y,(GridScript.ExplodeType)type);
 	}
 
+	public void DetonateKamikaze(int x, int y, string shipid)
+	{
+		networkView.RPC ("RPCDetonateKamikaze",RPCMode.AllBuffered,x,y,shipid);
+	}
+
+	[RPC]
+	void RPCDetonateKamikaze(int x, int y, string shipid)
+	{
+		CellScript targetCell = gridScript.grid[x, y];
+		foreach (ShipScript shipscript in gameScript.ships)
+		{
+			if (shipscript.shipID == shipid)
+			{
+				shipscript.Detonate(targetCell,0);
+				break;
+			}
+		}
+	}
+
 	public void PlaceMine(int x, int y)
 	{
 		networkView.RPC ("RPCPlaceMine",RPCMode.AllBuffered,x,y);
