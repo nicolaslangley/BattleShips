@@ -43,6 +43,7 @@ public class ShipScript : MonoBehaviour {
 	protected int radarRangeStart = -2;
 	public bool heavyCannon;
 	protected bool heavyArmor;
+	protected float moveTime;
 	#endregion
 
 	#region GUI display booleans
@@ -224,9 +225,10 @@ public class ShipScript : MonoBehaviour {
 		// Time.time contains current frame time, so remember starting point
 		float startTime=Time.time;
 		// Perform the following until 1 second has passed
-		while(Time.time-startTime <= 1) {
+		while(Time.time-startTime <= 2) {
 			// lerp from A to B in one second
-			transform.position = Vector3.Lerp(start,dest,Time.time-startTime); 
+			transform.position = Vector3.Lerp(start,dest,moveTime); 
+			moveTime += Time.deltaTime/1; 
 			// Wait for next frame
 			yield return 1; 
 		}
@@ -238,9 +240,10 @@ public class ShipScript : MonoBehaviour {
 		// Time.time contains current frame time, so remember starting point
 		float startTime=Time.time;
 		// Perform the following until 1 second has passed
-		while(Time.time-startTime <= 1) {
+		while(Time.time-startTime <= 2) {
 			// lerp from A to B in one second
-			transform.position = Vector3.Lerp(start,destPos,Time.time-startTime); 
+			transform.position = Vector3.Lerp(start,destPos,moveTime); 
+			moveTime += Time.deltaTime/1;
 			// Wait for next frame
 			yield return 1; 
 		}
@@ -272,9 +275,10 @@ public class ShipScript : MonoBehaviour {
 		// Time.time contains current frame time, so remember starting point
 		float startTime=Time.time;
 		// Perform the following until 1 second has passed
-		while(Time.time-startTime <= 1) {
+		while(Time.time-startTime <= 2) {
 			// lerp from A to B in one second
-			transform.position = Vector3.Lerp(start,dest,Time.time-startTime); 
+			transform.position = Vector3.Lerp(start,dest,moveTime); 
+			moveTime += Time.deltaTime/1;
 			// Wait for next frame
 			yield return 1; 
 		}
@@ -288,7 +292,6 @@ public class ShipScript : MonoBehaviour {
 			yield return 1; // wait for next frame
 		}
 
-		Instantiate(explosion, target.transform.position, Quaternion.identity);
 		CellScript targetCellScript = target.GetComponent<CellScript>();
 		if (targetCellScript.curCellState == GameScript.CellState.Reef) {
 			targetCellScript.renderer.material.color = Color.black;
@@ -394,6 +397,7 @@ public class ShipScript : MonoBehaviour {
 					}
 				}
 			}
+			moveTime = 0;
 			StartCoroutine(MoveShipSideways(destCell.transform.position));
 			destCell = tCell;
 
@@ -413,6 +417,7 @@ public class ShipScript : MonoBehaviour {
 //			if (!validMove) {
 //				return;
 //			}
+			moveTime = 0;
 			StartCoroutine(MoveShipBackward());
 		} else {
 			// Verify that destination cell is within correct range
@@ -440,6 +445,7 @@ public class ShipScript : MonoBehaviour {
 				// TODO: Potentially notify other player of reef collision? Does damage occur?
 			}
 			forward = true;
+			moveTime = 0;
 			StartCoroutine(MoveShipForward(destCell.transform.position));
 		}
 		DisplayMoveRange(false);
