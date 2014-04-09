@@ -1074,7 +1074,6 @@ public class ShipScript : MonoBehaviour {
 					if (startX + x < 0 || startX + x > 29 || startY + y < 0 || startY + y > 29) continue;
 					CellScript curCellScript = gridScript.grid[startX + x, startY + y];
 					curCellScript.SetVisible(true);
-					Debug.Log ("Ship type is: " + shipType);
 					if (curCellScript.curCellState == GameScript.CellState.Mine && shipType == "minelayer") {
 						curCellScript.renderer.material.color = Color.gray;
 					}

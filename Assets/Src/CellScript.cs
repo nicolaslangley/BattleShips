@@ -82,7 +82,7 @@ public class CellScript : MonoBehaviour {
 				bool possible = true;
 				foreach (CellScript neighbor in neighbours) {
 					if (neighbor.occupier.GetComponent<ShipScript>() != gameScript.selectedShip) {
-						possible = possible && neighbor.curCellState == GameScript.CellState.Available;
+						possible = (possible && (neighbor.curCellState == GameScript.CellState.Available));
 					}
 				}
 				if (possible) {
@@ -111,6 +111,7 @@ public class CellScript : MonoBehaviour {
 			}
 		} else if (gameScript.curPlayAction == GameScript.PlayAction.Detonate) {
 			if (availableForShoot) {
+				gameScript.selectedShip.MoveShip(this, 1);
 				gameScript.selectedShip.Detonate(this, 1);
 				gameScript.curPlayAction = GameScript.PlayAction.None;
 			}
