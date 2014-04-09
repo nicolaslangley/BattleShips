@@ -714,6 +714,7 @@ public class GridScript : MonoBehaviour {
 					curCell.isMineRadius = false;
 					curCell.mineParentCell = null;
 				}
+				curCell.isMineRadius = false;
 			}
 		}
 		cell.available = true;
