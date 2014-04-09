@@ -2,8 +2,7 @@
 using System.Collections;
 
 public class MineLayerScript : ShipScript {
-
-	int minesLeft;
+	bool mineRadius = false;
 
 	// Use this for initialization
 	void Awake () {
@@ -42,9 +41,13 @@ public class MineLayerScript : ShipScript {
 				gameScript.curPlayAction = GameScript.PlayAction.DropMine;
 			}
 		}
-		bool mineRadius = false;
-		foreach (CellScript cell in this.cells) {
-			mineRadius = mineRadius || cell.isMineRadius;
+		if (selected) {
+
+			foreach (CellScript cell in this.cells) {
+				foreach (CellScript neighbor in cell.neighbours) {
+					mineRadius = mineRadius || neighbor.curCellState == GameScript.CellState.Mine;
+				}
+			}
 		}
 		if (selected && mineRadius) { 
 			if (GUI.Button(new Rect(Screen.width - 150, 250, 100, 30), "Pickup Mine")) {
