@@ -125,6 +125,7 @@ public class MainMenuScript : MonoBehaviour
 
             }
         }
+
     }
 
     public void OpenMenu(string newMenu)
