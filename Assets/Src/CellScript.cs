@@ -82,7 +82,7 @@ public class CellScript : MonoBehaviour {
 				bool possible = true;
 				foreach (CellScript neighbor in neighbours) {
 					if (neighbor.occupier.GetComponent<ShipScript>() != gameScript.selectedShip) {
-						possible = possible && neighbor.curCellState == GameScript.CellState.Available;
+						possible = (possible && (neighbor.curCellState == GameScript.CellState.Available));
 					}
 				}
 				if (possible) {
