@@ -29,7 +29,7 @@ public class KamikazeBoatScript : ShipScript {
 	}
 
 	void KamikazeGUI() {
-		if (GUI.Button(new Rect(Screen.width - 170, 90, 120, 30), "Detonate")) {
+		if (GUI.Button(new Rect(Screen.width - 150, 90, 120, 30), "Detonate")) {
 			DisplayCannonRange(true);
 			gameScript.curPlayAction = GameScript.PlayAction.Detonate;
 		}

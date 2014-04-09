@@ -12,6 +12,7 @@ public class GameScript : MonoBehaviour {
 	public enum ShipTypes {Cruiser, Destroyer, Torpedo, Mine, Radar, Kamikaze};
 
 
+	
 	public enum PlayerType {None = 0, Player1 =1, Player2=2}
 	/** Properties **/
 	public List<ShipScript> ships;
@@ -77,6 +78,7 @@ public class GameScript : MonoBehaviour {
 		gridScript = gameObject.GetComponent<GridScript>();
 		rpcScript = gameObject.GetComponent<RPCScript>();
 
+		
 		// Initialize game state variables
 		curPlayAction = PlayAction.None;
 		curGameState = GameState.Connecting;
@@ -134,7 +136,10 @@ public class GameScript : MonoBehaviour {
 			if (!gridInited) {
 				gridInited = true;
 				gridScript.Init();
-
+				LobbyChatScript chat = GetComponent<LobbyChatScript>() as LobbyChatScript;
+				chat.ShowChatWindow();
+				
+				
 				if (isLoadedGame) {
 					//Load game
 					GameSaverScript.Load(loadFilePath,this);
