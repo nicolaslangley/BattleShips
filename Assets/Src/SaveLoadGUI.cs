@@ -9,17 +9,15 @@ public class SaveLoadGUI : MonoBehaviour {
 	GameSaverScript gameSaver;
 	
 	void OnGUI() {
-		/*if(GUI.Button(new Rect(Screen.width-150,10,100,80), "Load")) {
-			GameSaverScript.Load(Path.Combine(Application.persistentDataPath, "ships_saved.xml"),GetComponent<GameScript>());
-			Debug.Log("Loaded " + Path.Combine(Application.persistentDataPath, "ships_saved.xml").ToString());
-
-		}*/
-		if (GUI.Button (new Rect (Screen.width-150, 90, 100, 80), "Save")) {
-			gameSaver = new GameSaverScript(GetComponent<GameScript>());
-			string filename = gameSaver.myname + "_" + gameSaver.opponentname + ".xml";
-			gameSaver.Save(Path.Combine("Assets/Saves", filename));
-			Debug.Log("Saved to " + Path.Combine(Application.persistentDataPath, filename).ToString());
+		GameScript.GameState gamestate = GetComponent<GameScript> ().curGameState;
+		if (Network.peerType == NetworkPeerType.Server && gamestate == GameScript.GameState.Play
+		    || gamestate == GameScript.GameState.Wait) {
+			if (GUI.Button (new Rect (10, Screen.height-40, 100, 40), "Save")) {
+				gameSaver = new GameSaverScript(GetComponent<GameScript>());
+				string filename = gameSaver.myname + "_" + gameSaver.opponentname + ".xml";
+				gameSaver.Save(Path.Combine("Assets/Saves", filename));
+				Debug.Log("Saved to " + Path.Combine("Assets/Saves", filename).ToString());
+			}
 		}
-
 	}
 }
