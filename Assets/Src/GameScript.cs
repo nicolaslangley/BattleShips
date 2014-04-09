@@ -213,7 +213,7 @@ public class GameScript : MonoBehaviour {
 				message = "Hit player base";
 				break;
 			case CellState.Mine:
-				message = "Mine Hit... this shouldn't happen";
+				message = "Mine Hit";
 				break;
 			case CellState.Ship:
 				message = "Hit Ship";

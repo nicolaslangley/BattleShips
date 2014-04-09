@@ -114,7 +114,9 @@ public class BaseScript : MonoBehaviour {
 			rpcScript.fireCannonBase(myPlayerType,sectionIndex,damage);
 			return;
 		}
-		
+
+		gameScript.NotifyDetonation("cannon",cells[sectionIndex]);
+
 		HandleHit(section,local,damage);
 		gameScript.EndTurn();
 		
