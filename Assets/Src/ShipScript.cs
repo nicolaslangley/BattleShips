@@ -423,23 +423,29 @@ public class ShipScript : MonoBehaviour {
 			}
 
 			CellScript validDestCell = gridScript.VerifyCellPath(startX, startY, distance, curDir, destCell, "mine",isMineLayer);
-			if (validDestCell != destCell) {
-				Debug.Log ("Invalid path, moving up until collision");
-				if ( !validDestCell.isMineRadius || isMineLayer) {
-					CellScript newDestCell = gridScript.VerifyCellPath(startX, startY, distance, curDir, destCell, "Move",isMineLayer);
-					destCell = newDestCell;
-					gameScript.GlobalNotify("Collision at (" +destCell.gridPositionX +","+destCell.gridPositionY+")"); 
-
-				} else {
-					Debug.Log("Was MINEEE");
-					destCell = validDestCell;
-					triggerMine = true;
-					previousState = destCell.curCellState;
-				}
-
-
-				// TODO: Potentially notify other player of reef collision? Does damage occur?
+			if (validDestCell.isMineRadius && !isMineLayer) {
+				// Go here and explode
+				triggerMine = true;
+				previousState = destCell.curCellState;
+				destCell = validDestCell;
 			}
+			if (!validDestCell.isMineRadius && isMineLayer) {
+				// Not a mine radius
+				if (validDestCell.curCellState == GameScript.CellState.Available) {
+					destCell = validDestCell;
+				} else {
+					gameScript.GlobalNotify("Collision at (" +destCell.gridPositionX +","+destCell.gridPositionY+")");
+					destCell = gridScript.VerifyCellPath(startX, startY, distance, curDir, destCell, "Move",isMineLayer);
+				}
+			} else {
+				if (validDestCell.curCellState == GameScript.CellState.Available) {
+					destCell = validDestCell;
+				} else {
+					gameScript.GlobalNotify("Collision at (" +destCell.gridPositionX +","+destCell.gridPositionY+")");
+					destCell = gridScript.VerifyCellPath(startX, startY, distance, curDir, destCell, "Move",isMineLayer);
+				}
+			}
+
 			forward = true;
 			moveTime = 0;
 			StartCoroutine(MoveShipForward(destCell.transform.position));
