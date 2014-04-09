@@ -288,7 +288,6 @@ public class ShipScript : MonoBehaviour {
 			yield return 1; // wait for next frame
 		}
 
-		Instantiate(explosion, target.transform.position, Quaternion.identity);
 		CellScript targetCellScript = target.GetComponent<CellScript>();
 		if (targetCellScript.curCellState == GameScript.CellState.Reef) {
 			targetCellScript.renderer.material.color = Color.black;
