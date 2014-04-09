@@ -11,6 +11,8 @@ public class GameSaverScript {
 	[XmlArrayItem("Ship")]
 	public List<ShipSaverScript> ships;
 
+	public List<BaseSaverScript> playerBases;
+
 	public string myname;
 	public string opponentname;
 	public string turn;
@@ -35,6 +37,10 @@ public class GameSaverScript {
 		curGameState = gameScript.curGameState;
 		myPlayerType = gameScript.myPlayerType;
 		winner = gameScript.winner;
+
+		foreach (BaseScript baseScript in gameScript.bases) {
+			playerBases.Add(new BaseSaverScript(baseScript));
+		}
 	}
  
 	public void Save(string path) {
@@ -63,10 +69,11 @@ public class GameSaverScript {
 
 		gameScript.rpcScript.SetTurn (loader.myname);
 
-		if (loader.myname == gameScript.myname) {
-
-		} else {
-
+		foreach (BaseScript playerBase in gameScript.bases) {
+			foreach (BaseSaverScript baseSaver in loader.playerBases) {
+				if (playerBase.player == baseSaver.player)
+					baseSaver.Restore(playerBase);
+			}
 		}
 
 		XmlSerializer serialize = new XmlSerializer(typeof(ShipSaverScript));
