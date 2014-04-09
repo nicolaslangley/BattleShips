@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class KamikazeBoatScript : ShipScript {
@@ -30,30 +30,27 @@ public class KamikazeBoatScript : ShipScript {
 
 	void KamikazeGUI() {
 		if (GUI.Button(new Rect(Screen.width - 170, 90, 120, 30), "Detonate")) {
-			int startX = this.cells[0].gridPositionX;
-			int startY = this.cells[0].gridPositionY;
-
-			for (int x = (startX > 0 ? startX-1 : startX); x < 3 && x < this.gridScript.grid.GetLength(0); x++) {
-				for (int y = (startY > 0 ? startY-1 : startY); y < 3 && y < this.gridScript.grid.GetLength(1); y++) {
-					CellScript temp = this.gridScript.grid[x, y];
-					if (temp.curCellState == GameScript.CellState.Ship) {
-						if (temp.occupier != null) {
-							ShipSectionScript section = temp.occupier.GetComponent<ShipSectionScript>();
-							ShipScript ship = section.parent;
-							if (ship.player == gameScript.myname) {
-								ship.HandleHit(temp.occupier, 1, 1);
-							} else {
-								this.rpcScript.fireCannonShip(ship.shipID, 0, 1);
-							}
-						}
-						gameScript.NotifyDetonation("Kamikaze boat", temp);
-					}
-				}
-			}
+			DisplayCannonRange(true);
+			gameScript.curPlayAction = GameScript.PlayAction.Detonate;
 		}
 	}
 
-
+	public override void Detonate (CellScript targetCell, int local) {
+		DisplayCannonRange(false);
+		gridScript.Explode(targetCell.gridPositionX, targetCell.gridPositionY, GridScript.ExplodeType.Kamikaze);
+		// Destroy kamikaze ship
+		gameScript.ships.Remove(this);
+		foreach (CellScript c in cells) 
+		{
+			c.available = true;
+			c.occupier = null;
+			c.isVisible = false;
+			c.curCellState = GameScript.CellState.Available;
+		}
+		Destroy(gameObject);
+	}
+	
+	
 	IEnumerator MoveKamikazeBoat (Vector3 destPos) {
 		destPos.y += 0.5f;
 		Vector3 start = transform.position;
@@ -141,8 +138,13 @@ public class KamikazeBoatScript : ShipScript {
 
 		// TODO: Check path for movement is valid
 		Debug.Log ("Called MoveShip within Kamikaze Boat for " + player);
-
-		// De-select current cell for ship
+		DisplayMoveRange(false);
+		CellScript validDestCell = checkValidMove(destCell, cells[0].gridPositionX, cells[0].gridPositionY);
+		if (validDestCell != destCell) {
+			Debug.Log ("Invalid path, moving up until collision");
+			// De-select current cell for ship
+			destCell = validDestCell;
+		}
 		CellScript curCellScript = cells[0];
 		curCellScript.occupier = null;
 		curCellScript.selected = false;
@@ -157,9 +159,6 @@ public class KamikazeBoatScript : ShipScript {
 		destCell.curCellState = GameScript.CellState.Ship;
 		destCell.selected = true;
 
-		// Un-display move range and end turn
-		// TODO: range is not being un-displayed properly
-		DisplayMoveRange(false);
 		// Move ship to target cell
 		StartCoroutine(MoveKamikazeBoat(destCell.transform.position));
 		gameScript.EndTurn();

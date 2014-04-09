@@ -2,7 +2,11 @@ fileFormatVersion: 2
 guid: 6e6e5c39c83274ce5a1d19779bdef6d1
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - gameScript: {instanceID: 0}
+  - gridScript: {instanceID: 0}
+  - explosion: {fileID: 100004, guid: 169b10ce10f4327cb9f40f6b117ed8d7, type: 2}
+  - baseCell: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

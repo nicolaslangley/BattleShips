@@ -46,6 +46,7 @@ public class ShipSectionScript : MonoBehaviour {
 				gameScript.selectedShip.DisplayCannonRange(false);
 				gameScript.curPlayAction = GameScript.PlayAction.None;
 			}
+			// TODO: add other options when clicking on ship - i.e. movement up to and detonation
 		} else if (parent.player != gameScript.myname) {
 			// Only allow for repair or selection if the ship is mine.
 			return;
