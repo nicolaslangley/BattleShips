@@ -130,7 +130,6 @@ public class GridScript : MonoBehaviour {
 
 			CellScript startCell = grid[(int)startPos.x, (int)startPos.z];
 			Debug.Log ("Start Cell Pos: " + startCell.gridPositionX + " " + startCell.gridPositionY);
-			Debug.Log ("End Pos: " + endPos + " Start Pos: " + startPos);
 			if (startCell.availableForDock) {
 				Debug.Log ("Placing ship because cell is available for dock");
 				PlaceShip(startPos.x, startPos.z, shipDir, 1, gameScript.myname, shipType, gameScript.myPlayerType);
@@ -146,7 +145,7 @@ public class GridScript : MonoBehaviour {
 	public ShipScript PlaceShip (float startPosX, float startPosZ, GameScript.Direction dir, int local, string Player, GameScript.ShipTypes types, GameScript.PlayerType playerType) {
 		if (local == 1)
 		{
-			rpcScript.setShip(startPosX, startPosZ, (int)dir, Player, types, playerType);
+			rpcScript.setShip(startPosX, startPosZ, dir, Player, types, playerType);
 		}
 		// Update newZ and newX based on orientation
 		GameScript.Direction shipDir = dir;
