@@ -42,6 +42,16 @@ public class MineLayerScript : ShipScript {
 				gameScript.curPlayAction = GameScript.PlayAction.DropMine;
 			}
 		}
+		bool mineRadius = false;
+		foreach (CellScript cell in this.cells) {
+			mineRadius = mineRadius || cell.isMineRadius;
+		}
+		if (selected && mineRadius) { 
+			if (GUI.Button(new Rect(Screen.width - 150, 250, 100, 30), "Pickup Mine")) {
+				DisplayMineRange(true);
+				gameScript.curPlayAction = GameScript.PlayAction.PickupMine;
+			}
+		}
 	}
 
 }
