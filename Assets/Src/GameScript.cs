@@ -465,9 +465,19 @@ public class GameScript : MonoBehaviour {
 				player2HasShips = true;
 			}
 		}
-		if (player1HasShips && player2HasShips) return GameScript.PlayerType.None;
-		if (!player2HasShips) return GameScript.PlayerType.Player1;
-		if (!player1HasShips) return GameScript.PlayerType.Player2;
+		if (player1HasShips && player2HasShips)
+		{
+			Debug.Log("No winner");
+			return GameScript.PlayerType.None;
+		}
+		if (!player2HasShips){
+			Debug.Log("Player 1 winner");
+			return GameScript.PlayerType.Player1;
+		}
+		if (!player1HasShips){
+			Debug.Log("Player 2 winner");
+			return GameScript.PlayerType.Player2;
+		}
 		return GameScript.PlayerType.None;
 	}
 

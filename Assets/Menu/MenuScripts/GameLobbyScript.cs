@@ -143,7 +143,7 @@ public class GameLobbyScript : MonoBehaviour
             players = 32;
         }
         serverTitle = serverName;
-		MultiplayerFunctionScript.SP.StartServer(password, MultiplayerFunctionScript.SP.defaultServerPort, (players - 1), true);
+		MultiplayerFunctionScript.SP.StartServer(password, MultiplayerFunctionScript.SP.defaultServerPort, (players - 1), false);
     }
     void showLobby()
     {
