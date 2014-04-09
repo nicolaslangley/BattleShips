@@ -43,7 +43,7 @@ public class RadarBoatScript : ShipScript {
 
 	void RadarGUI() {
 		Debug.Log("Radar gui");
-		if (GUI.Button(new Rect(Screen.width - 170, 90, 120, 30), "Toggle Long Range")) {
+		if (GUI.Button(new Rect(Screen.width - 150, 90, 120, 30), "Toggle Long Range")) {
 			ToggleLongRange();
 			rpcScript.EndTurn();
 		}
