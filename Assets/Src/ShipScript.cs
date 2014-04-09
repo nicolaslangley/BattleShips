@@ -680,11 +680,13 @@ public class ShipScript : MonoBehaviour {
 
 		// Handle damage if rotation was supposed to happen and mine occured.
 		if (obstacleMine) {
+			Debug.Log ("Obstacle was a mine");
 			foreach (CellScript c in cells) {
 				List<CellScript> neighbours = gridScript.GetCellNeighbours(c);
 				foreach (CellScript nc in cells) {
 					if (nc.isMineRadius || nc.curCellState == GameScript.CellState.Mine) {
 						HandleDoubleHit(c, 2, c);
+						Debug.Log ("Handling hit on ship for mine collision");
 						break;
 					}
 				}

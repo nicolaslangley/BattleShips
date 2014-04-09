@@ -646,6 +646,9 @@ public class GridScript : MonoBehaviour {
 		//Tell cells around it that it was hit by explosion
 		gameScript.GlobalNotify("Explosion at (" +centerX +","+centerY+")"); 
 
+		// Have explosion for explode
+		Instantiate(Resources.Load ("explosion"), grid[centerX, centerY].transform.position, Quaternion.identity);
+
 		for (int x = (centerX > 0 ? centerX-1 : centerX); x <= centerX+1 && x < this.grid.GetLength(0); x++) {
 			for (int y = (centerY > 0 ? centerY-1 : centerY); y <= centerY+1 && y < this.grid.GetLength(1); y++) {
 				GetCell(x,y).handleCellDamage(2,type,GetCell(centerX,centerY));
