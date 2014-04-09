@@ -130,6 +130,8 @@ public class GameScript : MonoBehaviour {
 			break;
 		case (GameState.Setup):
 			// Perform update to objects based on setup state
+			BaseScript myBase = bases[((int)myPlayerType)-1];
+			myBase.UpdateBaseVisibility(true);
 			if (!gridInited) {
 				gridInited = true;
 				gridScript.Init();
@@ -189,12 +191,16 @@ public class GameScript : MonoBehaviour {
 			foreach (ShipScript s in ships) {
 				s.UpdateShipVisibility();
 			}
+			myBase = bases[((int)myPlayerType)-1];
+			myBase.UpdateBaseVisibility(true);
 			break;
 		case (GameState.Wait):
 			gridScript.ResetVisibility();
 			foreach (ShipScript s in ships) {
 				s.CustomPlayUpdate();
 			}
+			myBase = bases[((int)myPlayerType)-1];
+			myBase.UpdateBaseVisibility(true);
 			break;
 		case (GameState.End):
 			Debug.Log("In end state");
@@ -413,6 +419,8 @@ public class GameScript : MonoBehaviour {
 		foreach (ShipScript s in ships) {
 			s.UpdateShipVisibility();
 		}
+		BaseScript myBase = bases[((int)myPlayerType)-1];
+		myBase.UpdateBaseVisibility(true);
 
 
 		winner = checkWinner();
