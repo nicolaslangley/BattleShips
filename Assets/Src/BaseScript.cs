@@ -14,7 +14,7 @@ public class BaseScript : MonoBehaviour {
 	private List<GameObject> baseSections;
 	private GameObject system;
 	protected RPCScript rpcScript;
-	private int[] health;
+	public int[] health;
 
 	/** UNITY METHODS **/
 
