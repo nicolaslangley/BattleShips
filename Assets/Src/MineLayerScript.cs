@@ -26,7 +26,7 @@ public class MineLayerScript : ShipScript {
 
 		this.shipType = "minelayer";
 
-		minesLeft = 5;
+		this.minesLeft = 5;
 	}
 
 	void OnGUI () {
