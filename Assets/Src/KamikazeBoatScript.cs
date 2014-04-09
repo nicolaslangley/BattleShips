@@ -88,42 +88,42 @@ public class KamikazeBoatScript : ShipScript {
 			// Check diagonals
 			if (destX < startX && destY > startY) {
 				// Upper left diagonal
-				while (destX < startX && destY > startY) {
-					destX += 1;
-					destY -= 1;
+				while (destX < startX-1 && destY > startY+1) {
 					if (!gridScript.VerifyCell(destX, destY)) {
 						validDestCell = gridScript.grid[destX, destY];
 					}
+					destX += 1;
+					destY -= 1;
 				}
 			} 
 			if (destX > startX && destY > startY) {
 				// Upper right diagonal
-				while (destX > startX && destY > startY) {
-					destX -= 1;
-					destY -= 1;
+				while (destX > startX+1 && destY > startY+1) {
 					if (!gridScript.VerifyCell(destX, destY)) {
 						validDestCell = gridScript.grid[destX, destY];
 					}
+					destX -= 1;
+					destY -= 1;
 				}
 			}
 			if (destX < startX && destY < startY) {
 				// Bottom left diagonal
-				while (destX < startX && destY < startY) {
-					destX += 1;
-					destY += 1;
+				while (destX < startX-1 && destY < startY-1) {
 					if (!gridScript.VerifyCell(destX, destY)) {
 						validDestCell = gridScript.grid[destX, destY];
 					}
+					destX += 1;
+					destY += 1;
 				}
 			}
 			if (destX > startX && destY < startY) {
 				// Bottom right diagonal
-				while (destX > startX && destY < startY) {
-					destX -= 1;
-					destY += 1;
+				while (destX > startX+1 && destY < startY-1) {
 					if (!gridScript.VerifyCell(destX, destY)) {
 						validDestCell = gridScript.grid[destX, destY];
 					}
+					destX -= 1;
+					destY += 1;
 				}
 			}
 		}
